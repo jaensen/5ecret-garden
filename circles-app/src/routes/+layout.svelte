@@ -24,7 +24,6 @@
   import { initContactStore } from '$lib/shared/state/contacts';
   import { initBalanceStore } from '$lib/shared/state/circlesBalances';
   import { browser } from '$app/environment';
-  import { PUBLIC_PLAUSIBLE_DOMAIN } from '$env/static/public';
   import { initGroupMetricsStore } from '$lib/areas/groups/state';
   import type { Address } from '@circles-sdk/utils';
   import { get } from 'svelte/store';
@@ -247,16 +246,6 @@
   // Toasts
   let hasToasts: boolean = $derived($tasks.length > 0 || historyForwardNoopToastVisible);
 </script>
-
-<svelte:head>
-  {#if browser && PUBLIC_PLAUSIBLE_DOMAIN && hasUserInteraction && avatarState.avatar}
-    <script
-      defer
-      data-domain={PUBLIC_PLAUSIBLE_DOMAIN}
-      src="https://plausible.io/js/script.js"
-    ></script>
-  {/if}
-</svelte:head>
 
 {#if avatarState.avatar}
   <DefaultHeader homeLink="/dashboard" />

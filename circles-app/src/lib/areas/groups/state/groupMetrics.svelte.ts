@@ -4,7 +4,6 @@ import { uint256ToAddress, type Address } from "@circles-sdk/utils";
 import { formatEther, type BigNumberish } from "ethers";
 import {
     queryAffiliateGroupChangedPage,
-    queryGroupErc20Token,
     queryGroupMembersCountSeries,
     queryGroupMintRedeemSeries,
     queryGroupTokenHoldersBalance,
@@ -38,9 +37,6 @@ export type GroupMetrics = {
     mintRedeemPerDay?: Array<mintRedeem>;
     wrapUnwrapPerHour?: Array<wrapUnwrap>;
     wrapUnwrapPerDay?: Array<wrapUnwrap>;
-    erc20Token?: Address;
-    priceHistoryWeek?: Array<{ timestamp: Date; price: number }>;
-    priceHistoryMonth?: Array<{ timestamp: Date; price: number }>;
     affiliateMembersCount?: number;
 }
 
@@ -78,26 +74,6 @@ export async function fetchGroupMetrics(
     countCurrentAffiliateMembers(circlesRpc, groupAddress).then(r => {
         target.affiliateMembersCount = r
     });
-    const token = await getERC20Token(circlesRpc, groupAddress);
-    target.erc20Token = token;
-
-    if (token) {
-        const base = `/api/price/?group=${encodeURIComponent(token)}`;
-        const [week, month] = await Promise.all([
-            fetch(`${base}&period=7 days&resolution=hour`).then(r => r.ok ? r.json() : []),
-            fetch(`${base}&period=30 days&resolution=day`).then(r => r.ok ? r.json() : []),
-        ]);
-
-        target.priceHistoryWeek = week?.map((p: { timestamp: string; price: string }) => ({
-            timestamp: new Date(p.timestamp),
-            price: Number(p.price)
-        }));
-
-        target.priceHistoryMonth = month?.map((p: { timestamp: string; price: string }) => ({
-            timestamp: new Date(p.timestamp),
-            price: Number(p.price)
-        }));
-    }
 }
 
 
@@ -216,16 +192,6 @@ async function getGroupTokenHoldersBalance(
         demurragedTotalBalance: Number(formatEther(toBigNumberish(d))),
         fractionalOwnership: Number(f),
     }));
-}
-
-async function getERC20Token(
-    circlesRpc: CirclesRpc,
-    groupAddress: Address
-): Promise<Address | undefined> {
-    const result = await queryGroupErc20Token(circlesRpc, groupAddress);
-    const token = result.rows[1]?.[7];
-
-    return typeof token === 'string' ? (token as Address) : undefined;
 }
 
 export async function countCurrentAffiliateMembers(

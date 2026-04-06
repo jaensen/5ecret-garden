@@ -212,9 +212,7 @@ export async function clearSession() {
         wrapUnwrapPerDay: undefined,
         collateralInTreasury: undefined,
         tokenHolderBalance: undefined,
-        erc20Token: undefined,
-        priceHistoryWeek: undefined,
-        priceHistoryMonth: undefined
+        affiliateMembersCount: undefined,
     });
     Object.assign(avatarState, {
         avatar: undefined,

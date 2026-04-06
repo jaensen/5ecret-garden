@@ -12,17 +12,6 @@
     <GroupMetricsStats {groupMetrics} />
 
     <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 mt-6">
-        {#if groupMetrics.priceHistoryWeek && groupMetrics.priceHistoryMonth}
-            <div class="bg-base-100 border border-base-300 p-6 rounded-xl shadow-sm">
-                <ModernHistoryChart
-                        dataSet1={groupMetrics.priceHistoryWeek}
-                        dataSet2={groupMetrics.priceHistoryMonth}
-                        title="Price History"
-                        label="xDAI"
-                />
-            </div>
-        {/if}
-
         {#if groupMetrics?.memberCountPerHour && groupMetrics.memberCountPerHour.length > 0 && groupMetrics.memberCountPerDay && groupMetrics.memberCountPerDay.length > 0}
             <div class="bg-base-100 border border-base-300 p-6 rounded-xl shadow-sm">
                 <ModernHistoryChart
