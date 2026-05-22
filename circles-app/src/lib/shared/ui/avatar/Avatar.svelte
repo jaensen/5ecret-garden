@@ -1,16 +1,15 @@
 <script lang="ts">
-  import { AvatarDisplay } from '@garden-ui/avatar';
-  import { openProfilePopup } from '$lib/shared/ui/profile/openProfilePopup';
-  import { getProfile } from '$lib/shared/utils/profile';
-  import { getTypeString } from '$lib/shared/utils/helpers';
-  import { isVipProfileBookmark, profileBookmarksStore } from '$lib/areas/settings/state/profileBookmarks';
-  import type { Address } from '@circles-sdk/utils';
-  import type { AppProfileCore as Profile } from '$lib/shared/model/profile';
-  import type { AvatarRow } from '@circles-sdk/data';
-  import { fade } from 'svelte/transition';
-  import { circles } from '$lib/shared/state/circles';
-  import { normalizeEvmAddress } from '@circles-market/sdk';
-  import { getAvatarInfoBatched } from '$lib/shared/data/circles/avatarInfoBatcher';
+  import {AvatarDisplay} from '@garden-ui/avatar';
+  import {openProfilePopup} from '$lib/shared/ui/profile/openProfilePopup';
+  import {getProfile} from '$lib/shared/utils/profile';
+  import {getTypeString} from '$lib/shared/utils/helpers';
+  import {isVipProfileBookmark, profileBookmarksStore} from '$lib/areas/settings/state/profileBookmarks';
+  import type {Address} from '@circles-sdk/utils';
+  import type {AppProfileCore as Profile} from '$lib/shared/model/profile';
+  import type {AvatarRow} from '@circles-sdk/data';
+  import {circles} from '$lib/shared/state/circles';
+  import {normalizeEvmAddress} from '@circles-market/sdk';
+  import {getAvatarInfoBatched} from '$lib/shared/data/circles/avatarInfoBatcher';
 
   const avatarInfoCache = new Map<string, Promise<AvatarRow | undefined>>();
 
@@ -50,16 +49,13 @@
     placeholderBottom = true,
   }: Props = $props();
 
-  const placeholderHasTopInfo = $derived(placeholderTop && !!topInfo);
-  const placeholderHasBottomInfo = $derived(placeholderBottom && !!bottomInfo);
-
   const normalizedAddress = $derived.by((): Address | null => {
     if (address == null) return null;
     if (typeof address === 'string' && address.trim().length === 0) return null;
     try {
       return normalizeEvmAddress(String(address)) as Address;
     } catch (e) {
-      console.debug('[avatar] failed to normalize address', { address }, e);
+      console.debug('[avatar] failed to normalize address', {address}, e);
       return null;
     }
   });
@@ -128,7 +124,7 @@
     let promise = avatarInfoCache.get(key);
     if (!promise) {
       promise = getAvatarInfoBatched($circles, addr).catch((e) => {
-        console.debug('[avatar] failed to load avatar info', { addr }, e);
+        console.debug('[avatar] failed to load avatar info', {addr}, e);
         return undefined;
       });
       avatarInfoCache.set(key, promise);
@@ -173,7 +169,7 @@
     const addr = normalizedAddress;
     if (!addr) return;
 
-    openProfilePopup(addr, { title: '' });
+    openProfilePopup(addr, {title: ''});
 
     e?.stopPropagation?.();
     e?.preventDefault?.();
@@ -181,19 +177,19 @@
 </script>
 
 <AvatarDisplay
-  {profile}
-  {clickable}
-  {view}
-  {pictureOverlayUrl}
-  showBookmarkBadge={effectiveShowBookmarkBadge}
-  {topInfo}
-  bottomInfo={computedBottomInfo}
-  placeholderAvatar={placeholderAvatar}
-  placeholderTop={placeholderTop}
-  placeholderBottom={placeholderBottom}
-  title={tooltipText}
-  typeLabel={showTypeInfo ? typeLabel : undefined}
-  onActivate={openAvatar}
+    {profile}
+    {clickable}
+    {view}
+    {pictureOverlayUrl}
+    showBookmarkBadge={effectiveShowBookmarkBadge}
+    {topInfo}
+    bottomInfo={computedBottomInfo}
+    placeholderAvatar={placeholderAvatar}
+    placeholderTop={placeholderTop}
+    placeholderBottom={placeholderBottom}
+    title={tooltipText}
+    typeLabel={showTypeInfo ? typeLabel : undefined}
+    onActivate={openAvatar}
 >
   {#snippet descriptionRenderer(description: string)}
     <div class="prose prose-sm max-w-none text-base-content/70 mt-0">{description}</div>

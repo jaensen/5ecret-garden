@@ -3,7 +3,7 @@
     import {createEventDispatcher} from 'svelte';
     import {runTask} from '$lib/shared/utils/tasks';
     import type {Address} from "@circles-sdk/utils";
-    import type {CidV0} from '$lib/areas/market/offers';
+    import type {CidV0} from '$lib/shared/model/profile/bindings';
     import type { ProfilesBindings } from '@circles-market/sdk';
     import { buildLinkDraft, canonicaliseLink } from '@circles-market/sdk';
     import {
@@ -24,7 +24,7 @@
     } from 'lucide';
     import { ipfsGatewayUrl } from '$lib/shared/utils/ipfs';
     import JumpLink from '$lib/shared/ui/content/jump/JumpLink.svelte';
-    import { getProfilesBindings } from '$lib/areas/market/offers';
+    import { getProfilesBindings } from '$lib/shared/model/profile/bindings';
     import { getWalletProvider } from '$lib/shared/integrations/wallet';
     import { ensureGnosisChain } from '$lib/shared/integrations/chain/gnosis';
     import { getMarketClient } from '$lib/shared/integrations/market';

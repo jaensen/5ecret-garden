@@ -34,18 +34,11 @@
     /* NEW: tabs */
     import { Tabs, Tab } from '@garden-ui/tabs';
     import type { TabIdOf } from '$lib/shared/ui/primitives/tabs/tabId';
-    // Offers tab dependencies
-    import ProductCard from '$lib/areas/market/ui/product/ProductCard.svelte';
-    import { normalizeEvmAddress as normalizeAddress } from '@circles-market/sdk';
-    import type { AggregatedCatalogItem } from '$lib/areas/market/model';
-    import { getMarketClient } from '$lib/shared/integrations/market';
     // Namespaces explorer (read-only) for other profiles
     import { ProfileNamespaces } from '$lib/shared/ui/profile';
     import { loadProfileOrInit } from '@circles-market/sdk';
     import type { ProfilesBindings } from '@circles-market/sdk';
-    import { createCirclesSdkProfilesBindings } from '@circles-profile/core';
-    import { get } from 'svelte/store';
-    import {gnosisConfig} from "$lib/shared/config/circles";
+    import { getProfilesBindings } from '$lib/shared/model/profile/bindings';
     import { TrustScoreBadge } from '$lib/shared/ui/profile';
     import TrustHistoryHeatmap from '$lib/areas/trust/ui/TrustHistoryHeatmap.svelte';
     import PersonalMintHistoryHeatmap from '$lib/areas/minting/ui/PersonalMintHistoryHeatmap.svelte';
@@ -60,6 +53,10 @@
     } from '$lib/areas/settings/state/profileBookmarks';
     import HelpPopover from '$lib/shared/ui/primitives/HelpPopover.svelte';
     import { TRUST_ROUTING_HELP_LINES } from '$lib/shared/content/trustRoutingCopy';
+
+    function normalizeAddress(value: string | Address): Address {
+        return String(value).trim().toLowerCase() as Address;
+    }
 
     interface Props {
         address: Address | undefined;
@@ -115,64 +112,6 @@
     let holdingsLoading: boolean = $state(false);
     let holdingsError: string | null = $state(null);
 
-    // Offers tab state
-    let offersLoading: boolean = $state(false);
-    let offersError: string = $state('');
-    let offers: AggregatedCatalogItem[] = $state([]);
-    // Track which seller address the current `offers` belong to (lowercased)
-    let offersFor: string | null = $state(null);
-
-    async function loadOffers(): Promise<void> {
-        if (!address) return;
-        const seller = normalizeAddress(String(address));
-        if (!seller) {
-            offersError = 'Invalid address';
-            offers = [];
-            offersFor = null;
-            return;
-        }
-        offersLoading = true;
-        offersError = '';
-        offers = [];
-        try {
-            const operator = gnosisConfig.production.marketOperator;
-            if (!operator) {
-                throw new Error('Market operator not configured');
-            }
-            const catalog = getMarketClient().catalog.forOperator(operator);
-            const items = await catalog.fetchSellerCatalog(seller);
-            // Defensive filter (API already filters by seller)
-            offers = items.filter((p) => (p.seller ?? '').toLowerCase() === seller.toLowerCase());
-            offersFor = seller;
-        } catch (e: any) {
-            offersError = e?.message || 'Failed to load offers';
-            offersFor = seller; // avoid refetch loop on same address
-        } finally {
-            offersLoading = false;
-        }
-    }
-
-    // Load when the Offers tab is selected or when the address changes while on the tab
-    $effect(() => {
-        if (selectedTab === 'offers' && address) {
-            const want = normalizeAddress(String(address));
-            if (!offersLoading && offersFor !== want) {
-                void loadOffers();
-            }
-        }
-    });
-
-    // Also eagerly load offers whenever the viewed address changes,
-    // so the Offers tab is ready immediately. This avoids timing issues
-    // where the tab becomes visible before the fetch is triggered.
-    $effect(() => {
-        if (!address) return;
-        const want = normalizeAddress(String(address));
-        if (!offersLoading && offersFor !== want) {
-            void loadOffers();
-        }
-    });
-
     // ─────────────────────────────────────────────────────────────
     // Namespaces explorer for the displayed profile (auto-load)
     // ─────────────────────────────────────────────────────────────
@@ -184,12 +123,7 @@
     let namespacesFor: string | null = $state(null);
 
     function getBindings(): ProfilesBindings {
-        const sdk = get(circles);
-        if (!sdk) {
-            throw new Error('Circles SDK not initialized');
-        }
-        const { bindings } = createCirclesSdkProfilesBindings({ circlesSdk: sdk as any });
-        return bindings as ProfilesBindings;
+        return getProfilesBindings().bindings;
     }
 
     async function loadNamespacesFor(addr: Address): Promise<void> {
@@ -361,7 +295,6 @@
         'collateral',
         'holders',
         'holdings',
-        'offers',
         'explore_namespaces',
     ] as const;
     type TabId = TabIdOf<typeof TAB_IDS>;
@@ -485,7 +418,6 @@
         ) {
             ids.push('holdings');
         }
-        ids.push('offers');
         ids.push('explore_namespaces');
         return ids;
     })());
@@ -890,40 +822,6 @@
             </div>
         </Tab>
     {/if}
-
-    <!-- Offers tab: shows products listed by this profile's address -->
-    <Tab
-            id="offers"
-            title="Offers"
-            badge={offers.length}
-            panelClass={tabPanelClass}
-    >
-        {#if offersLoading}
-            <div class="flex items-center gap-2 text-base-content/70 py-2">
-                <span class="loading loading-spinner loading-sm"></span>
-                <span>Loading offers…</span>
-            </div>
-        {:else if offersError}
-            <div class="alert alert-warning">
-                <span>{offersError}</span>
-                <button class="btn btn-xs ml-2" onclick={loadOffers}>Retry</button>
-            </div>
-        {:else}
-            {#if offers.length === 0}
-                <div class="text-sm opacity-70">No offers</div>
-            {:else}
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" data-sveltekit-preload-data="hover">
-                    {#each offers as p (p.productCid ?? p.linkKeccak ?? p.indexInChunk)}
-                        <ProductCard
-                                product={p}
-                                showSellerInfo={false}
-                                ondeleted={() => loadOffers()}
-                        />
-                    {/each}
-                </div>
-            {/if}
-        {/if}
-    </Tab>
 
     <!-- Explore namespaces tab: auto-load the viewed profile's namespaces (read-only) -->
     <Tab

@@ -1,48 +1,19 @@
 <script lang="ts">
-  import {
-    adminProductTypeLabels,
-    resolveAdminProductType,
-    type AdminUnifiedProduct
-  } from '$lib/areas/admin/types';
-
-  const sampleProducts: AdminUnifiedProduct[] = [
-    {
-      key: 'prod-route',
-      chainId: 100,
-      seller: '0x1111111111111111111111111111111111111111',
-      sku: 'ROUTE-ONLY-001'
-    },
-    {
-      key: 'prod-odoo',
-      chainId: 100,
-      seller: '0x2222222222222222222222222222222222222222',
-      sku: 'ODOO-001',
-      odoo: {} as any
-    },
-    {
-      key: 'prod-code',
-      chainId: 100,
-      seller: '0x3333333333333333333333333333333333333333',
-      sku: 'CODE-001',
-      code: {} as any
-    }
-  ];
-
   const typeContractRows = [
     {
-      domain: 'market',
-      file: '$lib/areas/market/model.ts',
-      exports: 'AggregatedCatalogItem, SchemaOrgOfferLite, SchemaOrgProductLite, ...'
+      domain: 'profile',
+      file: '$lib/shared/model/profile/bindings.ts',
+      exports: 'CidV0, ProfilesBindingsWithMedia, getProfilesBindings(...)'
     },
     {
-      domain: 'orders',
-      file: '$lib/areas/market/orders/types.ts',
-      exports: 'OrderSnapshot, OrderStatusHistory, OrderStatusEventPayload, ...'
+      domain: 'profile',
+      file: '$lib/shared/model/profile/namespacesEditor.ts',
+      exports: 'loadNamespaceLinks(...), rewriteNamespaceFromLinks(...), applyEditableLinkMetadata(...)'
     },
     {
-      domain: 'admin',
-      file: '$lib/areas/admin/types.ts',
-      exports: 'AdminUnifiedProduct, AdminProductType, resolveAdminProductType(...)'
+      domain: 'settings',
+      file: '$lib/areas/settings/model/gatewayTypes.ts',
+      exports: 'GatewayRow, TrustRow, gateway-related UI contracts'
     }
   ];
 
@@ -57,7 +28,7 @@
 <section class="rounded-xl border border-base-300 bg-base-100 p-4 space-y-4">
   <h2 class="text-lg font-semibold">Data & Types</h2>
   <p class="text-sm opacity-70">
-    Contract-focused playground for market/order/admin type modules and lightweight typed mock objects.
+    Contract-focused playground for surviving shared and settings type modules after the market/admin removal.
   </p>
 
   <div class="space-y-2">
@@ -77,25 +48,6 @@
           {/each}
         </tbody>
       </table>
-    </div>
-  </div>
-
-  <div class="space-y-2">
-    <h3 class="font-medium">Admin product type resolution</h3>
-    <p class="text-sm opacity-70">
-      Demonstrates <code>resolveAdminProductType</code> and human label mapping from <code>$lib/areas/admin/types.ts</code>.
-    </p>
-    <div class="space-y-2">
-      {#each sampleProducts as product (product.key)}
-        {@const resolvedType = resolveAdminProductType(product)}
-        <div class="rounded-lg border border-base-300 p-3 bg-base-200/20 text-sm flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <div class="font-medium">{product.sku}</div>
-            <div class="opacity-70 text-xs">{product.key} · seller {product.seller}</div>
-          </div>
-          <span class="badge badge-primary badge-sm">{adminProductTypeLabels[resolvedType]}</span>
-        </div>
-      {/each}
     </div>
   </div>
 

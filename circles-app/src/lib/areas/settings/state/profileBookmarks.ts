@@ -1,8 +1,8 @@
 import { browser } from '$app/environment';
 import { get, writable, type Readable } from 'svelte/store';
 import type { Address } from '@circles-sdk/utils';
-import type { CidV0 } from '$lib/areas/market/offers';
-import { getProfilesBindings } from '$lib/areas/market/offers';
+import type { CidV0 } from '$lib/shared/model/profile/bindings';
+import { getProfilesBindings } from '$lib/shared/model/profile/bindings';
 import { gnosisConfig } from '$lib/shared/config/circles';
 import { getWalletProvider } from '$lib/shared/integrations/wallet';
 import { getMarketClient } from '$lib/shared/integrations/market';

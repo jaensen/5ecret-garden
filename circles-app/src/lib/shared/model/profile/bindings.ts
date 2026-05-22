@@ -1,8 +1,9 @@
-// circles-app/src/lib/offers/profilesBindings.ts
 import { get } from 'svelte/store';
 import { circles } from '$lib/shared/state/circles';
 import { createCirclesSdkProfilesBindings } from '@circles-profile/core';
 import type { ProfilesBindings } from '@circles-market/sdk';
+
+export type CidV0 = `Qm${string}`;
 
 export type ProfilesBindingsWithMedia = {
   bindings: ProfilesBindings;

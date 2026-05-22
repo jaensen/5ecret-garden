@@ -3,9 +3,9 @@
     import { popupState } from '$lib/shared/state/popup';
     import { headerDropdownOpen } from '$lib/shared/state/headerDropdown';
     import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
-    import { Home as LHome, Users as LUsers, Layers as LLayers, Settings as LSettings, Circle as LCircle, ShoppingBag as LShoppingBag } from 'lucide';
+    import { Home as LHome, Users as LUsers, Layers as LLayers, Settings as LSettings, Circle as LCircle } from 'lucide';
 
-    type Icon = 'dashboard' | 'contacts' | 'groups' | 'market' | 'settings' | 'default';
+    type Icon = 'dashboard' | 'contacts' | 'groups' | 'settings' | 'default';
     type Item = { name: string; link: string; icon?: Icon };
 
     interface Props {
@@ -26,13 +26,11 @@
         const isDashboard = n.includes('dashboard') || l.includes('/dashboard');
         const isContacts  = n.includes('contact')   || l.includes('/contacts');
         const isGroups    = n.includes('group')     || l.includes('/groups');
-        const isMarket    = n.includes('market')    || l.includes('/market');
         const isSettings  = n.includes('setting')   || l.includes('/settings');
 
         if (isDashboard) { return 'dashboard'; }
         if (isContacts)  { return 'contacts'; }
         if (isGroups)    { return 'groups'; }
-        if (isMarket)    { return 'market'; }
         if (isSettings)  { return 'settings'; }
         return 'default';
     }
@@ -42,7 +40,6 @@
         dashboard: LHome,
         contacts: LUsers,
         groups: LLayers,
-        market: LShoppingBag,
         settings: LSettings,
         default: LCircle
     };

@@ -14,7 +14,7 @@
   import { popToOrOpen } from '$lib/shared/flow';
   import type { CreateGatewayFlowContext } from './context';
   import { gnosisConfig } from '$lib/shared/config/circles';
-  import { getProfilesBindings } from '$lib/areas/market/offers';
+  import { getProfilesBindings } from '$lib/shared/model/profile/bindings';
   import { ensureProfileShape, cidV0ToDigest32Strict } from '@circles-profile/core';
   import { isValidOnChainName } from '$lib/shared/utils/isValid';
   import ProfilePreviewCard from '$lib/shared/ui/profile/ProfilePreviewCard.svelte';

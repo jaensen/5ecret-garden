@@ -3,7 +3,6 @@
   import type { Address } from '@circles-sdk/utils';
   import type { GroupRow, TokenBalanceRow, TransactionHistoryRow } from '@circles-sdk/data';
   import type { TrustRow, GatewayRow } from '$lib/areas/settings/model/gatewayTypes';
-  import type { AdminUnifiedProduct, AdminProductType, AdminOdooConnection } from '$lib/areas/admin/types';
   import type { MonthlyItem, RangeOverlayEvent } from '$lib/shared/ui/event-history/types';
   import type { AvatarSearchItem } from '../../avatar-search/dev/avatarSearch.types';
 
@@ -15,20 +14,16 @@
   import BalanceRow from '$lib/areas/wallet/ui/components/BalanceRow.svelte';
   import TransactionRow from '../../dashboard/TransactionRow.svelte';
   import GroupRowView from '../../groups/GroupRowView.svelte';
-  import SalesOrderRow from '$lib/areas/market/ui/SalesOrderRow.svelte';
   import AvatarSearchRow from '../../avatar-search/dev/AvatarSearchRow.svelte';
   import AvatarRowPlaceholder from '$lib/shared/ui/lists/placeholders/AvatarRowPlaceholder.svelte';
   import BalanceRowPlaceholder from '$lib/shared/ui/lists/placeholders/BalanceRowPlaceholder.svelte';
   import TransactionRowPlaceholder from '$lib/shared/ui/lists/placeholders/TransactionRowPlaceholder.svelte';
-  import MarketOrderRowPlaceholder from '$lib/shared/ui/lists/placeholders/MarketOrderRowPlaceholder.svelte';
   import GatewayRowPlaceholder from '$lib/shared/ui/lists/placeholders/GatewayRowPlaceholder.svelte';
   import GatewayTrustedAccountsList from '$lib/areas/settings/ui/components/GatewayTrustedAccountsList.svelte';
   import GatewayRowView from '$lib/areas/settings/ui/components/GatewayRow.svelte';
   import HoldersRow from '$lib/shared/ui/profile/components/HoldersRow.svelte';
   import SearchablePaginatedAddressList from '$lib/shared/ui/profile/components/SearchablePaginatedAddressList.svelte';
   import SearchAvatar from '$lib/areas/contacts/ui/pages/SearchAvatar.svelte';
-  import AdminProductRow from '$lib/areas/admin/components/AdminProductRow.svelte';
-  import AdminProductList from '$lib/areas/admin/components/AdminProductList.svelte';
   import EventHistoryMonthlyList from '$lib/shared/ui/event-history/EventHistoryMonthlyList.svelte';
   import TxEvents from '../../dashboard/TxEvents.svelte';
 
@@ -38,14 +33,6 @@
     logIndex: number;
     address: Address;
     contact: { row: { relation: 'mutuallyTrusts' | 'trusts' | 'trustedBy' | 'variesByVersion' } };
-  };
-
-  type DemoSalesOrder = {
-    key: string;
-    orderNumber: string;
-    orderDate?: string;
-    orderStatus?: string;
-    paymentReference?: string | null;
   };
 
   type DemoTrustRowItem = TrustRow & { showRemove?: boolean; onRemove?: () => void };
@@ -166,32 +153,6 @@
   })) as GroupRow[];
   const groupsStore = createStaticStore(groupRows);
 
-  // Sales orders demo
-  const salesOrders: DemoSalesOrder[] = [
-    {
-      key: 'so-001',
-      orderNumber: 'SO-2026-001',
-      orderDate: new Date(Date.now() - 86400000).toISOString(),
-      orderStatus: 'paid',
-      paymentReference: 'Reference 9281',
-    },
-    {
-      key: 'so-002',
-      orderNumber: 'SO-2026-002',
-      orderDate: new Date(Date.now() - 172800000).toISOString(),
-      orderStatus: 'processing',
-      paymentReference: 'Reference 9282',
-    },
-    {
-      key: 'so-003',
-      orderNumber: 'SO-2026-003',
-      orderDate: new Date(Date.now() - 220000000).toISOString(),
-      orderStatus: 'new',
-      paymentReference: null,
-    },
-  ];
-  const salesOrderStore = createStaticStore(salesOrders);
-
   // Avatar search dev demo
   const avatarSearchQuery = writable('');
   const avatarSearchItems: AvatarSearchItem[] = demoAddresses.map((address, i) => ({
@@ -278,75 +239,6 @@
 
   // Searchable paginated address list demo
   const trustRelationsStore = writable<Address[]>(demoAddresses.slice(0, 5));
-
-  // Admin catalog + grouped list demo
-  const adminProducts: AdminUnifiedProduct[] = [
-    {
-      key: 'odoo-1',
-      chainId: 100,
-      seller: demoAddresses[0],
-      sku: 'COFFEE-001',
-      route: {
-        chainId: 100,
-        seller: demoAddresses[0],
-        sku: 'COFFEE-001',
-        offerType: 'odoo',
-        isOneOff: false,
-        enabled: true,
-      },
-      odoo: {
-        chainId: 100,
-        seller: demoAddresses[0],
-        sku: 'COFFEE-001',
-        odooProductCode: 'C001',
-        enabled: true,
-        revokedAt: null,
-        totalInventory: 120,
-        localAvailableQty: 18,
-      },
-    },
-    {
-      key: 'code-1',
-      chainId: 100,
-      seller: demoAddresses[1],
-      sku: 'VOUCHER-25',
-      route: {
-        chainId: 100,
-        seller: demoAddresses[1],
-        sku: 'VOUCHER-25',
-        offerType: 'codedispenser',
-        isOneOff: false,
-        enabled: true,
-      },
-      code: {
-        chainId: 100,
-        seller: demoAddresses[1],
-        sku: 'VOUCHER-25',
-        poolId: 'POOL-1',
-        downloadUrlTemplate: null,
-        enabled: false,
-        revokedAt: null,
-        poolRemaining: 4,
-      },
-    },
-  ];
-
-  const adminConnections: AdminOdooConnection[] = [
-    {
-      chainId: 100,
-      seller: demoAddresses[0],
-      odooUrl: 'https://odoo.demo.example',
-      odooDb: 'circles',
-      odooUid: 12,
-      salePartnerId: 120,
-      jsonrpcTimeoutMs: 15000,
-      fulfillInheritRequestAbort: null,
-      enabled: true,
-      revokedAt: null,
-    },
-  ];
-  const adminCatalogRow = adminProducts[0];
-  const adminCatalogType: AdminProductType = 'odoo';
 
   // Event history monthly list demo
   function monthStart(offset: number): number {
@@ -467,19 +359,6 @@
 
   <div class="grid gap-4 lg:grid-cols-2">
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
-      <h3 class="font-medium">Sales orders (SalesOrderRow)</h3>
-      <VirtualList
-        store={salesOrderStore}
-        row={SalesOrderRow}
-        rowHeight={64}
-        expectedPageSize={3}
-        maxPlaceholderPages={1}
-        placeholderRow={MarketOrderRowPlaceholder}
-        getKey={(item) => item.key ?? item.orderNumber}
-      />
-    </section>
-
-    <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Avatar search dev list (AvatarSearchRow)</h3>
       <ListShell query={avatarSearchQuery} searchPlaceholder="Search avatar results" wrapInListContainer={false}>
         <VirtualList
@@ -537,18 +416,6 @@
     <h3 class="font-medium">RPC avatar search list (SearchAvatar)</h3>
     <SearchAvatar searchType="contact" />
   </section>
-
-  <div class="grid gap-4 lg:grid-cols-2">
-    <section class="rounded-xl border border-base-300 p-3 space-y-2">
-      <h3 class="font-medium">Admin catalog selection (AdminProductRow)</h3>
-      <AdminProductRow product={adminCatalogRow} productType={adminCatalogType} />
-    </section>
-
-    <section class="rounded-xl border border-base-300 p-3 space-y-2">
-      <h3 class="font-medium">Admin grouped product list (AdminProductList)</h3>
-      <AdminProductList products={adminProducts} connections={adminConnections} />
-    </section>
-  </div>
 
   <div class="grid gap-4 lg:grid-cols-2">
     <section class="rounded-xl border border-base-300 p-3 space-y-2">

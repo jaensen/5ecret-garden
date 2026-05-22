@@ -7,7 +7,7 @@
     import { normalizeEvmAddress as normalizeAddress } from '@circles-market/sdk';
     import type { ProfilesBindings } from '@circles-market/sdk';
     import { loadProfileOrInit, rebaseAndSaveProfile } from '@circles-market/sdk';
-    import { getProfilesBindings } from '$lib/areas/market/offers';
+    import { getProfilesBindings } from '$lib/shared/model/profile/bindings';
     import { removeProfileFromCache } from '$lib/shared/utils/profile';
     import type {Address} from '@circles-sdk/utils';
     import type { Profile } from '@circles-sdk/profiles';
