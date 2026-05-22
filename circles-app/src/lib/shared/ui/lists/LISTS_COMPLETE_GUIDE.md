@@ -26,7 +26,7 @@ List implementation is layered:
 
 1. `@garden-ui/list-shell` `ListShell` — search toolbar + state gating + optional list container
 2. `VirtualList.svelte` — app-owned paged + virtualized row renderer
-3. State helpers:
+3. Shared app adapters/state helpers:
    - `createPaginatedList(...)`
    - `createSearchablePaginatedList(...)`
 4. Interaction helpers:
@@ -122,34 +122,6 @@ Props:
 - `expectedPageSize?: number`
 
 Behavior: virtualized paging, placeholder staging, retry UI, focus-aware scrolling.
-
-## 3.5 `SearchablePaginatedList.svelte`
-
-Path: `src/lib/shared/ui/lists/SearchablePaginatedList.svelte`
-
-Props:
-
-- `items: Readable<T[]>` (required)
-- `row: Component<{ item: T }>` (required)
-- `addressOf: (item: T) => string` (required)
-- `getKey?: (item: T) => string`
-- `onInputKeydown?: (KeyboardEvent) => void`
-- `inputDataAttribute?: string`
-- `loading?: boolean`
-- `error?: string | null`
-- `rowHeight?: number`
-- `pageSize?: number`
-- `emptyLabel?: string`
-- `noMatchesLabel?: string`
-- `searchPlaceholder?: string`
-
-Internally composes:
-
-- `createSearchablePaginatedList(...)`
-- `@garden-ui/list-shell` `ListShell`
-- `VirtualList`
-
----
 
 ## 4) Shared state + utility reference
 
@@ -255,9 +227,13 @@ For any request/response based search (RPC, HTTP, SDK):
 
 Use when you already have `{ data, next, ended }` or need custom filter wiring.
 
-### Mode B — `SearchablePaginatedList`
+### Mode B — address-search composition
 
-Use when rows have address identity and need name+address search quickly.
+Use when rows have address identity and need name+address search quickly. Compose:
+
+- `createSearchablePaginatedList(...)`
+- `@garden-ui/list-shell` `ListShell`
+- `VirtualList`
 
 ### Mode C — Overlay search + picked list
 
@@ -305,16 +281,34 @@ Use only when domain UX requires non-shell behavior (example: day-events histogr
 </div>
 ```
 
-## 8.2 `SearchablePaginatedList`
+## 8.2 Address-search composition
 
 ```svelte
-<SearchablePaginatedList
-  items={rows}
-  row={MyRow}
-  addressOf={(row) => String(row.address)}
+<script lang="ts">
+  import { ListShell } from '@garden-ui/list-shell';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
+  import { createSearchablePaginatedList } from '$lib/shared/state/searchablePaginatedList';
+
+  const searchable = createSearchablePaginatedList(rows, {
+    pageSize: 25,
+    addressOf: (row) => String(row.address)
+  });
+</script>
+
+<ListShell
+  query={searchable.searchQuery}
   onInputKeydown={onInputArrowDown}
   inputDataAttribute="data-my-search-input"
-/>
+  isEmpty={$rows.length === 0}
+  isNoMatches={$rows.length > 0 && $searchable.filteredItems.length === 0}
+>
+  <VirtualList
+    store={searchable.paginatedItems}
+    row={MyRow}
+    rowHeight={64}
+    expectedPageSize={25}
+  />
+</ListShell>
 ```
 
 ---

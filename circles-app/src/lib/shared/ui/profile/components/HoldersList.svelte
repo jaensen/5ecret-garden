@@ -1,11 +1,14 @@
 <script lang="ts">
-    import SearchablePaginatedList from '$lib/shared/ui/lists/SearchablePaginatedList.svelte';
+    import { ListShell } from '@garden-ui/list-shell';
     import HoldersRow from '$lib/shared/ui/profile/components/HoldersRow.svelte';
     import AvatarRowPlaceholder from '$lib/shared/ui/lists/placeholders/AvatarRowPlaceholder.svelte';
+    import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
     import type { Address } from '@circles-sdk/utils';
     import type { TrustRelation } from '@circles-sdk/data';
-    import { writable } from 'svelte/store';
+    import type { Readable, Writable } from 'svelte/store';
+    import { readable, writable } from 'svelte/store';
     import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
+    import { createSearchablePaginatedList } from '$lib/shared/state/searchablePaginatedList';
     import { usePopupListFocusRestore } from '$lib/shared/ui/profile/utils/popupListFocusRestore';
 
     interface HolderRow {
@@ -32,9 +35,25 @@
     let listScopeEl: HTMLDivElement | null = $state(null);
 
     const holdersStore = writable<HolderRow[]>([]);
+    const emptyItems = readable<any[]>([]);
+
+    let searchQuery = $state<Writable<string>>(writable(''));
+    let filteredItems = $state<Readable<any[]>>(emptyItems);
+    let paginatedItems = $state<any>(emptyItems);
 
     $effect(() => {
         holdersStore.set(holders);
+    });
+
+    $effect(() => {
+        const next = createSearchablePaginatedList(holdersStore, {
+            pageSize: 25,
+            addressOf: (item) => String(item.avatar) as Address,
+        });
+
+        searchQuery = next.searchQuery;
+        filteredItems = next.filteredItems;
+        paginatedItems = next.paginatedItems;
     });
 
     const onInputArrowDown = createListInputArrowDownHandler({
@@ -49,18 +68,25 @@
 </script>
 
 <div data-profile-holders-list-scope bind:this={listScopeEl}>
-    <SearchablePaginatedList
-        items={holdersStore}
-        row={HoldersRow}
-        getKey={(item) => String(item.avatar)}
-        addressOf={(row) => String(row.avatar)}
+    <ListShell
+        query={searchQuery}
+        searchPlaceholder={searchPlaceholder}
         onInputKeydown={onInputArrowDown}
         inputDataAttribute="data-holders-search-input"
-        rowHeight={64}
-        pageSize={25}
-        placeholderRow={AvatarRowPlaceholder}
-        {searchPlaceholder}
+        isEmpty={$holdersStore.length === 0}
+        isNoMatches={$holdersStore.length > 0 && $filteredItems.length === 0}
         {emptyLabel}
         {noMatchesLabel}
-    />
+    >
+        <VirtualList
+            store={paginatedItems}
+            row={HoldersRow}
+            getKey={(item) => String(item.avatar)}
+            rowHeight={64}
+            pageSize={25}
+            expectedPageSize={25}
+            maxPlaceholderPages={2}
+            placeholderRow={AvatarRowPlaceholder}
+        />
+    </ListShell>
 </div>
