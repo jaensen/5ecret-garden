@@ -34,6 +34,7 @@
     "@typescript-eslint/types": "^8.54.0",
     "autoprefixer": "^10.4.23",
     "daisyui": "^4.12.10",
+    "jsdom": "^29.1.1",
     "mdsvex": "^0.12.6",
     "postcss": "^8.5.3",
     "prettier": "^3.8.1",

@@ -139,12 +139,20 @@
     .ui-row[data-clickable] { cursor: pointer; }
     .ui-row[data-clickable]:hover { background: var(--row-bg-hover); border-color: var(--row-border-hover); }
     .ui-row[data-clickable]:active { transform: translateY(0.5px); }
-    .ui-row:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--row-focus-ring); }
+    .ui-row:focus-visible {
+        outline: none;
+        border-color: var(--row-border-selected);
+        box-shadow: 0 0 0 1px var(--row-focus-ring);
+    }
 
     .ui-row[data-selected] {
         background: var(--row-bg-selected);
         border-color: var(--row-border-selected);
         box-shadow: 0 0 0 2px var(--row-border-selected) inset;
+    }
+
+    .ui-row[data-selected]:focus-visible {
+        box-shadow: 0 0 0 1px var(--row-focus-ring), inset 0 0 0 2px var(--row-border-selected);
     }
 
     .ui-row[data-disabled] { opacity: 0.6; pointer-events: none; }
