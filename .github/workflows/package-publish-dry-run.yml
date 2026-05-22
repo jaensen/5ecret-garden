@@ -1,0 +1,72 @@
+name: Package publish dry-run
+
+on:
+  pull_request:
+    paths:
+      - "packages/**"
+      - "scripts/validate-publish.mjs"
+      - "publish-packages.sh"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dry-run:
+    name: npm publish dry-run validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate package publishability without publishing
+        run: |
+          set -euo pipefail
+          PACKAGES_ORDER=(
+            "circles-market-core"
+            "circles-market-session"
+            "circles-market-signers"
+            "circles-profile-core"
+            "circles-market-auth"
+            "circles-market-cart"
+            "circles-market-catalog"
+            "circles-market-offers"
+            "circles-market-orders"
+            "circles-market-sales"
+            "circles-market-sdk"
+          )
+
+          for pkg_dir in "${PACKAGES_ORDER[@]}"; do
+            dir="packages/$pkg_dir"
+            pkg_json="$dir/package.json"
+            [ -f "$pkg_json" ] || continue
+
+            name="$(node -p "require('./$pkg_json').name")"
+            is_private="$(node -p "Boolean(require('./$pkg_json').private)")"
+            echo "---------------------------------------------------"
+            echo "Validating $name"
+
+            if [ "$is_private" = "true" ]; then
+              echo "Skipping private package $name"
+              continue
+            fi
+
+            node scripts/validate-publish.mjs pre "$dir"
+            npm run build --workspace "$name"
+            node scripts/validate-publish.mjs post "$dir"
+            npm publish --dry-run --workspace "$name" --access public
+          done
