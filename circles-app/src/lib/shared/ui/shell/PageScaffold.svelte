@@ -23,7 +23,7 @@ import SettingProfile from '$lib/areas/settings/ui/pages/SettingProfile.svelte';
         collapsedHeightMd = '3.5rem',
 
         headerTopGapClass = 'mt-4 md:mt-6',
-        collapsedTopGapClass = 'mt-3 md:mt-4',
+        collapsedTopGapClass = 'mt-2 md:mt-2',
 
         // Svelte 5 snippet props (replacement for named slots)
         title,

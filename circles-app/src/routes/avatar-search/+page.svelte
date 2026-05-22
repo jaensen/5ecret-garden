@@ -10,8 +10,7 @@
   contentWidthClass="page page--lg"
   usePagePadding={true}
   headerTopGapClass="mt-4 md:mt-6"
-  collapsedTopGapClass="mt-3 md:mt-4"
->
+  >
   {#snippet title()}
     <h1 class="h2 m-0">Avatar Search (Dev)</h1>
   {/snippet}
