@@ -3,11 +3,15 @@
   import { onDestroy, onMount } from 'svelte';
   import type { Address } from '@circles-sdk/utils';
   import type { GroupRow } from '@circles-sdk/data';
+  import { ethers } from 'ethers';
   import ConnectCircles from '$lib/areas/wallet/ui/onboarding/ConnectCircles.svelte';
   import CreateSafe from '$lib/areas/wallet/ui/components/CreateSafe.svelte';
   import { createSafeDiscoveryStore } from '$lib/areas/wallet/data/safeDiscovery';
 
   let searchQuery = $state('');
+  let directSafeAddress = $state('');
+  let directLookupAddress = $state<Address | null>(null);
+  let directLookupError = $state<string | null>(null);
   let safes: Address[] = $state([]);
   let profileBySafe: Record<string, AvatarRow | undefined> = $state({});
   let groupsByOwner: Record<Address, GroupRow[]> = $state({});
@@ -30,7 +34,7 @@
     refreshGroupsCallback,
   }: Props = $props();
 
-  const { state: safeState, refresh, addSafe } = createSafeDiscoveryStore(
+  const { state: safeState, refresh, addSafe, ensureSafeLoaded } = createSafeDiscoveryStore(
     safeOwnerAddress,
     sdk
   );
@@ -54,6 +58,27 @@
     addSafe(address);
   }
 
+  async function lookupSafeByAddress() {
+    const trimmed = directSafeAddress.trim();
+
+    if (!trimmed) {
+      directLookupAddress = null;
+      directLookupError = null;
+      return;
+    }
+
+    if (!ethers.isAddress(trimmed)) {
+      directLookupAddress = null;
+      directLookupError = 'Please enter a valid Safe address.';
+      return;
+    }
+
+    const normalized = ethers.getAddress(trimmed).toLowerCase() as Address;
+    directLookupError = null;
+    directLookupAddress = normalized;
+    await ensureSafeLoaded(normalized);
+  }
+
   // Refresh groups for all safes owned by this account
   async function refreshGroupsLocal() {
     await refresh({ forceRefresh: true });
@@ -66,6 +91,8 @@
   }
 
   function getFilteredSafes(): Address[] {
+    if (directLookupAddress) return [directLookupAddress];
+
     const query = searchQuery.trim().toLowerCase();
     if (!query) return safes ?? [];
 
@@ -83,6 +110,26 @@
       Choose which Safe you want to use as your active avatar.
     </p>
   </div>
+
+  <label class="form-control w-full gap-2">
+    <span class="label-text text-sm text-base-content/70">Search by Safe address</span>
+    <div class="flex gap-2">
+      <input
+        type="text"
+        class="input input-bordered w-full"
+        placeholder="0x..."
+        bind:value={directSafeAddress}
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button type="button" class="btn btn-primary" onclick={lookupSafeByAddress}>
+        Find
+      </button>
+    </div>
+    {#if directLookupError}
+      <span class="label-text-alt text-error">{directLookupError}</span>
+    {/if}
+  </label>
 
   <label class="form-control w-full">
     <div class="input input-bordered w-full flex items-center gap-2">
@@ -104,6 +151,7 @@
         bind:value={searchQuery}
         autocomplete="off"
         spellcheck="false"
+        disabled={directLookupAddress !== null}
       />
       {#if searchQuery.length > 0}
         <button
@@ -112,6 +160,19 @@
           aria-label="Clear search"
           onclick={() => {
             searchQuery = '';
+          }}
+        >
+          Clear
+        </button>
+      {:else if directLookupAddress}
+        <button
+          type="button"
+          class="btn btn-ghost btn-xs"
+          aria-label="Clear direct safe lookup"
+          onclick={() => {
+            directSafeAddress = '';
+            directLookupAddress = null;
+            directLookupError = null;
           }}
         >
           Clear
@@ -132,6 +193,12 @@
       <button class="btn btn-sm btn-outline" type="button" onclick={() => refresh({ forceRefresh: true })}>
         Retry
       </button>
+    </div>
+  {:else if directLookupAddress && getFilteredSafes().length === 0}
+    <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
+      <p class="text-sm text-base-content/70">
+        No Safe found for “{directLookupAddress}”.
+      </p>
     </div>
   {:else if (safes ?? []).length === 0}
     <div class="rounded-xl border border-dashed border-base-300 bg-base-200/40 p-4">

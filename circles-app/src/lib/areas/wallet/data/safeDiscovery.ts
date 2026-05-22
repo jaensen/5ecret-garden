@@ -124,6 +124,7 @@ export function createSafeDiscoveryStore(
   state: Readable<SafeDiscoveryState>;
   refresh: (opts?: { forceRefresh?: boolean }) => Promise<void>;
   addSafe: (address: Address) => void;
+  ensureSafeLoaded: (address: Address) => Promise<void>;
 } {
   const state = writable<SafeDiscoveryState>({
     safes: [],
@@ -161,6 +162,35 @@ export function createSafeDiscoveryStore(
     }
   }
 
+  async function ensureSafeLoaded(address: Address): Promise<void> {
+    const normalized = ethers.getAddress(address).toLowerCase() as Address;
+
+    state.update((current) => ({ ...current, isLoading: true, error: null }));
+
+    try {
+      addSafe(normalized);
+      const currentState = get(state);
+      const currentSafes = mergeSafes(currentState.safes, [normalized]);
+      const { profileBySafe, groupsByOwner } = await loadSafesProfileAndGroups(sdk, currentSafes);
+
+      state.update((current) => ({
+        ...current,
+        safes: currentSafes,
+        profileBySafe,
+        groupsByOwner,
+        isLoading: false,
+        error: null,
+      }));
+    } catch (e) {
+      console.error('Failed to load safe by address', e);
+      state.update((current) => ({
+        ...current,
+        isLoading: false,
+        error: 'Could not load this Safe. Please try another address.',
+      }));
+    }
+  }
+
   async function refresh(opts: { forceRefresh?: boolean } = {}) {
     state.update((current) => ({ ...current, isLoading: true, error: null }));
 
@@ -192,5 +222,5 @@ export function createSafeDiscoveryStore(
     }
   }
 
-  return { state, refresh, addSafe };
+  return { state, refresh, addSafe, ensureSafeLoaded };
 }
