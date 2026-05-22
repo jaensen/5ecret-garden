@@ -2,9 +2,11 @@
 import { describe, expect, it, vi } from 'vitest';
 import { mount, tick, unmount } from 'svelte';
 
-const getOrderStatusHistoryMock = vi.fn();
-const subscribeBuyerOrderEventsMock = vi.fn();
-const getOrderMock = vi.fn();
+const { getOrderStatusHistoryMock, subscribeBuyerOrderEventsMock, getOrderMock } = vi.hoisted(() => ({
+  getOrderStatusHistoryMock: vi.fn(),
+  subscribeBuyerOrderEventsMock: vi.fn(),
+  getOrderMock: vi.fn(),
+}));
 
 vi.mock('../src/lib/areas/market/orders/ordersQueries', () => ({
   getOrderStatusHistory: getOrderStatusHistoryMock,
@@ -25,7 +27,7 @@ function deferred<T>() {
 }
 
 describe('OrderDetailsPopup SSE subscription lifecycle', () => {
-  it('unsubscribes if destroyed before history load resolves (prevents leaked duplicate SSE listeners)', async () => {
+  it('does not subscribe if destroyed before history load resolves (prevents leaked duplicate SSE listeners)', async () => {
     const historyDeferred = deferred<{ events: any[] }>();
     const unsubscribe = vi.fn();
 
@@ -53,8 +55,8 @@ describe('OrderDetailsPopup SSE subscription lifecycle', () => {
     historyDeferred.resolve({ events: [] });
     await tick();
 
-    expect(subscribeBuyerOrderEventsMock).toHaveBeenCalledTimes(1);
-    expect(unsubscribe).toHaveBeenCalledTimes(1);
+    expect(subscribeBuyerOrderEventsMock).not.toHaveBeenCalled();
+    expect(unsubscribe).not.toHaveBeenCalled();
 
     target.remove();
   });

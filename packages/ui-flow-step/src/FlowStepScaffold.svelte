@@ -8,13 +8,14 @@
     subtitle?: string;
     labels?: readonly string[];
     className?: string;
+    headerProps?: Record<string, unknown>;
     children?: Snippet;
   }
-  let { step, total, title, subtitle, labels = [], className = 'gui-step-scaffold', children, ...rest }: Props = $props();
+  let { step, total, title, subtitle, labels = [], className = 'gui-step-scaffold', headerProps = {}, children, ...rest }: Props = $props();
 </script>
 
 <div class={className} tabindex="-1" data-ui-initial-focus {...rest}>
-  <FlowStepHeader {step} {total} {title} {subtitle} {labels} />
+  <FlowStepHeader {step} {total} {title} {subtitle} {labels} {...headerProps} />
   {@render children?.()}
 </div>
 

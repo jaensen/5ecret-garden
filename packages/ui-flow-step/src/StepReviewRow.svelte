@@ -6,19 +6,35 @@
     onChange?: () => void;
     changeLabel?: string;
     className?: string;
+    mainClassName?: string;
+    labelClassName?: string;
     valueClassName?: string;
+    buttonClassName?: string;
+    unstyled?: boolean;
     children?: Snippet;
   }
-  let { label, value, onChange, changeLabel = 'Change', className = '', valueClassName = '', children }: Props = $props();
+  let {
+    label,
+    value,
+    onChange,
+    changeLabel = 'Change',
+    className = '',
+    mainClassName = 'gui-review-row__main',
+    labelClassName = 'gui-review-row__label',
+    valueClassName = 'gui-review-row__value',
+    buttonClassName = 'gui-review-row__change',
+    unstyled = false,
+    children,
+  }: Props = $props();
 </script>
 
-<div class={`gui-review-row ${className}`.trim()}>
-  <div class="gui-review-row__main">
-    <div class="gui-review-row__label">{label}</div>
-    {#if value}<div class={`gui-review-row__value ${valueClassName}`.trim()}>{value}</div>{/if}
+<div class={`${unstyled ? '' : 'gui-review-row'} ${className}`.trim()}>
+  <div class={mainClassName}>
+    <div class={labelClassName}>{label}</div>
+    {#if value}<div class={valueClassName}>{value}</div>{/if}
     {@render children?.()}
   </div>
-  {#if onChange}<button type="button" class="gui-review-row__change" onclick={onChange}>{changeLabel}</button>{/if}
+  {#if onChange}<button type="button" class={buttonClassName} onclick={onChange}>{changeLabel}</button>{/if}
 </div>
 
 <style>

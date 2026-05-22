@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { StepReviewRow as PackageStepReviewRow } from '@garden-ui/flow-step';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -22,18 +23,16 @@
   }: Props = $props();
 </script>
 
-<div class={`flex items-start justify-between gap-3 ${className}`.trim()}>
-  <div class="min-w-0">
-    <div class="text-xs text-base-content/60">{label}</div>
-    {#if value}
-      <div class={`text-sm ${valueClassName}`.trim()}>{value}</div>
-    {/if}
-    {@render children?.()}
-  </div>
-
-  {#if onChange}
-    <button type="button" class="btn btn-ghost btn-xs" onclick={onChange}>
-      {changeLabel}
-    </button>
-  {/if}
-</div>
+<PackageStepReviewRow
+  {label}
+  {value}
+  {onChange}
+  {changeLabel}
+  {children}
+  unstyled
+  className={`flex items-start justify-between gap-3 ${className}`.trim()}
+  mainClassName="min-w-0"
+  labelClassName="text-xs text-base-content/60"
+  valueClassName={`text-sm ${valueClassName}`.trim()}
+  buttonClassName="btn btn-ghost btn-xs"
+/>

@@ -5,28 +5,62 @@
     title: string;
     subtitle?: string;
     labels?: readonly string[];
+    className?: string;
+    topClassName?: string;
+    titleWrapClassName?: string;
+    titleClassName?: string;
+    subtitleClassName?: string;
+    badgeClassName?: string;
+    progressClassName?: string;
+    segmentClassName?: string;
+    activeSegmentClassName?: string;
+    inactiveSegmentClassName?: string;
+    labelsClassName?: string;
+    labelClassName?: string;
+    activeLabelClassName?: string;
+    inactiveLabelClassName?: string;
   }
-  let { step, total, title, subtitle, labels = [] }: Props = $props();
+  let {
+    step,
+    total,
+    title,
+    subtitle,
+    labels = [],
+    className = 'gui-step-header',
+    topClassName = 'gui-step-header__top',
+    titleWrapClassName = 'gui-step-header__title-wrap',
+    titleClassName = 'gui-step-header__title',
+    subtitleClassName = 'gui-step-header__subtitle',
+    badgeClassName = 'gui-step-header__badge',
+    progressClassName = 'gui-step-header__progress',
+    segmentClassName = 'gui-step-header__progress-segment',
+    activeSegmentClassName = 'gui-step-header__progress-segment--active',
+    inactiveSegmentClassName = '',
+    labelsClassName = 'gui-step-header__labels',
+    labelClassName = '',
+    activeLabelClassName = 'gui-step-header__labels--active',
+    inactiveLabelClassName = '',
+  }: Props = $props();
   const activeIndex = $derived.by(() => total <= 0 ? 0 : Math.max(0, Math.min(total - 1, step - 1)));
 </script>
 
-<header class="gui-step-header">
-  <div class="gui-step-header__top">
-    <div class="gui-step-header__title-wrap">
-      <h2 class="gui-step-header__title">{title}</h2>
-      {#if subtitle}<p class="gui-step-header__subtitle">{subtitle}</p>{/if}
+<header class={className}>
+  <div class={topClassName}>
+    <div class={titleWrapClassName}>
+      <h2 class={titleClassName}>{title}</h2>
+      {#if subtitle}<p class={subtitleClassName}>{subtitle}</p>{/if}
     </div>
-    <div class="gui-step-header__badge">{step}/{total}</div>
+    <div class={badgeClassName}>{step}/{total}</div>
   </div>
-  <div class="gui-step-header__progress" aria-label={`Step ${step} of ${total}`}>
+  <div class={progressClassName} aria-label={`Step ${step} of ${total}`}>
     {#each Array(total) as _, index}
-      <span class="gui-step-header__progress-segment" class:gui-step-header__progress-segment--active={index <= activeIndex}></span>
+      <span class={`${segmentClassName} ${index <= activeIndex ? activeSegmentClassName : inactiveSegmentClassName}`.trim()}></span>
     {/each}
   </div>
   {#if labels.length}
-    <div class="gui-step-header__labels">
+    <div class={labelsClassName}>
       {#each labels as label, index}
-        <span class:gui-step-header__labels--active={index === activeIndex}>{label}</span>
+        <span class={`${labelClassName} ${index === activeIndex ? activeLabelClassName : inactiveLabelClassName}`.trim()}>{label}</span>
       {/each}
     </div>
   {/if}

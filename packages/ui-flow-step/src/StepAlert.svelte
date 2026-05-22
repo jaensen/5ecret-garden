@@ -5,21 +5,43 @@
     title?: string;
     message?: string;
     className?: string;
+    contentClassName?: string;
+    bodyClassName?: string;
+    titleClassName?: string;
+    actionClassName?: string;
+    unstyled?: boolean;
     ariaLive?: 'off' | 'polite' | 'assertive';
     action?: Snippet;
     children?: Snippet;
   }
-  let { variant = 'info', title, message, className = '', ariaLive = 'polite', action, children }: Props = $props();
+  let {
+    variant = 'info',
+    title,
+    message,
+    className = '',
+    contentClassName = 'gui-step-alert__content',
+    bodyClassName = '',
+    titleClassName = 'gui-step-alert__title',
+    actionClassName = '',
+    unstyled = false,
+    ariaLive = 'polite',
+    action,
+    children,
+  }: Props = $props();
 </script>
 
-<div class={`gui-step-alert gui-step-alert--${variant} ${className}`.trim()} role={variant === 'error' ? 'alert' : 'status'} aria-live={ariaLive}>
-  <div class="gui-step-alert__content">
-    <div>
-      {#if title}<div class="gui-step-alert__title">{title}</div>{/if}
+<div class={`${unstyled ? '' : `gui-step-alert gui-step-alert--${variant}`} ${className}`.trim()} role={variant === 'error' ? 'alert' : 'status'} aria-live={ariaLive}>
+  <div class={contentClassName}>
+    <div class={bodyClassName}>
+      {#if title}<div class={titleClassName}>{title}</div>{/if}
       {#if message}<div>{message}</div>{/if}
       {@render children?.()}
     </div>
-    {#if action}<div>{@render action()}</div>{/if}
+    {#if action}
+      <div class={actionClassName}>
+        {@render action()}
+      </div>
+    {/if}
   </div>
 </div>
 
