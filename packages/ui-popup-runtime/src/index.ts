@@ -1,5 +1,9 @@
 import { get, writable, type Writable } from 'svelte/store';
 
+export type PopupRuntimeOptions = {
+  historyStateKey?: string;
+};
+
 export type PopupContentDefinition = {
   title?: string;
   hideTitle?: boolean;
@@ -12,6 +16,7 @@ export type PopupContentDefinition = {
   dismiss?: 'backdrop' | 'explicit' | 'confirmIfDirty';
   isDirty?: boolean;
   flowId?: string;
+  meta?: Record<string, unknown>;
 };
 
 export type PopupState = {
@@ -21,7 +26,7 @@ export type PopupState = {
 
 type PopupHistoryMarker = { sessionId: string; depth: number };
 
-const POPUP_HISTORY_STATE_KEY = '__gardenUiPopupHistory';
+const DEFAULT_POPUP_HISTORY_STATE_KEY = '__gardenUiPopupHistory';
 const initialState: PopupState = { content: null, stack: [] };
 
 export const popupState: Writable<PopupState> = writable(initialState);
@@ -34,6 +39,21 @@ let popupHistorySyncHandlingPopstate = false;
 let popupHistorySyncCleanup: (() => void) | null = null;
 let popupHistorySyncUnsubscribe: (() => void) | null = null;
 let popupHistorySyncSkipStateSync = false;
+let popupRuntimeOptions: Required<PopupRuntimeOptions> = {
+  historyStateKey: DEFAULT_POPUP_HISTORY_STATE_KEY
+};
+
+export function configurePopupRuntime(options: PopupRuntimeOptions): void {
+  popupRuntimeOptions = {
+    ...popupRuntimeOptions,
+    ...options,
+    historyStateKey: options.historyStateKey ?? popupRuntimeOptions.historyStateKey
+  };
+}
+
+export function resetPopupRuntimeConfiguration(): void {
+  popupRuntimeOptions = { historyStateKey: DEFAULT_POPUP_HISTORY_STATE_KEY };
+}
 
 export function resolvePopupDismiss(def: PopupContentDefinition | null | undefined): NonNullable<PopupContentDefinition['dismiss']> {
   if (!def) return 'explicit';
@@ -77,7 +97,7 @@ function applyDepth(targetDepth: number): void {
 
 function readPopupHistoryMarker(state: any): PopupHistoryMarker | null {
   if (!popupHistorySyncSessionId || !state || typeof state !== 'object') return null;
-  const raw = (state as Record<string, unknown>)[POPUP_HISTORY_STATE_KEY];
+  const raw = (state as Record<string, unknown>)[popupRuntimeOptions.historyStateKey];
   if (!raw || typeof raw !== 'object') return null;
   const marker = raw as Record<string, unknown>;
   if (marker.sessionId !== popupHistorySyncSessionId) return null;
@@ -89,7 +109,7 @@ function writePopupHistoryDepth(depth: number, mode: 'push' | 'replace'): void {
   if (!supportsBrowserHistory() || !popupHistorySyncSessionId) return;
   const nextState = {
     ...(window.history.state ?? {}),
-    [POPUP_HISTORY_STATE_KEY]: { sessionId: popupHistorySyncSessionId, depth }
+    [popupRuntimeOptions.historyStateKey]: { sessionId: popupHistorySyncSessionId, depth }
   };
   if (mode === 'push') {
     window.history.pushState(nextState, '', window.location.href);
@@ -179,6 +199,21 @@ function close(): void {
     return { content: null, stack: [] };
   });
   syncPopupHistoryToCurrentDepth();
+}
+
+
+function closeAndThen(action: () => void): void {
+  if (hasActivePopupHistorySync() && !popupHistorySyncHandlingPopstate) {
+    popupState.update((s) => {
+      notifyClosed(entriesFor(s));
+      return { content: null, stack: [] };
+    });
+    syncPopupHistoryToCurrentDepth();
+    action();
+    return;
+  }
+  close();
+  action();
 }
 
 function replace(def: PopupContentDefinition): void {
@@ -312,6 +347,7 @@ export const popupControls = {
   back,
   popTo,
   close,
+  closeAndThen,
   replace,
   setCurrentDirty,
   markCurrentDirty,

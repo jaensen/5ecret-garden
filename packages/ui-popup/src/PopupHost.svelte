@@ -14,22 +14,62 @@
     type PopupContentDefinition
   } from '@garden-ui/popup-runtime';
 
+  export type PopupFocusOptions = {
+    initialInputSelectors?: string[];
+    initialFocusSelectors?: string[];
+    closeControlSelector?: string;
+  };
+
+  export type PopupDirtyTrackingOptions = {
+    enabled?: boolean;
+    eventTypes?: Array<'input' | 'change'>;
+    trackSelector?: string;
+    ignoreSelector?: string;
+    onlyWhenDismissExplicit?: boolean;
+  };
+
   interface Props {
-    closeConfirm?: PopupContentDefinition | null;
+    closeConfirm?: PopupContentDefinition | ((active: PopupContentDefinition) => PopupContentDefinition | null) | null;
     defaultActionSelector?: string;
     enableEnterDefaultAction?: boolean;
+    restorePageScroll?: boolean;
+    focusOptions?: PopupFocusOptions;
+    dirtyTracking?: PopupDirtyTrackingOptions | false;
   }
 
   let {
     closeConfirm = null,
     defaultActionSelector = '[data-ui-default-action], button[type="submit"], .gui-primary-action',
-    enableEnterDefaultAction = true
+    enableEnterDefaultAction = true,
+    restorePageScroll = true,
+    focusOptions = {},
+    dirtyTracking = false
   }: Props = $props();
 
   let popupEl: HTMLDivElement | null = $state(null);
   let previouslyFocusedEl: HTMLElement | null = null;
   let wasOpen = false;
   let lastTopPageKey = '';
+  let lastScrollPageKey = '';
+  const pageScrollTops = new Map<string, number>();
+
+  const initialInputSelectors = $derived(focusOptions.initialInputSelectors ?? ['[data-ui-initial-input]']);
+  const initialFocusSelectors = $derived(focusOptions.initialFocusSelectors ?? ['[data-ui-initial-focus]']);
+  const closeControlSelector = $derived(focusOptions.closeControlSelector ?? '[data-popup-close-control], .gui-popup-title');
+
+  function queryFirst(scope: ParentNode | null, selectors: string[]): HTMLElement | null {
+    if (!scope) return null;
+    for (const selector of selectors) {
+      const match = scope.querySelector<HTMLElement>(selector);
+      if (match) return match;
+    }
+    return null;
+  }
+
+  function queryAll(scope: ParentNode | null, selectors: string[]): HTMLElement[] {
+    if (!scope) return [];
+    return selectors.flatMap((selector) => Array.from(scope.querySelectorAll<HTMLElement>(selector)));
+  }
 
   function findTopPage(): HTMLElement | null {
     return popupEl?.querySelector<HTMLElement>('.gui-popup-page.is-top') ?? null;
@@ -41,28 +81,43 @@
     return isKeyboardFocusableElement(match) ? match : null;
   }
 
-  function pushCloseConfirmStep(): void {
-    if (!closeConfirm) return;
-    if ($popupState.content?.id === closeConfirm.id) return;
-    popupControls.open(closeConfirm);
+  function resolveCloseConfirm(active: PopupContentDefinition): PopupContentDefinition | null {
+    if (typeof closeConfirm === 'function') return closeConfirm(active);
+    return closeConfirm;
+  }
+
+  function isCloseConfirmOpen(): boolean {
+    if (!closeConfirm) return false;
+    const active = $popupState.content;
+    if (!active) return false;
+    const confirm = typeof closeConfirm === 'function' ? closeConfirm(active) : closeConfirm;
+    if (!confirm) return false;
+    return active.id != null && confirm.id != null && active.id === confirm.id;
+  }
+
+  function pushCloseConfirmStep(active: PopupContentDefinition): void {
+    const confirm = resolveCloseConfirm(active);
+    if (!confirm) return;
+    if ($popupState.content?.id === confirm.id) return;
+    popupControls.open(confirm);
   }
 
   function attemptClose(source: 'backdrop' | 'escape' | 'header'): void {
     const content = $popupState.content;
     if (!content) return;
-    if (closeConfirm && $popupState.content?.id === closeConfirm.id) {
+    if (isCloseConfirmOpen()) {
       if (source === 'backdrop' || source === 'escape') popupControls.back();
       return;
     }
     const dismiss = resolvePopupDismiss(content);
     const flowDirty = isCurrentFlowDirty($popupState);
     if (dismiss === 'explicit' && (source === 'backdrop' || source === 'escape')) {
-      if (flowDirty && closeConfirm) pushCloseConfirmStep();
+      if (flowDirty && resolveCloseConfirm(content)) pushCloseConfirmStep(content);
       else popupControls.close();
       return;
     }
-    if (dismiss === 'confirmIfDirty' && flowDirty && closeConfirm) {
-      pushCloseConfirmStep();
+    if (dismiss === 'confirmIfDirty' && flowDirty && resolveCloseConfirm(content)) {
+      pushCloseConfirmStep(content);
       return;
     }
     popupControls.close();
@@ -139,6 +194,8 @@
       focusElement(previouslyFocusedEl);
       previouslyFocusedEl = null;
       lastTopPageKey = '';
+      lastScrollPageKey = '';
+      pageScrollTops.clear();
     }
     wasOpen = isOpen;
   });
@@ -155,16 +212,78 @@
       const active = document.activeElement as HTMLElement | null;
       if (active && topPage.contains(active)) return;
       const preferredInput = shouldAutoFocusTextInput()
-        ? topPage.querySelector<HTMLElement>('[data-ui-initial-input]')
+        ? queryFirst(topPage, initialInputSelectors)
         : null;
       const preferred = isKeyboardFocusableElement(preferredInput)
         ? preferredInput
-        : Array.from(topPage.querySelectorAll<HTMLElement>('[data-ui-initial-focus]')).find((candidate) => isKeyboardFocusableElement(candidate))
+        : queryAll(topPage, initialFocusSelectors).find((candidate) => isKeyboardFocusableElement(candidate))
           ?? getFocusableElements(topPage)[0]
-          ?? popupEl?.querySelector<HTMLElement>('[data-popup-close-control], .gui-popup-title')
+          ?? queryFirst(popupEl, [closeControlSelector])
           ?? null;
       focusElement(preferred);
     });
+  });
+
+  $effect(() => {
+    if (!restorePageScroll || !$popupState.content || !popupEl) return;
+    const topPage = popupEl.querySelector<HTMLElement>('.gui-popup-page.is-top');
+    if (!topPage) return;
+    const pageKey = topPage.dataset.popupPageKey ?? '';
+    if (!pageKey || pageKey === lastScrollPageKey) return;
+    lastScrollPageKey = pageKey;
+    const restoreTop = pageScrollTops.get(pageKey) ?? 0;
+    const popupNode = popupEl;
+    popupNode.scrollTop = restoreTop;
+    requestAnimationFrame(() => {
+      if (!popupEl || popupEl !== popupNode || lastScrollPageKey !== pageKey) return;
+      popupNode.scrollTop = restoreTop;
+    });
+  });
+
+  $effect(() => {
+    if (!restorePageScroll || !popupEl) return;
+    const popupNode = popupEl;
+    const rememberScroll = () => {
+      if (!lastScrollPageKey) return;
+      pageScrollTops.set(lastScrollPageKey, popupNode.scrollTop);
+    };
+    popupNode.addEventListener('scroll', rememberScroll, { passive: true });
+    return () => popupNode.removeEventListener('scroll', rememberScroll);
+  });
+
+  $effect(() => {
+    if (!popupEl || !dirtyTracking || !dirtyTracking.enabled) return;
+    const options = dirtyTracking;
+    const eventTypes = options.eventTypes ?? ['input', 'change'];
+    const trackSelector = options.trackSelector ?? 'input, textarea, select, [contenteditable="true"], [role="textbox"]';
+    const ignoreSelector = options.ignoreSelector ?? '[data-ui-dirty-ignore="true"]';
+    const onlyWhenDismissExplicit = options.onlyWhenDismissExplicit ?? true;
+
+    const markDirtyIfNeeded = (event: Event) => {
+      const content = $popupState.content;
+      if (!content) return;
+      if (isCloseConfirmOpen()) return;
+      if ((content.isDirty ?? false) === true) return;
+      if (onlyWhenDismissExplicit && resolvePopupDismiss(content) !== 'explicit') return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+      if (ignoreSelector && target.closest(ignoreSelector)) return;
+      const editable = target.closest(trackSelector);
+      if (!(editable instanceof HTMLElement)) return;
+      if (editable instanceof HTMLInputElement) {
+        const nonDataTypes = new Set(['button', 'submit', 'reset', 'image', 'file']);
+        if (nonDataTypes.has((editable.type || '').toLowerCase())) return;
+        if (editable.readOnly || editable.disabled) return;
+      }
+      if (editable instanceof HTMLTextAreaElement && (editable.readOnly || editable.disabled)) return;
+      if (editable instanceof HTMLSelectElement && editable.disabled) return;
+      popupControls.markCurrentDirty();
+    };
+
+    for (const eventType of eventTypes) popupEl.addEventListener(eventType, markDirtyIfNeeded, true);
+    return () => {
+      for (const eventType of eventTypes) popupEl?.removeEventListener(eventType, markDirtyIfNeeded, true);
+    };
   });
 
   let pages = $derived([
@@ -172,12 +291,24 @@
     ...($popupState.content ? [$popupState.content] : [])
   ]);
 
+  const ids = new WeakMap<any, string>();
+  let seq = 0;
+  function keyFor(page: any): string {
+    if (page?.key != null) return String(page.key);
+    if (page?.id != null) return String(page.id);
+    const existing = ids.get(page);
+    if (existing) return existing;
+    const id = `page-${++seq}`;
+    ids.set(page, id);
+    return id;
+  }
+
   type PageKeyEntry = { page: any; key: string };
   const pagesWithKeys = $derived((): PageKeyEntry[] => {
     const entries: PageKeyEntry[] = [];
     const seen = new Map<string, number>();
     for (const page of pages) {
-      const base = page?.key != null ? String(page.key) : page?.id != null ? String(page.id) : `page-${entries.length}`;
+      const base = keyFor(page);
       const count = seen.get(base) ?? 0;
       seen.set(base, count + 1);
       entries.push({ page, key: count === 0 ? base : `${base}::${count}` });
