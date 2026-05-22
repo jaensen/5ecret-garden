@@ -1,7 +1,6 @@
 <script lang="ts">
   import AdminProductRow from './AdminProductRow.svelte';
-  import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
-  import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
+  import { Tabs, Tab } from '@garden-ui/tabs';
   import type { AdminUnifiedProduct, AdminProductType } from '../types';
   import { resolveAdminProductType, adminProductTypeLabels } from '../types';
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';

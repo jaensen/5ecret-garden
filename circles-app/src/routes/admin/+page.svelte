@@ -55,8 +55,7 @@
   import { resolveAdminProductType } from '$lib/areas/admin/types';
   import type { AdminProductType, AdminUnifiedProduct, AdminOdooConnection } from '$lib/areas/admin/types';
   import { shortenAddress } from '$lib/shared/utils/shared';
-  import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
-  import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
+  import { Tabs, Tab } from '@garden-ui/tabs';
   import type { TabIdOf } from '$lib/shared/ui/primitives/tabs/tabId';
   import { openConfirmPopup } from '$lib/shared/ui/shell/confirmDialogs';
 

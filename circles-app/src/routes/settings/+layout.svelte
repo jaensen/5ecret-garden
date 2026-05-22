@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import PageScaffold from '$lib/shared/ui/shell/PageScaffold.svelte';
-  import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
-  import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
+  import { Tabs, Tab } from '@garden-ui/tabs';
   import { readable, writable } from 'svelte/store';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';

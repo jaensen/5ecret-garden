@@ -20,8 +20,7 @@
     import { getBaseAndCmgGroupsByOwnerBatch } from '$lib/shared/utils/getGroupsByOwnerBatch';
     import { getGroupsByMember } from '$lib/areas/groups/utils/getGroupsByMemberBatch';
     import type { GroupRow } from '@circles-sdk/data';
-    import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
-    import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
+    import { Tabs, Tab } from '@garden-ui/tabs';
     import { type TabIdOf } from '$lib/shared/ui/primitives/tabs/tabId';
 
     let groups: Readable<{

@@ -11,8 +11,7 @@
     import type { Action } from '$lib/shared/ui/shell/actions';
     import { goto } from '$app/navigation';
     import { avatarState } from '$lib/shared/state/avatar.svelte';
-    import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
-    import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
+    import { Tabs, Tab } from '@garden-ui/tabs';
     import {gnosisConfig} from "$lib/shared/config/circles";
 
     // Defaults (as requested)
@@ -370,7 +369,7 @@
             {#if scanOperators.length > 1}
               <div class="mb-3 flex items-center justify-between gap-2">
                 <div class="flex-1 min-w-0">
-                  <Tabs bind:selected={selectedOperator} size="sm" variant="bordered">
+                  <Tabs bind:selected={selectedOperator} size="sm" variant="underline">
                     {#each scanOperators as op (op)}
                       <Tab id={op} title={shortAddr(op)} />
                     {/each}

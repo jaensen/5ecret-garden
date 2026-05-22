@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
-  import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
+  import { Tabs, Tab } from '@garden-ui/tabs';
 
   let selectedMain = $state<string | null>('overview');
   let selectedBordered = $state<string | null>('a');
@@ -32,7 +31,7 @@
 
   <div class="space-y-2">
     <h3 class="font-medium">Bordered variant</h3>
-    <Tabs bind:selected={selectedBordered} variant="bordered" size="sm">
+    <Tabs bind:selected={selectedBordered} variant="underline" size="sm">
       <Tab id="a" title="Bordered A" panelClass="pt-2">
         <div class="text-xs opacity-70">Compact state A.</div>
       </Tab>

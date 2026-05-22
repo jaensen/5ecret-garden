@@ -32,8 +32,7 @@
     import {avatarState} from '$lib/shared/state/avatar.svelte';
 
     /* NEW: tabs */
-    import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
-    import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
+    import { Tabs, Tab } from '@garden-ui/tabs';
     import type { TabIdOf } from '$lib/shared/ui/primitives/tabs/tabId';
     // Offers tab dependencies
     import ProductCard from '$lib/areas/market/ui/product/ProductCard.svelte';
