@@ -10,6 +10,14 @@ async function flushUi(times = 2) {
   }
 }
 
+async function waitUntil(predicate: () => boolean, attempts = 5_000) {
+  for (let i = 0; i < attempts; i += 1) {
+    await tick();
+    await Promise.resolve();
+    if (predicate()) return;
+  }
+}
+
 describe('library list proof', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
@@ -22,6 +30,7 @@ describe('library list proof', () => {
     await flushUi();
 
     expect(target.textContent).toContain('10,000');
+    expect(target.textContent).toContain('Visible items: 20');
     const rows = target.querySelectorAll('[data-library-list-proof-row]');
     expect(rows.length).toBeGreaterThan(0);
     expect(rows.length).toBeLessThan(1000);
@@ -44,6 +53,28 @@ describe('library list proof', () => {
 
     const firstRow = target.querySelector<HTMLElement>('[data-library-list-proof-row]');
     expect(document.activeElement).toBe(firstRow);
+
+    unmount(component);
+    target.remove();
+  });
+
+  it('updates the rendered rows live when the search query changes', async () => {
+    const target = document.createElement('div');
+    document.body.appendChild(target);
+    const component = mount(LibraryListProofPage, { target });
+    await flushUi(3);
+
+    const input = target.querySelector<HTMLInputElement>('[data-library-list-proof-input]');
+    expect(input).toBeTruthy();
+    expect(target.querySelector('[data-library-list-proof-row]')?.textContent).toContain('Generated item 1');
+
+    input!.value = 'Generated item 20';
+    input!.dispatchEvent(new Event('input', { bubbles: true }));
+    await flushUi(3);
+
+    expect(target.textContent).toContain('Filtered total:');
+    expect(target.querySelector('[data-library-list-proof-row]')?.textContent).toContain('Generated item 20');
+    expect(target.querySelector('[data-library-list-proof-row]')?.textContent).not.toContain('Generated item 1');
 
     unmount(component);
     target.remove();
@@ -106,12 +137,9 @@ describe('library list proof', () => {
     const loadAll = target.querySelector<HTMLButtonElement>('[data-library-list-proof-load-all]');
     expect(loadAll).toBeTruthy();
     loadAll!.click();
-    for (let i = 0; i < 120; i += 1) {
-      await flushUi(1);
-      if (target.querySelector('[data-library-list-proof-ended="true"]')) break;
-    }
+    await waitUntil(() => Boolean(target.querySelector('[data-library-list-proof-ended="true"]')));
 
-    expect(target.querySelector('[data-library-list-proof-ended="true"]')).toBeTruthy();
+    expect(target.querySelector('[data-library-list-proof-ended="true"]'), target.textContent ?? '').toBeTruthy();
     expect(target.textContent).toContain('Ended: yes');
 
     unmount(component);

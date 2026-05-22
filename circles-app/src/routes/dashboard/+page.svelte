@@ -27,10 +27,6 @@
     ];
 
     let mintableAmount: number = $state(0);
-
-    const defaultTab: string = avatarState.isGroup ? 'overview' : 'transaction-history';
-    let selectedTab: string = defaultTab;
-
     $effect(() => {
         (async () => {
             const hasAvatar: boolean = !!avatarState.avatar;

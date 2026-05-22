@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
+  import { RowFrame } from '@garden-ui/row';
   import type { MockListItem } from './mockListData';
 
   interface Props {
@@ -30,8 +31,9 @@
   });
 </script>
 
-<button
-  type="button"
+<RowFrame
+  clickable={true}
+  noLeading={true}
   class="proof-row"
   data-library-list-proof-row
   data-list-row-focusable
@@ -39,33 +41,24 @@
   onclick={() => activate(item)}
   onkeydown={navigator.onRowKeydown}
 >
-  <span class="proof-row__main">
-    <strong>{item.title}</strong>
-    <small>{item.subtitle}</small>
-  </span>
-</button>
+  {#snippet title()}{item.title}{/snippet}
+  {#snippet subtitle()}{item.subtitle}{/snippet}
+  {#snippet meta()}Package-backed row-card proof{/snippet}
+  {#snippet trailing()}<span class="proof-row__badge">Open</span>{/snippet}
+</RowFrame>
 
 <style>
-  .proof-row {
-    width: 100%;
-    height: 100%;
+  :global(.proof-row) {
+    height: calc(100% - .75rem);
+    margin: .375rem 0;
+    box-sizing: border-box;
     text-align: left;
-    border: 1px solid #d4d4d8;
-    background: #fff;
-    border-radius: .875rem;
-    padding: .75rem 1rem;
-    cursor: pointer;
   }
-  .proof-row:focus-visible {
-    outline: 2px solid #2563eb;
-    outline-offset: 2px;
+
+  :global(.proof-row:focus-visible) {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--gui-row-focus, #2563eb);
   }
-  .proof-row__main {
-    display: flex;
-    flex-direction: column;
-    gap: .2rem;
-  }
-  .proof-row__main small {
-    color: #52525b;
-  }
+
+  .proof-row__badge { font-size: .75rem; border: 1px solid #d4d4d8; border-radius: 999px; padding: .15rem .45rem; color: #52525b; }
 </style>

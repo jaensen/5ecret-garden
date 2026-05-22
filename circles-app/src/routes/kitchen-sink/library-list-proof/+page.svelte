@@ -20,7 +20,8 @@
   const storeBackedItems = writable(MOCK_LIST_ITEMS);
   const query = writable('');
   let sourceMode = $state<'array' | 'store' | 'paged'>('array');
-  const PROOF_PAGE_SIZE = 1000;
+  const PROOF_PAGE_SIZE = 20;
+  const PROOF_ROW_HEIGHT = 104;
 
   const arrayBase = createArrayListController(MOCK_LIST_ITEMS, { pageSize: PROOF_PAGE_SIZE, initialPageCount: 1 });
   const storeBase = createStoreListController(storeBackedItems, { pageSize: PROOF_PAGE_SIZE, initialPageCount: 1 });
@@ -104,13 +105,17 @@
   }
 
   function loadMoreQueued(controller: ListController<MockListItem>): Promise<boolean> {
-    const pending = loadQueues.get(controller) ?? Promise.resolve(!get(controller).ended);
-    const nextLoad = pending
-      .catch(() => false)
-      .then(async () => {
-        const hasMore = await controller.loadMore();
+    const queued = loadQueues.get(controller);
+    if (queued) return queued;
+
+    const nextLoad = controller.loadMore()
+      .then((hasMore) => {
         publishControllerSnapshot(controller);
         return hasMore;
+      })
+      .catch(() => {
+        publishControllerSnapshot(controller);
+        return false;
       })
       .finally(() => {
         if (loadQueues.get(controller) === nextLoad) {
@@ -128,6 +133,11 @@
     });
 
     return () => unsubscribe();
+  });
+
+  $effect(() => {
+    $query;
+    publishControllerSnapshot(activeBaseController);
   });
 
   let selectedItem: MockListItem | null = $state(null);
@@ -163,11 +173,14 @@
   async function loadAllCurrent(): Promise<void> {
     const controller = getCurrentController();
     let guard = 0;
-    while (guard < 500) {
+    const maxLoads = Math.ceil(MOCK_LIST_ITEMS.length / PROOF_PAGE_SIZE) + 2;
+    while (guard < maxLoads) {
       const snapBefore = get(controller);
       if (snapBefore.ended) break;
 
       const hasMore = await loadMoreQueued(controller);
+      await tick();
+      await Promise.resolve();
 
       const snapAfter = get(controller);
       guard += 1;
@@ -261,7 +274,7 @@
       store={genericListStore}
       row={ListProofRow}
       getKey={(item: MockListItem) => item.id}
-      rowHeight={72}
+      rowHeight={PROOF_ROW_HEIGHT}
       expectedPageSize={PROOF_PAGE_SIZE}
       maxPlaceholderPages={2}
     />

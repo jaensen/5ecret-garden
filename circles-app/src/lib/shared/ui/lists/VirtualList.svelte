@@ -425,8 +425,9 @@
                 style={`transform: translateY(${vr.top}px); height: ${rowHeight}px; z-index: ${elevatedRowIndex === vr.index ? 2 : 1}`}
             >
                 {#if vr.kind === 'item'}
+                    {@const Row = row}
                     <div data-list-row>
-                        <svelte:component this={row} item={vr.item} />
+                        <Row item={vr.item} />
                     </div>
                 {:else}
                     {#if placeholderRow}
