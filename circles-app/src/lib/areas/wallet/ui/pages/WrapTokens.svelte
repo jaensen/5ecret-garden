@@ -40,7 +40,10 @@
     if (avatarState.avatar?.avatarInfo?.version !== 2) {
       throw new Error('Only supported for Avatar v2');
     }
-    const receipt = await avatarState.avatar?.wrapInflationErc20(asset.tokenAddress, sendValue);
+    const receipt = await avatarState.avatar?.wrapInflationErc20(
+      asset.tokenAddress,
+      sendValue
+    );
     if (!receipt) {
       throw new Error('Failed to wrap Circles');
     }
@@ -50,7 +53,10 @@
     if (avatarState.avatar?.avatarInfo?.version !== 2) {
       throw new Error('Only supported for Avatar v2');
     }
-    const receipt = await avatarState.avatar?.wrapDemurrageErc20(asset.tokenAddress, sendValue);
+    const receipt = await avatarState.avatar?.wrapDemurrageErc20(
+      asset.tokenAddress,
+      sendValue
+    );
     if (!receipt) {
       throw new Error('Failed to wrap Circles');
     }
@@ -133,6 +139,11 @@
   </div>
 
   <PopupActionBar>
-    <button type="submit" class="btn btn-primary btn-sm" onclick={wrap} disabled={!canWrap}>Wrap</button>
+    <button
+      type="submit"
+      class="btn btn-primary btn-sm"
+      onclick={wrap}
+      disabled={!canWrap}>Wrap</button
+    >
   </PopupActionBar>
 </div>

@@ -89,7 +89,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 w-full gap-4 mb-8">
   <!-- Member Count -->
   <div
-    class="flex flex-col justify-between p-6 border border-base-300 rounded-xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
+    class="flex flex-col justify-between p-6 border border-base-300 rounded-3xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
   >
     <div class="w-4 h-4 mb-4 text-primary">
       <svg
@@ -120,7 +120,7 @@
 
   <!-- Total Supply -->
   <div
-    class="flex flex-col justify-between p-6 border border-base-300 rounded-xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
+    class="flex flex-col justify-between p-6 border border-base-300 rounded-3xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
   >
     <div class="w-4 h-4 mb-4 text-secondary">
       <svg
@@ -150,7 +150,7 @@
 
   <!-- Total Minted -->
   <div
-    class="flex flex-col justify-between p-6 border border-base-300 rounded-xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
+    class="flex flex-col justify-between p-6 border border-base-300 rounded-3xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
   >
     <div class="w-4 h-4 mb-4 text-accent">
       <svg
@@ -179,7 +179,7 @@
 
   <!-- Total Redeemed -->
   <div
-    class="flex flex-col justify-between p-6 border border-base-300 rounded-xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
+    class="flex flex-col justify-between p-6 border border-base-300 rounded-3xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
   >
     <div class="w-4 h-4 mb-4 text-primary">
       <svg
@@ -205,7 +205,7 @@
 
   <!-- Affiliate Members Count -->
   <div
-    class="flex flex-col justify-between p-6 border border-base-300 rounded-xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
+    class="flex flex-col justify-between p-6 border border-base-300 rounded-3xl bg-base-100 hover:shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-0.5"
   >
     <div class="w-4 h-4 mb-4 text-primary">
       <svg

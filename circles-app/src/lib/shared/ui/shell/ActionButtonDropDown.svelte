@@ -1,14 +1,20 @@
 <script lang="ts">
-import Lucide from "$lib/shared/ui/icons/Lucide.svelte";
+  import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
 
-// Default to empty list; tolerate undefined entries
-let { actions = [] as any[] } = $props();
-
+  // Default to empty list; tolerate undefined entries
+  let { actions = [] as any[] } = $props();
 </script>
+
 {#each actions.filter(Boolean) as a, i (a?.id ?? a?.label ?? i)}
+  {@const variantClass =
+    a.variant === 'primary'
+      ? 'btn-primary'
+      : a.variant === 'muted'
+        ? 'btn-muted-outline'
+        : 'btn-ghost'}
   <button
     type="button"
-    class={`btn btn-sm ${a.variant === 'primary' ? 'btn-primary' : 'btn-ghost'} min-h-0 h-[var(--collapsed-h)] md:h-[var(--collapsed-h-md)] w-full justify-start px-3`}
+    class={`btn btn-sm ${variantClass} min-h-0 h-[var(--collapsed-h)] md:h-[var(--collapsed-h-md)] w-full justify-start px-3`}
     onclick={a.onClick}
     aria-label={a.label}
     disabled={!!a?.disabled}

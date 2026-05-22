@@ -7,20 +7,33 @@
   import OdooConnectionForm from '$lib/areas/admin/components/OdooConnectionForm.svelte';
   import DetailsStep from './5_Details.svelte';
   import type { AdminNewProductFlowContext } from './context';
-  import type { AdminOdooConnection, AdminUnifiedProduct } from '$lib/areas/admin/types';
+  import type {
+    AdminOdooConnection,
+    AdminUnifiedProduct,
+  } from '$lib/areas/admin/types';
 
   interface Props {
     context: AdminNewProductFlowContext;
     connections: AdminOdooConnection[];
     existingProducts: AdminUnifiedProduct[];
     onExecute: (payload: any) => Promise<void>;
-    onCreateConnection: (payload: { connection: any }) => Promise<AdminOdooConnection>;
+    onCreateConnection: (payload: {
+      connection: any;
+    }) => Promise<AdminOdooConnection>;
   }
 
-  let { context, connections, existingProducts, onExecute, onCreateConnection }: Props = $props();
+  let {
+    context,
+    connections,
+    existingProducts,
+    onExecute,
+    onCreateConnection,
+  }: Props = $props();
 
   const normalizedSeller = $derived(
-    context.seller ? (normalizeAddress(String(context.seller)) as Address) : undefined
+    context.seller
+      ? (normalizeAddress(String(context.seller)) as Address)
+      : undefined
   );
 
   let saving = $state(false);
@@ -46,7 +59,9 @@
           odooKey: (context.odooKey ?? '').trim(),
           salePartnerId: context.salePartnerId ?? undefined,
           jsonrpcTimeoutMs: context.jsonrpcTimeoutMs ?? 30000,
-          fulfillInheritRequestAbort: Boolean(context.fulfillInheritRequestAbort),
+          fulfillInheritRequestAbort: Boolean(
+            context.fulfillInheritRequestAbort
+          ),
           enabled: Boolean(context.enabled ?? true),
         },
       });
@@ -56,11 +71,20 @@
       openStep({
         title: 'Use odoo product',
         component: DetailsStep,
-        props: { context, connections: [...connections, created], existingProducts, onExecute, onCreateConnection },
+        props: {
+          context,
+          connections: [...connections, created],
+          existingProducts,
+          onExecute,
+          onCreateConnection,
+        },
         key: 'admin-new-product-details',
       });
     } catch (e: unknown) {
-      formError = e instanceof Error ? e.message : 'Failed to create connection. Please try again.';
+      formError =
+        e instanceof Error
+          ? e.message
+          : 'Failed to create connection. Please try again.';
     } finally {
       saving = false;
     }
@@ -73,12 +97,11 @@
   title="Create Odoo connection"
   subtitle="Create an Odoo connection for this seller."
 >
-
-    <OdooConnectionForm
-      value={context}
-      onSubmit={submit}
-      loading={saving}
-      submitLabel="Create connection"
-      error={formError}
-    />
-  </FlowStepScaffold>
+  <OdooConnectionForm
+    value={context}
+    onSubmit={submit}
+    loading={saving}
+    submitLabel="Create connection"
+    error={formError}
+  />
+</FlowStepScaffold>

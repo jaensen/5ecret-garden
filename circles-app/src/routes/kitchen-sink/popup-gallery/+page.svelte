@@ -7,12 +7,15 @@
   let viewportMode = $state<ViewportMode>('phone');
 </script>
 
-<section class="sticky top-2 z-20 rounded-xl border border-base-300 bg-base-100/95 backdrop-blur p-4 space-y-2">
+<section
+  class="sticky top-2 z-20 rounded-3xl border border-base-300 bg-base-100/95 backdrop-blur p-4 space-y-2"
+>
   <div class="flex flex-wrap items-start justify-between gap-3">
     <div>
       <h2 class="text-lg font-semibold">Popup Gallery</h2>
       <p class="text-sm opacity-75">
-        Interactive inventory of popup flows and standalone popup pages. All pages auto-embed inline and can also open in the popup host.
+        Interactive inventory of popup flows and standalone popup pages. All
+        pages auto-embed inline and can also open in the popup host.
       </p>
     </div>
 

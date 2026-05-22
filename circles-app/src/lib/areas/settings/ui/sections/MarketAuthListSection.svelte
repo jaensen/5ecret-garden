@@ -7,7 +7,12 @@
   import MarketOrderRowPlaceholder from '$lib/shared/ui/lists/placeholders/MarketOrderRowPlaceholder.svelte';
   import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
 
-  type ListValue = { data: any[]; next: () => Promise<boolean>; ended: boolean; error?: string | null };
+  type ListValue = {
+    data: any[];
+    next: () => Promise<boolean>;
+    ended: boolean;
+    error?: string | null;
+  };
   type ListStore = Readable<ListValue>;
 
   type Props = {
@@ -33,7 +38,7 @@
     row,
     connectMessage,
     signInMessage,
-    signInLabel = 'Sign in'
+    signInLabel = 'Sign in',
   }: Props = $props();
 
   const query = writable('');
@@ -48,7 +53,9 @@
         const key = String(it?.key ?? '').toLowerCase();
         const orderNumber = String(it?.orderNumber ?? '').toLowerCase();
         const displayId = String(it?.displayId ?? '').toLowerCase();
-        return key.includes(q) || orderNumber.includes(q) || displayId.includes(q);
+        return (
+          key.includes(q) || orderNumber.includes(q) || displayId.includes(q)
+        );
       });
 
       return {
@@ -68,11 +75,11 @@
 
   const onSearchInputKeydown = createListInputArrowDownHandler({
     getScope: () => marketListScopeEl,
-    rowSelector: '[data-market-order-row]'
+    rowSelector: '[data-market-order-row]',
   });
 </script>
 
-<section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+<section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
   <div class="flex items-center justify-between">
     <div>
       <h3 class="text-sm font-semibold m-0">{title}</h3>
@@ -86,14 +93,14 @@
   </div>
 </section>
 
-<section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+<section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
   {#if !avatarAddress}
     <div class="text-sm opacity-70">{connectMessage}</div>
   {:else if !authed}
     <div class="text-sm opacity-70">{signInMessage}</div>
   {:else}
     <ListShell
-      query={query}
+      {query}
       searchPlaceholder="Search by order id"
       inputDataAttribute="data-market-auth-search-input"
       onInputKeydown={onSearchInputKeydown}

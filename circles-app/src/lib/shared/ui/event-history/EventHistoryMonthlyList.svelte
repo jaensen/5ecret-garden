@@ -8,7 +8,12 @@
     onSelectMonth?: (monthStartSec: number) => void;
   }
 
-  let { monthlyItems, maxBucketCount, rangeEvents = [], onSelectMonth }: Props = $props();
+  let {
+    monthlyItems,
+    maxBucketCount,
+    rangeEvents = [],
+    onSelectMonth,
+  }: Props = $props();
 
   function intensityClass(count: number, max: number): string {
     if (count <= 0 || max <= 0) return 'bg-base-300/50';
@@ -30,14 +35,26 @@
 
   function monthRangeEvents(monthStartSec: number): RangeOverlayEvent[] {
     const monthEndSec = nextMonthStartSec(monthStartSec) - 1;
-    return rangeEvents.filter((event) => event.startDaySec <= monthEndSec && event.endDaySec >= monthStartSec);
+    return rangeEvents.filter(
+      (event) =>
+        event.startDaySec <= monthEndSec && event.endDaySec >= monthStartSec
+    );
   }
 
-  function isMonthRangeStart(event: RangeOverlayEvent, monthStartSec: number): boolean {
-    return event.startDaySec >= monthStartSec && event.startDaySec < nextMonthStartSec(monthStartSec);
+  function isMonthRangeStart(
+    event: RangeOverlayEvent,
+    monthStartSec: number
+  ): boolean {
+    return (
+      event.startDaySec >= monthStartSec &&
+      event.startDaySec < nextMonthStartSec(monthStartSec)
+    );
   }
 
-  function isMonthRangeEnd(event: RangeOverlayEvent, monthStartSec: number): boolean {
+  function isMonthRangeEnd(
+    event: RangeOverlayEvent,
+    monthStartSec: number
+  ): boolean {
     const monthEndSec = nextMonthStartSec(monthStartSec) - 1;
     return event.endDaySec >= monthStartSec && event.endDaySec <= monthEndSec;
   }
@@ -47,7 +64,9 @@
   }
 </script>
 
-<div class="rounded-lg border border-base-300 overflow-auto max-h-[calc(80vh-14rem)]">
+<div
+  class="rounded-lg border border-base-300 overflow-auto max-h-[calc(80vh-14rem)]"
+>
   <ul class="divide-y divide-base-300">
     {#each monthlyItems as month (`month-${month.startSec}`)}
       {@const overlappingEvents = monthRangeEvents(month.startSec)}
@@ -70,7 +89,9 @@
               </span>
             {/if}
           </span>
-          <span class={`px-2 py-1 rounded-md text-xs ${intensityClass(month.count, maxBucketCount)}`}>
+          <span
+            class={`px-2 py-1 rounded-md text-xs ${intensityClass(month.count, maxBucketCount)}`}
+          >
             {month.count} event{month.count === 1 ? '' : 's'}
           </span>
         </button>

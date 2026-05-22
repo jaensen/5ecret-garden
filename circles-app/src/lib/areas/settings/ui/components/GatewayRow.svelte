@@ -13,7 +13,9 @@
   let { item }: Props = $props();
 
   const createdAt = $derived.by(() =>
-    item.timestamp ? new Date(Number(item.timestamp) * 1000).toLocaleString() : ''
+    item.timestamp
+      ? new Date(Number(item.timestamp) * 1000).toLocaleString()
+      : ''
   );
 
   function openManageTrust() {
@@ -21,22 +23,30 @@
     openStep({
       title: 'Payment gateway',
       component: ManageTrust,
-      props: { gateway: item.gateway }
+      props: { gateway: item.gateway },
     });
   }
 
   function focusGatewaySearchInput(current?: HTMLElement | null): void {
-    const scope = current?.closest<HTMLElement>('[data-payment-gateway-list-scope]')
-      ?? document.querySelector<HTMLElement>('[data-payment-gateway-list-scope]');
-    const input = scope?.querySelector<HTMLInputElement>('[data-payment-gateway-search-input]');
+    const scope =
+      current?.closest<HTMLElement>('[data-payment-gateway-list-scope]') ??
+      document.querySelector<HTMLElement>('[data-payment-gateway-list-scope]');
+    const input = scope?.querySelector<HTMLInputElement>(
+      '[data-payment-gateway-search-input]'
+    );
     input?.focus();
   }
 
   const listNavigator = createKeyboardListNavigator({
     getRows: (anchor) => {
-      const scope = anchor?.closest<HTMLElement>('[data-payment-gateway-list-scope]')
-        ?? document.querySelector<HTMLElement>('[data-payment-gateway-list-scope]');
-      return Array.from((scope ?? document).querySelectorAll<HTMLElement>('[data-gateway-row]'));
+      const scope =
+        anchor?.closest<HTMLElement>('[data-payment-gateway-list-scope]') ??
+        document.querySelector<HTMLElement>(
+          '[data-payment-gateway-list-scope]'
+        );
+      return Array.from(
+        (scope ?? document).querySelectorAll<HTMLElement>('[data-gateway-row]')
+      );
     },
     focusInput: focusGatewaySearchInput,
     onActivateRow: () => openManageTrust(),
@@ -73,7 +83,12 @@
       </div>
       {#snippet trailing()}
         <div aria-hidden="true">
-          <img src="/chevron-right.svg" alt="" class="h-4 w-4 opacity-70" aria-hidden="true" />
+          <img
+            src="/chevron-right.svg"
+            alt=""
+            class="h-4 w-4 opacity-70"
+            aria-hidden="true"
+          />
         </div>
       {/snippet}
     </div>

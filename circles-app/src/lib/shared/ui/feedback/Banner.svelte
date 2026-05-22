@@ -18,7 +18,9 @@
   const resolvedToneClass = $derived(toneClasses[tone]);
 </script>
 
-<div class={`w-full flex flex-col border-t-4 mb-4 rounded-b px-4 py-3 shadow-md ${resolvedToneClass} ${className}`.trim()}>
+<div
+  class={`w-full flex flex-col border-t-4 mb-4 rounded-b px-4 py-3 shadow-md ${resolvedToneClass} ${className}`.trim()}
+>
   <p class="font-bold">{title}</p>
   {#if message}
     <p class="text-sm text-base-content/80">{message}</p>

@@ -1,5 +1,7 @@
 <script lang="ts">
-  interface Props { height?: number }
+  interface Props {
+    height?: number;
+  }
   let { height = 64 }: Props = $props(); // px — match BalanceRow’s visual height
 </script>
 

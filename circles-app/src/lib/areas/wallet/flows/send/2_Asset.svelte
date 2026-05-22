@@ -25,7 +25,7 @@
     if (context?.selectedAsset) {
       selectedAsset = context.selectedAsset;
       // If we got here with a pre-selected asset, it means we probably
-      // came from a flow where we want to pick another asset, 
+      // came from a flow where we want to pick another asset,
       // but if the intention was to skip, 1_To.svelte should have handled it.
     }
   });
@@ -55,11 +55,10 @@
   title="Asset"
   subtitle="Choose the asset you want to send."
 >
-    <SelectAsset
-      {selectedAsset}
-      balances={circlesBalances}
-      inputDataAttribute="data-send-step-initial-input"
-      {onselect}
-    />
-  </FlowStepScaffold>
-
+  <SelectAsset
+    {selectedAsset}
+    balances={circlesBalances}
+    inputDataAttribute="data-send-step-initial-input"
+    {onselect}
+  />
+</FlowStepScaffold>

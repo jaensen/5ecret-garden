@@ -1,7 +1,10 @@
 <script lang="ts">
   import AdminProductFormBase from './AdminProductFormBase.svelte';
   import type { AdminProductType, AdminUnifiedProduct } from '../types';
-  import type { CodeProductConfig, RouteUpsertInput } from '$lib/areas/admin/services/gateway/adminClient';
+  import type {
+    CodeProductConfig,
+    RouteUpsertInput,
+  } from '$lib/areas/admin/services/gateway/adminClient';
   import { normalizeAddressInput, normalizeSku } from '../productEditorUtils';
 
   interface Props {
@@ -15,18 +18,15 @@
     onCancel?: () => void;
   }
 
-  let {
-    product = null,
-    onSubmit,
-    onDisable,
-    onCancel,
-  }: Props = $props();
+  let { product = null, onSubmit, onDisable, onCancel }: Props = $props();
 
   const chainId = 100;
   let seller: string = $state(product?.seller ?? '');
   let sku: string = $state(product?.sku ?? '');
 
-  let downloadUrlTemplate: string = $state(product?.code?.downloadUrlTemplate ?? '');
+  let downloadUrlTemplate: string = $state(
+    product?.code?.downloadUrlTemplate ?? ''
+  );
   let codesTextarea: string = $state('');
   let codeEnabled: boolean = $state(product?.code?.enabled ?? true);
 
@@ -75,7 +75,7 @@
   title={product ? 'Edit Code product' : 'Create Code product'}
   subtitle="Configure the code dispenser adapter; routes are handled automatically."
   onSubmit={submit}
-  onCancel={onCancel}
+  {onCancel}
   loading={saving}
   submitLabel={product ? 'Save changes' : 'Create product'}
 >
@@ -113,12 +113,18 @@
         bind:value={downloadUrlTemplate}
         placeholder={`https://example.com/${'{code}'}`}
       />
-      <span class="label-text-alt text-xs opacity-70">Use &lbrace;code&rbrace; as placeholder</span>
+      <span class="label-text-alt text-xs opacity-70"
+        >Use &lbrace;code&rbrace; as placeholder</span
+      >
     </label>
   </div>
   <label class="form-control">
     <span class="label-text">Seed codes (one per line)</span>
-    <textarea class="textarea textarea-bordered textarea-sm font-mono" rows="3" bind:value={codesTextarea}></textarea>
+    <textarea
+      class="textarea textarea-bordered textarea-sm font-mono"
+      rows="3"
+      bind:value={codesTextarea}
+    ></textarea>
   </label>
   {#if product && onDisable}
     <div class="divider text-xs">Danger zone</div>
@@ -141,6 +147,10 @@
 
   <label class="form-control">
     <span class="label-text">Enabled</span>
-    <input type="checkbox" class="checkbox checkbox-sm" bind:checked={codeEnabled} />
+    <input
+      type="checkbox"
+      class="checkbox checkbox-sm"
+      bind:checked={codeEnabled}
+    />
   </label>
 </AdminProductFormBase>

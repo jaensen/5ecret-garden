@@ -53,7 +53,11 @@
   import AdminNewConnectionSellerStep from '$lib/areas/admin/flows/newConnection/1_Seller.svelte';
   import { combineAdminProducts } from '$lib/areas/admin/helpers';
   import { resolveAdminProductType } from '$lib/areas/admin/types';
-  import type { AdminProductType, AdminUnifiedProduct, AdminOdooConnection } from '$lib/areas/admin/types';
+  import type {
+    AdminProductType,
+    AdminUnifiedProduct,
+    AdminOdooConnection,
+  } from '$lib/areas/admin/types';
   import { shortenAddress } from '$lib/shared/utils/shared';
   import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
   import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
@@ -84,14 +88,30 @@
 
   let defaultProductType: AdminProductType = $state('odoo');
 
-  const unifiedProducts = $derived(combineAdminProducts(routes, odooProducts, codeProducts, unlockProducts));
-  const hasRouteOnlyProducts = $derived(unifiedProducts.some((item) => !item.odoo && !item.code && !item.unlock));
-  const loadingAny = $derived(productsLoading || routesLoading || connectionsLoading);
+  const unifiedProducts = $derived(
+    combineAdminProducts(routes, odooProducts, codeProducts, unlockProducts)
+  );
+  const hasRouteOnlyProducts = $derived(
+    unifiedProducts.some((item) => !item.odoo && !item.code && !item.unlock)
+  );
+  const loadingAny = $derived(
+    productsLoading || routesLoading || connectionsLoading
+  );
 
-  const codeProductsUnified = $derived(unifiedProducts.filter((item) => resolveAdminProductType(item) === 'codedispenser'));
-  const odooProductsUnified = $derived(unifiedProducts.filter((item) => resolveAdminProductType(item) === 'odoo'));
-  const unlockProductsUnified = $derived(unifiedProducts.filter((item) => resolveAdminProductType(item) === 'unlock'));
-  const routeOnlyProductsUnified = $derived(unifiedProducts.filter((item) => resolveAdminProductType(item) === 'route'));
+  const codeProductsUnified = $derived(
+    unifiedProducts.filter(
+      (item) => resolveAdminProductType(item) === 'codedispenser'
+    )
+  );
+  const odooProductsUnified = $derived(
+    unifiedProducts.filter((item) => resolveAdminProductType(item) === 'odoo')
+  );
+  const unlockProductsUnified = $derived(
+    unifiedProducts.filter((item) => resolveAdminProductType(item) === 'unlock')
+  );
+  const routeOnlyProductsUnified = $derived(
+    unifiedProducts.filter((item) => resolveAdminProductType(item) === 'route')
+  );
 
   const PRODUCT_TAB_IDS = ['codedispenser', 'unlock', 'odoo', 'route'] as const;
   type ProductsTabId = TabIdOf<typeof PRODUCT_TAB_IDS>;
@@ -116,7 +136,9 @@
     authError = null;
 
     try {
-      const avatar = (avatarState.avatar?.address ?? avatarState.avatar?.avatarInfo?.avatar ?? '') as Address | '';
+      const avatar = (avatarState.avatar?.address ??
+        avatarState.avatar?.avatarInfo?.avatar ??
+        '') as Address | '';
       if (!avatar) {
         throw new Error('No avatar connected');
       }
@@ -220,20 +242,24 @@
     }
 
     const resolvedType = product
-      ? (resolveAdminProductType(product) === 'route' ? defaultProductType : resolveAdminProductType(product))
+      ? resolveAdminProductType(product) === 'route'
+        ? defaultProductType
+        : resolveAdminProductType(product)
       : defaultProductType;
 
-    const component = resolvedType === 'codedispenser'
-      ? AdminCodeProductEditor
-      : resolvedType === 'unlock'
-        ? AdminUnlockProductEditor
-        : AdminOdooProductEditor;
+    const component =
+      resolvedType === 'codedispenser'
+        ? AdminCodeProductEditor
+        : resolvedType === 'unlock'
+          ? AdminUnlockProductEditor
+          : AdminOdooProductEditor;
 
-    const typeLabel = resolvedType === 'codedispenser'
-      ? 'Code'
-      : resolvedType === 'unlock'
-        ? 'Unlock'
-        : 'Odoo';
+    const typeLabel =
+      resolvedType === 'codedispenser'
+        ? 'Code'
+        : resolvedType === 'unlock'
+          ? 'Unlock'
+          : 'Odoo';
 
     popupControls.open?.({
       title: product ? 'Edit product' : `New ${typeLabel} product`,
@@ -245,7 +271,9 @@
         connections: odooConnections,
         mode: 'product',
         onCancel: () => popupControls.close(),
-        onDisable: product ? async () => handleDisableProduct(product) : undefined,
+        onDisable: product
+          ? async () => handleDisableProduct(product)
+          : undefined,
         onSubmit: async (payload: SaveProductPayload) => {
           await saveProduct(payload, product ?? null);
         },
@@ -303,7 +331,9 @@
     });
   }
 
-  async function createConnectionInFlow(payload: { connection: OdooConnectionConfig }): Promise<AdminOdooConnection> {
+  async function createConnectionInFlow(payload: {
+    connection: OdooConnectionConfig;
+  }): Promise<AdminOdooConnection> {
     await runTask({
       name: 'Saving Odoo connection…',
       promise: upsertOdooConnection(payload.connection),
@@ -317,12 +347,15 @@
       updated.find(
         (c) =>
           c.chainId === payload.connection.chainId &&
-          String(c.seller).toLowerCase() === String(payload.connection.seller).toLowerCase()
+          String(c.seller).toLowerCase() ===
+            String(payload.connection.seller).toLowerCase()
       ) ?? (payload.connection as unknown as AdminOdooConnection)
     );
   }
 
-  async function saveConnection(payload: { connection: OdooConnectionConfig }): Promise<void> {
+  async function saveConnection(payload: {
+    connection: OdooConnectionConfig;
+  }): Promise<void> {
     await runTask({
       name: 'Saving Odoo connection…',
       promise: upsertOdooConnection(payload.connection),
@@ -335,31 +368,32 @@
     payload: SaveProductPayload,
     product: AdminUnifiedProduct | null
   ): Promise<void> {
-    const baseRoute: RouteUpsertInput | null = payload.type !== 'route'
-      ? {
-        chainId:
-          payload.type === 'odoo'
-            ? payload.odoo!.chainId
-            : payload.type === 'codedispenser'
-              ? payload.code!.chainId
-              : payload.unlock!.chainId,
-        seller:
-          payload.type === 'odoo'
-            ? payload.odoo!.seller
-            : payload.type === 'codedispenser'
-              ? payload.code!.seller
-              : payload.unlock!.seller,
-        sku:
-          payload.type === 'odoo'
-            ? payload.odoo!.sku
-            : payload.type === 'codedispenser'
-              ? payload.code!.sku
-              : payload.unlock!.sku,
-        offerType: payload.type,
-        isOneOff: false,
-        enabled: true,
-      }
-      : payload.route ?? null;
+    const baseRoute: RouteUpsertInput | null =
+      payload.type !== 'route'
+        ? {
+            chainId:
+              payload.type === 'odoo'
+                ? payload.odoo!.chainId
+                : payload.type === 'codedispenser'
+                  ? payload.code!.chainId
+                  : payload.unlock!.chainId,
+            seller:
+              payload.type === 'odoo'
+                ? payload.odoo!.seller
+                : payload.type === 'codedispenser'
+                  ? payload.code!.seller
+                  : payload.unlock!.seller,
+            sku:
+              payload.type === 'odoo'
+                ? payload.odoo!.sku
+                : payload.type === 'codedispenser'
+                  ? payload.code!.sku
+                  : payload.unlock!.sku,
+            offerType: payload.type,
+            isOneOff: false,
+            enabled: true,
+          }
+        : (payload.route ?? null);
 
     if (baseRoute) {
       await runTask({
@@ -382,7 +416,9 @@
       }
     } else if (payload.type === 'codedispenser' && payload.code) {
       await runTask({
-        name: product ? 'Saving CodeDispenser product…' : 'Creating CodeDispenser product…',
+        name: product
+          ? 'Saving CodeDispenser product…'
+          : 'Creating CodeDispenser product…',
         promise: upsertCodeProduct(payload.code),
       });
     } else if (payload.type === 'unlock' && payload.unlock) {
@@ -396,9 +432,17 @@
     popupControls.close();
   }
 
-  async function handleDisableConnection(connection: AdminOdooConnection): Promise<void> {
+  async function handleDisableConnection(
+    connection: AdminOdooConnection
+  ): Promise<void> {
     const confirmMessage = `Disable Odoo connection for ${shortenAddress(connection.seller)} on chain ${connection.chainId}?`;
-    if (!(await openConfirmPopup({ title: 'Disable Odoo connection', message: confirmMessage }))) return;
+    if (
+      !(await openConfirmPopup({
+        title: 'Disable Odoo connection',
+        message: confirmMessage,
+      }))
+    )
+      return;
 
     await runTask({
       name: 'Disabling Odoo connection…',
@@ -408,24 +452,44 @@
     popupControls.close();
   }
 
-  async function handleDisableProduct(product: AdminUnifiedProduct): Promise<void> {
+  async function handleDisableProduct(
+    product: AdminUnifiedProduct
+  ): Promise<void> {
     const confirmMessage = `Disable ${product.sku}? This disables adapter mappings and the route.`;
-    if (!(await openConfirmPopup({ title: 'Disable product', message: confirmMessage }))) return;
+    if (
+      !(await openConfirmPopup({
+        title: 'Disable product',
+        message: confirmMessage,
+      }))
+    )
+      return;
 
     if (product.odoo) {
       await runTask({
         name: 'Disabling Odoo product…',
-        promise: disableOdooProduct(product.chainId, product.seller, product.sku),
+        promise: disableOdooProduct(
+          product.chainId,
+          product.seller,
+          product.sku
+        ),
       });
     } else if (product.code) {
       await runTask({
         name: 'Disabling CodeDispenser product…',
-        promise: disableCodeProduct(product.chainId, product.seller, product.sku),
+        promise: disableCodeProduct(
+          product.chainId,
+          product.seller,
+          product.sku
+        ),
       });
     } else if (product.unlock) {
       await runTask({
         name: 'Disabling Unlock product…',
-        promise: disableUnlockProduct(product.chainId, product.seller, product.sku),
+        promise: disableUnlockProduct(
+          product.chainId,
+          product.seller,
+          product.sku
+        ),
       });
     } else if (product.route) {
       await runTask({
@@ -460,15 +524,14 @@
   {/snippet}
 
   {#snippet meta()}
-    <span class="text-sm opacity-70">Unified product configuration for the Market API</span>
+    <span class="text-sm opacity-70"
+      >Unified product configuration for the Market API</span
+    >
   {/snippet}
 
   {#snippet headerActions()}
     {#if !adminUser}
-      <ActionButton
-        action={connectAdminWallet}
-        disabled={authLoading}
-      >
+      <ActionButton action={connectAdminWallet} disabled={authLoading}>
         {authLoading ? 'Connecting…' : 'Login'}
       </ActionButton>
     {:else}
@@ -501,7 +564,6 @@
         {/if}
       </AdminSectionCard>
     {:else}
-
       <AdminSectionCard
         title="Products"
         description="Products are configured per SKU (route + adapter mapping)."
@@ -513,8 +575,13 @@
             disabled={loadingAny}
             aria-label={loadingAny ? 'Refreshing…' : 'Refresh'}
           >
-            <Lucide icon={LRefreshCw} size={16} class={loadingAny ? 'animate-spin' : ''} />
-            <span class="sr-only">{loadingAny ? 'Refreshing…' : 'Refresh'}</span>
+            <Lucide
+              icon={LRefreshCw}
+              size={16}
+              class={loadingAny ? 'animate-spin' : ''}
+            />
+            <span class="sr-only">{loadingAny ? 'Refreshing…' : 'Refresh'}</span
+            >
           </button>
           <button class="btn btn-primary btn-sm" onclick={openNewProductWizard}>
             Connect product
@@ -522,29 +589,52 @@
         {/snippet}
         {#if hasRouteOnlyProducts}
           <p class="text-xs text-warning mt-1">
-            Some SKUs only have a route configured. Open them to add the missing product adapter.
+            Some SKUs only have a route configured. Open them to add the missing
+            product adapter.
           </p>
         {/if}
         {#if productsError || routesError || connectionsError}
-          <p class="text-error text-sm">{productsError || routesError || connectionsError}</p>
+          <p class="text-error text-sm">
+            {productsError || routesError || connectionsError}
+          </p>
         {:else}
-          <Tabs bind:selected={selectedProductsTab} variant="boxed" size="sm" class="w-full p-0">
-            <Tab id="codedispenser" title="Voucher codes" badge={codeProductsUnified.length} panelClass="pt-4">
+          <Tabs
+            bind:selected={selectedProductsTab}
+            variant="boxed"
+            size="sm"
+            class="w-full p-0"
+          >
+            <Tab
+              id="codedispenser"
+              title="Voucher codes"
+              badge={codeProductsUnified.length}
+              panelClass="pt-4"
+            >
               {#if codeProductsUnified.length === 0}
-                <p class="text-sm opacity-70">No voucher code products configured yet.</p>
+                <p class="text-sm opacity-70">
+                  No voucher code products configured yet.
+                </p>
               {:else}
                 <AdminProductList
                   products={codeProductsUnified}
-                  onSelect={(product) => openProductEditor(product, 'codedispenser')}
+                  onSelect={(product) =>
+                    openProductEditor(product, 'codedispenser')}
                   connections={odooConnections}
                   productTypes={['codedispenser']}
                 />
               {/if}
             </Tab>
 
-            <Tab id="unlock" title="Unlock" badge={unlockProductsUnified.length} panelClass="pt-4">
+            <Tab
+              id="unlock"
+              title="Unlock"
+              badge={unlockProductsUnified.length}
+              panelClass="pt-4"
+            >
               {#if unlockProductsUnified.length === 0}
-                <p class="text-sm opacity-70">No Unlock products configured yet.</p>
+                <p class="text-sm opacity-70">
+                  No Unlock products configured yet.
+                </p>
               {:else}
                 <AdminProductList
                   products={unlockProductsUnified}
@@ -554,19 +644,32 @@
               {/if}
             </Tab>
 
-            <Tab id="odoo" title="Odoo" badge={odooProductsUnified.length} panelClass="pt-4">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <Tab
+              id="odoo"
+              title="Odoo"
+              badge={odooProductsUnified.length}
+              panelClass="pt-4"
+            >
+              <div
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4"
+              >
                 <div class="text-xs opacity-70">
-                  Odoo connections are shown per seller below. Click a seller group to review products.
+                  Odoo connections are shown per seller below. Click a seller
+                  group to review products.
                 </div>
                 <div class="flex items-center gap-2">
-                  <button class="btn btn-outline btn-xs" onclick={() => openConnectionEditor(null)}>
+                  <button
+                    class="btn btn-outline btn-xs"
+                    onclick={() => openConnectionEditor(null)}
+                  >
                     New connection
                   </button>
                 </div>
               </div>
               {#if odooProductsUnified.length === 0}
-                <p class="text-sm opacity-70">No Odoo products configured yet.</p>
+                <p class="text-sm opacity-70">
+                  No Odoo products configured yet.
+                </p>
               {:else}
                 <AdminProductList
                   products={odooProductsUnified}
@@ -578,7 +681,12 @@
               {/if}
             </Tab>
 
-            <Tab id="route" title="Route-only" badge={routeOnlyProductsUnified.length} panelClass="pt-4">
+            <Tab
+              id="route"
+              title="Route-only"
+              badge={routeOnlyProductsUnified.length}
+              panelClass="pt-4"
+            >
               {#if routeOnlyProductsUnified.length === 0}
                 <p class="text-sm opacity-70">No route-only SKUs.</p>
               {:else}

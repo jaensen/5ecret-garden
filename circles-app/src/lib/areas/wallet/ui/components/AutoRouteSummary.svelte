@@ -3,7 +3,9 @@
 </script>
 
 <div class="flex items-center gap-3 min-w-0">
-  <div class="w-10 h-10 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0">
+  <div
+    class="w-10 h-10 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0"
+  >
     <img src="/sparkles.svg" alt="Auto route" class="w-4 h-4 opacity-80" />
   </div>
   <div class="min-w-0">

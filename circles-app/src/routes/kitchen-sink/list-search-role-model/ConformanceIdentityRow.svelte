@@ -2,7 +2,10 @@
   import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
   import type { Address } from '@circles-sdk/utils';
 
-  type AvatarType = 'CrcV2_RegisterHuman' | 'CrcV2_RegisterOrganization' | 'CrcV2_RegisterGroup';
+  type AvatarType =
+    | 'CrcV2_RegisterHuman'
+    | 'CrcV2_RegisterOrganization'
+    | 'CrcV2_RegisterGroup';
 
   export interface ConformanceIdentityRowItem {
     id: string;
@@ -33,7 +36,9 @@
       <img src={iconUrl} alt="" class="h-7 w-7 rounded-full opacity-80" />
       <div class="min-w-0">
         <div class="truncate text-sm font-medium">{item.name}</div>
-        <div class="truncate text-xs opacity-70">{item.subtitle} • {item.address}</div>
+        <div class="truncate text-xs opacity-70">
+          {item.subtitle} • {item.address}
+        </div>
       </div>
     </div>
     <img src="/chevron-right.svg" alt="" class="h-4 w-4 opacity-50" />

@@ -31,7 +31,9 @@
   }: Props = $props();
 
   const normalizedSeller = $derived(
-    value.seller ? (normalizeAddress(String(value.seller)) as Address) : undefined
+    value.seller
+      ? (normalizeAddress(String(value.seller)) as Address)
+      : undefined
   );
 
   const hasRequiredFields = $derived(
@@ -51,12 +53,18 @@
       validationError = 'Seller is required.';
       return;
     }
-    const normalizedSellerInput = normalizeAddressInput(String(normalizedSeller));
+    const normalizedSellerInput = normalizeAddressInput(
+      String(normalizedSeller)
+    );
     if (!normalizedSellerInput) {
       validationError = 'Seller address is invalid.';
       return;
     }
-    if (!(value.odooUrl ?? '').trim() || !(value.odooDb ?? '').trim() || !(value.odooKey ?? '').trim()) {
+    if (
+      !(value.odooUrl ?? '').trim() ||
+      !(value.odooDb ?? '').trim() ||
+      !(value.odooKey ?? '').trim()
+    ) {
       validationError = 'Fill all required Odoo connection fields.';
       return;
     }
@@ -71,9 +79,9 @@
   title=""
   showHeader={false}
   onSubmit={submit}
-  loading={loading}
+  {loading}
   submitDisabled={!hasRequiredFields}
-  submitLabel={submitLabel}
+  {submitLabel}
 >
   {#if errorToShow}
     <StepAlert variant="error" message={errorToShow} />
@@ -109,26 +117,46 @@
       </label>
       <label class="form-control">
         <span class="label-text">Database *</span>
-        <input class="input input-bordered input-sm" bind:value={value.odooDb} />
+        <input
+          class="input input-bordered input-sm"
+          bind:value={value.odooDb}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">UID *</span>
-        <input type="number" class="input input-bordered input-sm" bind:value={value.odooUid} />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          bind:value={value.odooUid}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">API key *</span>
-        <input type="password" class="input input-bordered input-sm" bind:value={value.odooKey} />
+        <input
+          type="password"
+          class="input input-bordered input-sm"
+          bind:value={value.odooKey}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Sale partner ID</span>
-        <input type="number" class="input input-bordered input-sm" bind:value={value.salePartnerId} />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          bind:value={value.salePartnerId}
+        />
       </label>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <label class="form-control">
         <span class="label-text">JSON-RPC timeout (ms)</span>
-        <input type="number" class="input input-bordered input-sm" bind:value={value.jsonrpcTimeoutMs} min="1000" />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          bind:value={value.jsonrpcTimeoutMs}
+          min="1000"
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Fulfill inherit request abort</span>
@@ -140,7 +168,11 @@
       </label>
       <label class="form-control">
         <span class="label-text">Connection enabled</span>
-        <input type="checkbox" class="checkbox checkbox-sm" bind:checked={value.enabled} />
+        <input
+          type="checkbox"
+          class="checkbox checkbox-sm"
+          bind:checked={value.enabled}
+        />
       </label>
     </div>
   </StepSection>

@@ -44,13 +44,21 @@
 </script>
 
 {#if item.kind === 'group'}
-  <div class="px-3 pt-2 pb-1 sticky top-0 z-[1] bg-base-100 border-b border-base-300 flex items-start justify-between gap-2">
+  <div
+    class="px-3 pt-2 pb-1 sticky top-0 z-[1] bg-base-100 border-b border-base-300 flex items-start justify-between gap-2"
+  >
     <div class="min-w-0">
-      <div class="text-xs font-medium truncate" title={item.transactionHash ?? 'Unknown tx'}>
+      <div
+        class="text-xs font-medium truncate"
+        title={item.transactionHash ?? 'Unknown tx'}
+      >
         {shortHash(item.transactionHash)}
       </div>
       <div class="text-[10px] opacity-60">
-        Block {item.blockNumber} · Tx #{item.transactionIndex} · {item.count} event{item.count === 1 ? '' : 's'}
+        Block {item.blockNumber} · Tx #{item.transactionIndex} · {item.count} event{item.count ===
+        1
+          ? ''
+          : 's'}
       </div>
     </div>
     <a
@@ -61,21 +69,33 @@
       aria-label="Open transaction on Gnosisscan"
       title="Open on Gnosisscan"
     >
-      <img src="/external.svg" alt="" class="w-3.5 h-3.5 opacity-80" aria-hidden="true" />
+      <img
+        src="/external.svg"
+        alt=""
+        class="w-3.5 h-3.5 opacity-80"
+        aria-hidden="true"
+      />
     </a>
   </div>
 {:else}
   <RowFrame dense={true} noLeading={true}>
     <div class="min-w-0">
       {#if item.row.human}
-        <Avatar address={item.row.human} view="horizontal" clickable={true} showTypeInfo={true} />
+        <Avatar
+          address={item.row.human}
+          view="horizontal"
+          clickable={true}
+          showTypeInfo={true}
+        />
       {:else}
         <div class="text-sm opacity-70">Unknown minter</div>
       {/if}
     </div>
     {#snippet trailing()}
       <div class="text-right text-[10px]">
-        <div class="opacity-70">{formatTime(Number(item.row.timestamp ?? 0))}</div>
+        <div class="opacity-70">
+          {formatTime(Number(item.row.timestamp ?? 0))}
+        </div>
         <div class="opacity-60">Minted {formatAmount(item.row.amount)}</div>
       </div>
     {/snippet}

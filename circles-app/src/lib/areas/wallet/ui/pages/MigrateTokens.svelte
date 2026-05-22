@@ -31,9 +31,8 @@
 
     void executeTxSubmitFirst({
       name: `Migrate ${tokenTypeToString(asset.tokenType)} to v2...`,
-      submit: () => $circles.migrateV1TokensBatch(avatarAddress, [
-        asset.tokenAddress,
-      ]),
+      submit: () =>
+        $circles.migrateV1TokensBatch(avatarAddress, [asset.tokenAddress]),
       onSubmitted: () => popupControls.close(),
     });
   }

@@ -3,7 +3,11 @@
   import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
   import { ArrowRight as LArrowRight, Flame as LFlame } from 'lucide';
   import { safeStringify } from '$lib/shared/utils/json';
-  import { addressForDisplay, formatAttoCircles, isAddress } from '$lib/shared/utils/tx';
+  import {
+    addressForDisplay,
+    formatAttoCircles,
+    isAddress,
+  } from '$lib/shared/utils/tx';
 
   export type TxEvent = Record<string, any> & { $type?: string };
 
@@ -28,7 +32,7 @@
 </script>
 
 {#if events.length}
-  <div class="bg-base-100 border mt-4 rounded-xl overflow-hidden">
+  <div class="bg-base-100 border mt-4 rounded-3xl overflow-hidden">
     <div
       class="flex items-center justify-between p-3 border-b cursor-pointer select-none"
       role="button"
@@ -45,7 +49,11 @@
       <div class="text-sm opacity-70">
         Events <span class="opacity-60">({events.length})</span>
       </div>
-      <div class="transition-transform duration-200 text-base-content/70 {eventsListOpen ? 'rotate-90' : ''}">
+      <div
+        class="transition-transform duration-200 text-base-content/70 {eventsListOpen
+          ? 'rotate-90'
+          : ''}"
+      >
         <Lucide icon={LArrowRight} size={14} />
       </div>
     </div>
@@ -67,14 +75,22 @@
               onclick={() => toggleOpen(i)}
             >
               <div class="flex items-center gap-2 min-w-0">
-                <div class="transition-transform duration-200 text-base-content/70 {isOpen(i) ? 'rotate-90' : ''}">
+                <div
+                  class="transition-transform duration-200 text-base-content/70 {isOpen(
+                    i
+                  )
+                    ? 'rotate-90'
+                    : ''}"
+                >
                   <Lucide icon={LArrowRight} size={14} />
                 </div>
                 <div class="text-sm font-medium truncate">
                   {ev.$type ?? 'Event'} <span class="opacity-60">#{i + 1}</span>
                 </div>
               </div>
-              <div class="text-xs opacity-60 shrink-0">Log {ev.LogIndex ?? '-'}</div>
+              <div class="text-xs opacity-60 shrink-0">
+                Log {ev.LogIndex ?? '-'}
+              </div>
             </div>
             {#if isOpen(i)}
               <div class="mt-2 overflow-x-auto">
@@ -88,21 +104,31 @@
                   <tbody>
                     {#each eventDisplayEntries(ev) as [k, v]}
                       <tr>
-                        <td class="whitespace-nowrap opacity-70">{niceKey(k)}</td>
+                        <td class="whitespace-nowrap opacity-70"
+                          >{niceKey(k)}</td
+                        >
                         <td class="align-middle">
                           {#if k === 'Value' && formatAttoCircles(v)}
                             <span>{formatAttoCircles(v)}</span>
                           {:else if isAddress(v) || addressForDisplay(k, v)}
                             {#if addressForDisplay(k, v)}
                               <div class="inline-flex items-center gap-2">
-                                <Avatar address={addressForDisplay(k, v)} view="small" clickable={true} />
+                                <Avatar
+                                  address={addressForDisplay(k, v)}
+                                  view="small"
+                                  clickable={true}
+                                />
                               </div>
                             {:else}
-                              <span class="font-mono break-all">{String(v)}</span>
+                              <span class="font-mono break-all"
+                                >{String(v)}</span
+                              >
                             {/if}
                           {:else}
                             <span class="font-mono break-all">
-                              {typeof v === 'object' ? safeStringify(v, 0) : String(v)}
+                              {typeof v === 'object'
+                                ? safeStringify(v, 0)
+                                : String(v)}
                             </span>
                           {/if}
                         </td>

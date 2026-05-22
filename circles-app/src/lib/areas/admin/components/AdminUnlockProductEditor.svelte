@@ -39,20 +39,35 @@
   let lockAddress: string = $state(product?.unlock?.lockAddress ?? '');
   let rpcUrl: string = $state(product?.unlock?.rpcUrl ?? '');
   let servicePrivateKey: string = $state('');
-  let keyManagerMode: UnlockKeyManagerMode = $state(product?.unlock?.keyManagerMode ?? 'buyer');
+  let keyManagerMode: UnlockKeyManagerMode = $state(
+    product?.unlock?.keyManagerMode ?? 'buyer'
+  );
   let fixedKeyManager: string = $state(product?.unlock?.fixedKeyManager ?? '');
-  let locksmithBase: string = $state(product?.unlock?.locksmithBase ?? 'https://locksmith.unlock-protocol.com');
+  let locksmithBase: string = $state(
+    product?.unlock?.locksmithBase ?? 'https://locksmith.unlock-protocol.com'
+  );
   let locksmithToken: string = $state('');
-  let totalInventoryInput: string = $state(String(product?.unlock?.totalInventory ?? 0));
-  let timingMode: 'duration' | 'expiration' = $state(product?.unlock?.expirationUnix ? 'expiration' : 'duration');
-  let durationSecondsInput: string = $state(String(product?.unlock?.durationSeconds ?? 86400));
-  let expirationUnixInput: string = $state(String(product?.unlock?.expirationUnix ?? ''));
+  let totalInventoryInput: string = $state(
+    String(product?.unlock?.totalInventory ?? 0)
+  );
+  let timingMode: 'duration' | 'expiration' = $state(
+    product?.unlock?.expirationUnix ? 'expiration' : 'duration'
+  );
+  let durationSecondsInput: string = $state(
+    String(product?.unlock?.durationSeconds ?? 86400)
+  );
+  let expirationUnixInput: string = $state(
+    String(product?.unlock?.expirationUnix ?? '')
+  );
   let unlockEnabled: boolean = $state(product?.unlock?.enabled ?? true);
 
   let saving = $state(false);
   let formError: string | null = $state(null);
 
-  function parseNonNegativeInt(input: string, fieldName: string): number | null {
+  function parseNonNegativeInt(
+    input: string,
+    fieldName: string
+  ): number | null {
     const value = Number(input);
     if (!Number.isInteger(value) || value < 0) {
       formError = `${fieldName} must be a whole number greater than or equal to 0.`;
@@ -84,11 +99,17 @@
       let durationSeconds: number | undefined;
       let expirationUnix: number | undefined;
       if (timingMode === 'duration') {
-        const parsedDuration = parseNonNegativeInt(durationSecondsInput, 'Duration seconds');
+        const parsedDuration = parseNonNegativeInt(
+          durationSecondsInput,
+          'Duration seconds'
+        );
         if (parsedDuration == null) return;
         durationSeconds = parsedDuration;
       } else {
-        const parsedExpiration = parseNonNegativeInt(expirationUnixInput, 'Expiration unix');
+        const parsedExpiration = parseNonNegativeInt(
+          expirationUnixInput,
+          'Expiration unix'
+        );
         if (parsedExpiration == null) return;
         expirationUnix = parsedExpiration;
       }
@@ -97,12 +118,16 @@
       if (keyManagerMode === 'fixed') {
         normalizedFixedKeyManager = normalizeAddressInput(fixedKeyManager);
         if (!normalizedFixedKeyManager) {
-          formError = 'Fixed key manager address is required when key manager mode is fixed.';
+          formError =
+            'Fixed key manager address is required when key manager mode is fixed.';
           return;
         }
       }
 
-      const totalInventory = parseNonNegativeInt(totalInventoryInput, 'Total inventory');
+      const totalInventory = parseNonNegativeInt(
+        totalInventoryInput,
+        'Total inventory'
+      );
       if (totalInventory == null) return;
 
       const unlock: UnlockProductConfig = {
@@ -135,7 +160,7 @@
   title={product ? 'Edit Unlock product' : 'Create Unlock product'}
   subtitle="Configure the Unlock adapter; routes are handled automatically."
   onSubmit={submit}
-  onCancel={onCancel}
+  {onCancel}
   loading={saving}
   submitLabel={product ? 'Save changes' : 'Create product'}
 >
@@ -146,23 +171,48 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
     <label class="form-control">
       <span class="label-text">Seller address *</span>
-      <input type="text" class="input input-bordered input-sm font-mono" bind:value={seller} placeholder="0x..." />
+      <input
+        type="text"
+        class="input input-bordered input-sm font-mono"
+        bind:value={seller}
+        placeholder="0x..."
+      />
     </label>
     <label class="form-control">
       <span class="label-text">SKU *</span>
-      <input type="text" class="input input-bordered input-sm font-mono" bind:value={sku} placeholder="ticket-vip" />
+      <input
+        type="text"
+        class="input input-bordered input-sm font-mono"
+        bind:value={sku}
+        placeholder="ticket-vip"
+      />
     </label>
     <label class="form-control">
       <span class="label-text">Lock address *</span>
-      <input type="text" class="input input-bordered input-sm font-mono" bind:value={lockAddress} placeholder="0x..." />
+      <input
+        type="text"
+        class="input input-bordered input-sm font-mono"
+        bind:value={lockAddress}
+        placeholder="0x..."
+      />
     </label>
     <label class="form-control">
       <span class="label-text">RPC URL *</span>
-      <input type="text" class="input input-bordered input-sm" bind:value={rpcUrl} placeholder="https://rpc.gnosischain.com" />
+      <input
+        type="text"
+        class="input input-bordered input-sm"
+        bind:value={rpcUrl}
+        placeholder="https://rpc.gnosischain.com"
+      />
     </label>
     <label class="form-control md:col-span-2">
       <span class="label-text">Service private key *</span>
-      <input type="password" class="input input-bordered input-sm font-mono" bind:value={servicePrivateKey} placeholder="0x..." />
+      <input
+        type="password"
+        class="input input-bordered input-sm font-mono"
+        bind:value={servicePrivateKey}
+        placeholder="0x..."
+      />
     </label>
   </div>
 
@@ -178,17 +228,32 @@
     {#if timingMode === 'duration'}
       <label class="form-control">
         <span class="label-text">Duration seconds *</span>
-        <input type="number" class="input input-bordered input-sm" min="0" step="1" bind:value={durationSecondsInput} />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          min="0"
+          step="1"
+          bind:value={durationSecondsInput}
+        />
       </label>
     {:else}
       <label class="form-control">
         <span class="label-text">Expiration unix *</span>
-        <input type="number" class="input input-bordered input-sm" min="0" step="1" bind:value={expirationUnixInput} />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          min="0"
+          step="1"
+          bind:value={expirationUnixInput}
+        />
       </label>
     {/if}
     <label class="form-control">
       <span class="label-text">Key manager mode</span>
-      <select class="select select-bordered select-sm" bind:value={keyManagerMode}>
+      <select
+        class="select select-bordered select-sm"
+        bind:value={keyManagerMode}
+      >
         <option value="buyer">buyer</option>
         <option value="service">service</option>
         <option value="fixed">fixed</option>
@@ -206,11 +271,21 @@
     </label>
     <label class="form-control">
       <span class="label-text">Total inventory *</span>
-      <input type="number" class="input input-bordered input-sm" min="0" step="1" bind:value={totalInventoryInput} />
+      <input
+        type="number"
+        class="input input-bordered input-sm"
+        min="0"
+        step="1"
+        bind:value={totalInventoryInput}
+      />
     </label>
     <label class="form-control">
       <span class="label-text">Enabled</span>
-      <input type="checkbox" class="checkbox checkbox-sm" bind:checked={unlockEnabled} />
+      <input
+        type="checkbox"
+        class="checkbox checkbox-sm"
+        bind:checked={unlockEnabled}
+      />
     </label>
   </div>
 
@@ -218,11 +293,21 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
     <label class="form-control">
       <span class="label-text">Locksmith base</span>
-      <input type="text" class="input input-bordered input-sm" bind:value={locksmithBase} placeholder="https://locksmith.unlock-protocol.com" />
+      <input
+        type="text"
+        class="input input-bordered input-sm"
+        bind:value={locksmithBase}
+        placeholder="https://locksmith.unlock-protocol.com"
+      />
     </label>
     <label class="form-control">
       <span class="label-text">Locksmith token</span>
-      <input type="password" class="input input-bordered input-sm" bind:value={locksmithToken} placeholder="optional" />
+      <input
+        type="password"
+        class="input input-bordered input-sm"
+        bind:value={locksmithToken}
+        placeholder="optional"
+      />
     </label>
   </div>
 

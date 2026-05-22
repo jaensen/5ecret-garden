@@ -1,21 +1,21 @@
 <script lang="ts">
-    import BalanceRow from '$lib/areas/wallet/ui/components/BalanceRow.svelte';
-    import type { TokenBalanceRow } from '@circles-sdk/data';
+  import BalanceRow from '$lib/areas/wallet/ui/components/BalanceRow.svelte';
+  import type { TokenBalanceRow } from '@circles-sdk/data';
 
-    export type SelectableBalanceRowItem = {
-        balance: TokenBalanceRow;
-        onSelect: () => void;
-    };
+  export type SelectableBalanceRowItem = {
+    balance: TokenBalanceRow;
+    onSelect: () => void;
+  };
 
-    interface Props {
-        item: SelectableBalanceRowItem;
-    }
+  interface Props {
+    item: SelectableBalanceRowItem;
+  }
 
-    let { item }: Props = $props();
+  let { item }: Props = $props();
 
-    function onSelect(): void {
-        item.onSelect();
-    }
+  function onSelect(): void {
+    item.onSelect();
+  }
 </script>
 
 <BalanceRow item={item.balance} on:click={onSelect} />

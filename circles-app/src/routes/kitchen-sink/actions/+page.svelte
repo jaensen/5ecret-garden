@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { Plus as LPlus, RefreshCw as LRefreshCw, Star as LStar } from 'lucide';
+  import {
+    Plus as LPlus,
+    RefreshCw as LRefreshCw,
+    Star as LStar,
+  } from 'lucide';
 
   import ActionButton from '$lib/shared/ui/primitives/ActionButton.svelte';
   import ActionButtonBar from '$lib/shared/ui/shell/ActionButtonBar.svelte';
@@ -21,20 +25,42 @@
   }
 
   const actionItems: Action[] = [
-    { id: 'refresh', label: 'Refresh', iconNode: LRefreshCw, variant: 'ghost', onClick: () => {} },
-    { id: 'create', label: 'Create', iconNode: LPlus, variant: 'primary', onClick: () => {} },
-    { id: 'fav', label: 'Favorite', iconNode: LStar, variant: 'ghost', onClick: () => {} }
+    {
+      id: 'refresh',
+      label: 'Refresh',
+      iconNode: LRefreshCw,
+      variant: 'ghost',
+      onClick: () => {},
+    },
+    {
+      id: 'create',
+      label: 'Create',
+      iconNode: LPlus,
+      variant: 'primary',
+      onClick: () => {},
+    },
+    {
+      id: 'fav',
+      label: 'Favorite',
+      iconNode: LStar,
+      variant: 'ghost',
+      onClick: () => {},
+    },
   ];
 </script>
 
-<section class="rounded-xl border border-base-300 bg-base-100 p-4 space-y-4">
+<section class="rounded-3xl border border-base-300 bg-base-100 p-4 space-y-4">
   <h2 class="text-lg font-semibold">Actions</h2>
 
   <div class="space-y-2">
     <h3 class="font-medium">ActionButton states</h3>
     <div class="flex flex-wrap gap-3 items-center">
-      <ActionButton action={fakeSuccess} title="Always succeeds">Save</ActionButton>
-      <ActionButton action={fakeFlaky} title="Flaky demo">Flaky action</ActionButton>
+      <ActionButton action={fakeSuccess} title="Always succeeds"
+        >Save</ActionButton
+      >
+      <ActionButton action={fakeFlaky} title="Flaky demo"
+        >Flaky action</ActionButton
+      >
       <ActionButton action={fakeSuccess} disabled={true}>Disabled</ActionButton>
     </div>
   </div>

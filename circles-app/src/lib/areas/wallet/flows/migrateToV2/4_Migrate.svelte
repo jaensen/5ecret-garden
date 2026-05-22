@@ -17,7 +17,11 @@
   import { removeProfileFromCache } from '$lib/shared/utils/profile';
   import { popupControls } from '$lib/shared/state/popup';
   import { openStep, popToOrOpen, useAsyncAction } from '$lib/shared/flow';
-  import { requireAvatar, requireCircles, requireProfile } from '$lib/shared/flow';
+  import {
+    requireAvatar,
+    requireCircles,
+    requireProfile,
+  } from '$lib/shared/flow';
   import type { ReviewStepProps } from '$lib/shared/flow';
   import { get } from 'svelte/store';
 
@@ -48,7 +52,9 @@
   });
 
   const selectedContactsCount = $derived(context.trustList?.length ?? 0);
-  const profileName = $derived(context.profile?.name?.trim() || 'Unnamed profile');
+  const profileName = $derived(
+    context.profile?.name?.trim() || 'Unnamed profile'
+  );
   const hasInviter = $derived(Boolean(context.inviter));
 
   function editInvitation() {
@@ -83,26 +89,42 @@
   title="Migrate"
   subtitle="Confirm and run the Circles V2 migration."
 >
-
-  <StepSection title="Invitation" subtitle="Confirm who invited you before migrating.">
+  <StepSection
+    title="Invitation"
+    subtitle="Confirm who invited you before migrating."
+  >
     {#if hasInviter}
       <div class="flex items-center justify-between">
         <Avatar address={context.inviter} view="horizontal" clickable={false} />
-        <button type="button" class="btn btn-ghost btn-xs" onclick={editInvitation}>
+        <button
+          type="button"
+          class="btn btn-ghost btn-xs"
+          onclick={editInvitation}
+        >
           Edit
         </button>
       </div>
     {:else}
-      <div class="text-sm text-base-content/70">Self migration (no inviter address).</div>
+      <div class="text-sm text-base-content/70">
+        Self migration (no inviter address).
+      </div>
     {/if}
   </StepSection>
 
   <StepSection title="Profile" subtitle="Review your migrated profile details.">
-    <StepReviewRow label="Profile" value={profileName} onChange={editProfile} changeLabel="Edit" />
+    <StepReviewRow
+      label="Profile"
+      value={profileName}
+      onChange={editProfile}
+      changeLabel="Edit"
+    />
     <ProfilePreviewCard profile={context.profile} title="Migrated profile" />
   </StepSection>
 
-  <StepSection title="Selected contacts" subtitle="Contacts that will be migrated.">
+  <StepSection
+    title="Selected contacts"
+    subtitle="Contacts that will be migrated."
+  >
     <StepReviewRow
       label="Contacts"
       value={`${selectedContactsCount} selected`}
@@ -114,7 +136,13 @@
     {:else}
       <div class="space-y-2 mt-2">
         {#each context.trustList ?? [] as address (address)}
-          <Avatar {address} view="horizontal" clickable={false} bottomInfo={address} showTypeInfo={true} />
+          <Avatar
+            {address}
+            view="horizontal"
+            clickable={false}
+            bottomInfo={address}
+            showTypeInfo={true}
+          />
         {/each}
       </div>
     {/if}
@@ -141,5 +169,4 @@
       </button>
     {/snippet}
   </StepActionBar>
-  </FlowStepScaffold>
-
+</FlowStepScaffold>

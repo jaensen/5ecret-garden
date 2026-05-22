@@ -18,12 +18,19 @@
   }: Props = $props();
 </script>
 
-<details class={`rounded-xl border border-base-300 bg-base-100/60 p-3 ${className}`.trim()} {open}>
-  <summary class="cursor-pointer text-xs font-semibold uppercase tracking-wide text-base-content/60 list-none">
+<details
+  class={`rounded-3xl border border-base-300 bg-base-100/60 p-3 ${className}`.trim()}
+  {open}
+>
+  <summary
+    class="cursor-pointer text-xs font-semibold uppercase tracking-wide text-base-content/60 list-none"
+  >
     <span class="inline-flex items-center gap-2">
       <span>{title}</span>
       {#if subtitle}
-        <span class="normal-case text-[11px] font-normal opacity-70">{subtitle}</span>
+        <span class="normal-case text-[11px] font-normal opacity-70"
+          >{subtitle}</span
+        >
       {/if}
     </span>
   </summary>
@@ -31,7 +38,7 @@
     {@render children?.()}
   </div>
 </details>
- 
+
 <style>
   summary::-webkit-details-marker {
     display: none;

@@ -34,10 +34,13 @@
 
   let unwatch: (() => void) | null = null;
   let disposePopupHistorySync: (() => void) | null = null;
-  let walletModule: typeof import('$lib/shared/state/wallet.svelte') | null = null;
+  let walletModule: typeof import('$lib/shared/state/wallet.svelte') | null =
+    null;
   let walletWatcherInitialized = false;
 
-  function shouldBypassWalletRestore(routeId: string | null | undefined): boolean {
+  function shouldBypassWalletRestore(
+    routeId: string | null | undefined
+  ): boolean {
     if (!routeId) return true;
     return (
       routeId === '/' ||
@@ -128,7 +131,6 @@
       };
       window.addEventListener('pointerdown', markInteraction, { once: true });
       window.addEventListener('keydown', markInteraction, { once: true });
-
     }
 
     return undefined;
@@ -150,7 +152,8 @@
   });
 
   async function openWrongNetworkPopup(): Promise<void> {
-    const { default: WrongNetwork } = await import('$lib/areas/wallet/ui/onboarding/WrongNetwork.svelte');
+    const { default: WrongNetwork } =
+      await import('$lib/areas/wallet/ui/onboarding/WrongNetwork.svelte');
     popupControls.open({
       title: 'Wrong Network',
       component: WrongNetwork,
@@ -211,7 +214,11 @@
 
   $effect(() => {
     const currentAddress = avatarState.avatar?.address?.toLowerCase();
-    if (lastAvatarAddress && currentAddress && lastAvatarAddress !== currentAddress) {
+    if (
+      lastAvatarAddress &&
+      currentAddress &&
+      lastAvatarAddress !== currentAddress
+    ) {
       void (async () => {
         const [{ PersistentAuthContext }, { clearCart }] = await Promise.all([
           import('$lib/shared/integrations/market'),
@@ -244,7 +251,9 @@
   });
 
   // Toasts
-  let hasToasts: boolean = $derived($tasks.length > 0 || historyForwardNoopToastVisible);
+  let hasToasts: boolean = $derived(
+    $tasks.length > 0 || historyForwardNoopToastVisible
+  );
 </script>
 
 {#if avatarState.avatar}
@@ -257,7 +266,11 @@
   class="relative w-full min-h-screen bg-base-200 border-base-300 overflow-hidden font-dmSans pt-4"
 >
   {#if avatarInfo && canMigrate(avatarInfo)}
-    <button class="w-full fixed top-16 z-10" onclick={() => void openMigratePopup()} onkeydown={(e) => e.key === 'Enter' && void openMigratePopup()}>
+    <button
+      class="w-full fixed top-16 z-10"
+      onclick={() => void openMigratePopup()}
+      onkeydown={(e) => e.key === 'Enter' && void openMigratePopup()}
+    >
       <Banner
         title="Circles V2 is here!"
         message="Migrate your avatar to Circles V2."

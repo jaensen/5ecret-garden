@@ -17,7 +17,10 @@
 <div class="avatar-skeleton w-full flex flex-col items-center text-center">
   <span class="relative inline-flex">
     {#if showAvatar}
-      <div class="avatar-skeleton-block w-20 h-20 rounded-full" aria-hidden="true"></div>
+      <div
+        class="avatar-skeleton-block w-20 h-20 rounded-full"
+        aria-hidden="true"
+      ></div>
     {/if}
     {#if showBookmarkBadge}
       <span
@@ -28,10 +31,16 @@
   </span>
   <div class="flex flex-col items-center p-4 gap-y-0.5 w-full">
     {#if showTop}
-      <div class="avatar-skeleton-block h-6 rounded w-28 max-w-full" aria-hidden="true"></div>
+      <div
+        class="avatar-skeleton-block h-6 rounded w-28 max-w-full"
+        aria-hidden="true"
+      ></div>
     {/if}
     {#if showBottom}
-      <div class="avatar-skeleton-block h-4 rounded w-40 max-w-full" aria-hidden="true"></div>
+      <div
+        class="avatar-skeleton-block h-4 rounded w-40 max-w-full"
+        aria-hidden="true"
+      ></div>
     {/if}
   </div>
 </div>
@@ -51,7 +60,12 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.12),
+        transparent
+      );
       transform: translateX(-100%);
       animation: avatar-shimmer 1.1s infinite;
       pointer-events: none;

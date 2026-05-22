@@ -11,7 +11,9 @@
   import { setConnectorId } from '$lib/shared/state/connector';
   const connectors = getConnectors(config);
 
-  async function handleConnect(connector: ReturnType<typeof getConnectors>[number]) {
+  async function handleConnect(
+    connector: ReturnType<typeof getConnectors>[number]
+  ) {
     try {
       await clearSession();
       const result = await connect(config, { connector, chainId: 100 });

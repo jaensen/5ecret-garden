@@ -1,7 +1,7 @@
 <script lang="ts">
-    import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-    import SearchAvatar from '$lib/areas/contacts/ui/pages/SearchAvatar.svelte';
-    import { ADD_CONTACT_FLOW_SCAFFOLD_BASE } from './constants';
+  import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
+  import SearchAvatar from '$lib/areas/contacts/ui/pages/SearchAvatar.svelte';
+  import { ADD_CONTACT_FLOW_SCAFFOLD_BASE } from './constants';
   import Invite from '$lib/areas/contacts/ui/pages/Invite.svelte';
   import { contacts } from '$lib/shared/state/contacts';
   import { openStep } from '$lib/shared/flow';
@@ -66,13 +66,16 @@
   title="Find account"
   subtitle="Search for a person, organization, or group to add."
 >
-
-    <SearchAvatar
-      avatarTypes={["CrcV2_RegisterHuman","CrcV2_RegisterOrganization","CrcV2_RegisterGroup"]}
-      selectedAddress={context.selectedAddress}
-      {oninvite}
-      {onselect}
-      searchType="contact"
-      inputDataAttribute="data-popup-initial-input"
-    />
-  </FlowStepScaffold>
+  <SearchAvatar
+    avatarTypes={[
+      'CrcV2_RegisterHuman',
+      'CrcV2_RegisterOrganization',
+      'CrcV2_RegisterGroup',
+    ]}
+    selectedAddress={context.selectedAddress}
+    {oninvite}
+    {onselect}
+    searchType="contact"
+    inputDataAttribute="data-popup-initial-input"
+  />
+</FlowStepScaffold>

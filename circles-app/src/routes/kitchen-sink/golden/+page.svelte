@@ -12,21 +12,37 @@
   import type { Action } from '$lib/shared/ui/shell/actions';
 
   const shellActionItems: Action[] = [
-    { id: 'refresh', label: 'Refresh', iconNode: LRefreshCw, variant: 'ghost', onClick: () => {} },
-    { id: 'create', label: 'Create', iconNode: LPlus, variant: 'primary', onClick: () => {} }
+    {
+      id: 'refresh',
+      label: 'Refresh',
+      iconNode: LRefreshCw,
+      variant: 'ghost',
+      onClick: () => {},
+    },
+    {
+      id: 'create',
+      label: 'Create',
+      iconNode: LPlus,
+      variant: 'primary',
+      onClick: () => {},
+    },
   ];
 </script>
 
-<section class="rounded-xl border border-base-300 bg-base-100 p-4 space-y-4">
+<section class="rounded-3xl border border-base-300 bg-base-100 p-4 space-y-4">
   <h2 class="text-lg font-semibold">Golden Components & Layouts</h2>
   <p class="text-sm opacity-75">
-    Curated primitives aligned with the send-flow pattern and clean base pages. These are the canonical references for
-    new and refactored flows.
+    Curated primitives aligned with the send-flow pattern and clean base pages.
+    These are the canonical references for new and refactored flows.
   </p>
 
   <div class="space-y-2">
-    <h3 class="font-medium">Flow orientation + validation feedback + CTA bar</h3>
-    <div class="rounded-xl border border-base-300 bg-base-200/20 p-3 space-y-3">
+    <h3 class="font-medium">
+      Flow orientation + validation feedback + CTA bar
+    </h3>
+    <div
+      class="rounded-3xl border border-base-300 bg-base-200/20 p-3 space-y-3"
+    >
       <FlowStepHeader
         step={2}
         total={3}
@@ -54,27 +70,42 @@
 
   <div class="space-y-2">
     <h3 class="font-medium">RowFrame (canonical row layout)</h3>
-    <div class="rounded-xl border border-base-300 bg-base-200/20 p-3 space-y-2">
+    <div
+      class="rounded-3xl border border-base-300 bg-base-200/20 p-3 space-y-2"
+    >
       <RowFrame clickable={true}>
-        {#snippet leading()}<div class="avatar placeholder"><div class="bg-neutral text-neutral-content rounded-full w-8"><span>U</span></div></div>{/snippet}
+        {#snippet leading()}<div class="avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-8">
+              <span>U</span>
+            </div>
+          </div>{/snippet}
         {#snippet title()}Default row{/snippet}
         {#snippet subtitle()}Leading + content + trailing action{/snippet}
         {#snippet meta()}Meta{/snippet}
-        {#snippet trailing()}<button class="btn btn-xs btn-outline">Action</button>{/snippet}
+        {#snippet trailing()}<button class="btn btn-xs btn-outline"
+            >Action</button
+          >{/snippet}
       </RowFrame>
 
       <RowFrame dense={true} selected={true}>
         {#snippet title()}Dense selected row{/snippet}
         {#snippet subtitle()}Used in compact/selectable lists{/snippet}
-        {#snippet trailing()}<span class="badge badge-primary badge-sm">Selected</span>{/snippet}
+        {#snippet trailing()}<span class="badge badge-primary badge-sm"
+            >Selected</span
+          >{/snippet}
       </RowFrame>
     </div>
   </div>
 
   <div class="space-y-2">
     <h3 class="font-medium">Clean base page shell (PageScaffold)</h3>
-    <div class="rounded-xl border border-base-300 bg-base-200/20 py-3">
-      <PageScaffold maxWidthClass="max-w-4xl" contentWidthClass="max-w-4xl" highlight="tint" collapsedMode="bar">
+    <div class="rounded-3xl border border-base-300 bg-base-200/20 py-3">
+      <PageScaffold
+        maxWidthClass="max-w-4xl"
+        contentWidthClass="max-w-4xl"
+        highlight="tint"
+        collapsedMode="bar"
+      >
         {#snippet title()}
           <h3 class="text-xl font-semibold">Clean base page</h3>
         {/snippet}
@@ -92,7 +123,9 @@
         {/snippet}
 
         <FlowDecoration size="sm">
-          <p class="text-sm opacity-80">Use this as the default page-level composition baseline.</p>
+          <p class="text-sm opacity-80">
+            Use this as the default page-level composition baseline.
+          </p>
         </FlowDecoration>
       </PageScaffold>
     </div>

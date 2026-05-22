@@ -31,18 +31,25 @@
   }
 
   function focusHoldersSearchInput(anchor?: HTMLElement | null): void {
-    const scope = anchor?.closest<HTMLElement>('[data-profile-holders-list-scope]')
-      ?? document.querySelector<HTMLElement>('[data-profile-holders-list-scope]');
-    const input = scope?.querySelector<HTMLInputElement>('[data-holders-search-input]')
-      ?? document.querySelector<HTMLInputElement>('[data-holders-search-input]');
+    const scope =
+      anchor?.closest<HTMLElement>('[data-profile-holders-list-scope]') ??
+      document.querySelector<HTMLElement>('[data-profile-holders-list-scope]');
+    const input =
+      scope?.querySelector<HTMLInputElement>('[data-holders-search-input]') ??
+      document.querySelector<HTMLInputElement>('[data-holders-search-input]');
     input?.focus();
   }
 
   const listNavigator = createKeyboardListNavigator({
     getRows: (anchor) => {
-      const scope = anchor?.closest<HTMLElement>('[data-profile-holders-list-scope]')
-        ?? document.querySelector<HTMLElement>('[data-profile-holders-list-scope]');
-      return Array.from((scope ?? document).querySelectorAll<HTMLElement>('[data-holder-row]'));
+      const scope =
+        anchor?.closest<HTMLElement>('[data-profile-holders-list-scope]') ??
+        document.querySelector<HTMLElement>(
+          '[data-profile-holders-list-scope]'
+        );
+      return Array.from(
+        (scope ?? document).querySelectorAll<HTMLElement>('[data-holder-row]')
+      );
     },
     focusInput: focusHoldersSearchInput,
     onActivateRow: () => openProfile(item.avatar),
@@ -70,10 +77,15 @@
 >
   <RowFrame clickable={true} dense={true} noLeading={true}>
     <div class="min-w-0">
-      <Avatar address={item.avatar} clickable={true} view="horizontal" showTypeInfo={true} />
+      <Avatar
+        address={item.avatar}
+        clickable={true}
+        view="horizontal"
+        showTypeInfo={true}
+      />
     </div>
     {#snippet trailing()}<div class="text-right tabular-nums">
-      <div class="font-medium">{formatAmount(item.amount)} CRC</div>
-    </div>{/snippet}
+        <div class="font-medium">{formatAmount(item.amount)} CRC</div>
+      </div>{/snippet}
   </RowFrame>
 </div>

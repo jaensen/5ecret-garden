@@ -47,11 +47,20 @@
 
   <div class="flex items-center justify-end gap-2 pt-2">
     {#if onCancel}
-      <button type="button" class="btn btn-ghost btn-sm" onclick={onCancel} disabled={loading}>
+      <button
+        type="button"
+        class="btn btn-ghost btn-sm"
+        onclick={onCancel}
+        disabled={loading}
+      >
         Cancel
       </button>
     {/if}
-    <button type="submit" class="btn btn-primary btn-sm" disabled={loading || submitDisabled}>
+    <button
+      type="submit"
+      class="btn btn-primary btn-sm"
+      disabled={loading || submitDisabled}
+    >
       {#if loading}
         <span class="loading loading-spinner loading-xs"></span>
       {/if}

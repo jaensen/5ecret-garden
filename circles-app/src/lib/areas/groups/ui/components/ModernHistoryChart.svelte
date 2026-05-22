@@ -40,7 +40,8 @@
     probe.style.pointerEvents = 'none';
     probe.style.opacity = '0';
     document.body.appendChild(probe);
-    const resolved = getComputedStyle(probe).color || `rgba(99, 102, 241, ${alpha})`;
+    const resolved =
+      getComputedStyle(probe).color || `rgba(99, 102, 241, ${alpha})`;
     probe.remove();
     colorCache.set(key, resolved);
     return resolved;
@@ -146,7 +147,7 @@
           },
         },
         plugins: {
-          legend: { 
+          legend: {
             position: 'bottom',
             labels: {
               usePointStyle: true,
@@ -154,9 +155,9 @@
               padding: 20,
               color: legendColor,
               font: {
-                size: 12
-              }
-            }
+                size: 12,
+              },
+            },
           },
           tooltip: {
             backgroundColor: tooltipBg,
@@ -186,7 +187,7 @@
           point: {
             radius: 0,
             hoverRadius: 6,
-          }
+          },
         },
       },
     });
@@ -211,8 +212,10 @@
       />
     </div>
   </div>
-  
-  <div class="rounded-lg overflow-hidden bg-gradient-to-br from-transparent via-base-200/40 to-transparent p-px min-h-[250px]">
+
+  <div
+    class="rounded-lg overflow-hidden bg-gradient-to-br from-transparent via-base-200/40 to-transparent p-px min-h-[250px]"
+  >
     <canvas bind:this={canvas} class="w-full h-full"></canvas>
   </div>
 </div>

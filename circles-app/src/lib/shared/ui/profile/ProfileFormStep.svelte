@@ -38,9 +38,7 @@
     submitContainerClass = 'mx-auto',
   }: Props = $props();
 
-  const isSubmitDisabled = $derived(
-    submitDisabled ?? name.trim().length < 1
-  );
+  const isSubmitDisabled = $derived(submitDisabled ?? name.trim().length < 1);
 </script>
 
 <div class="w-full flex flex-col gap-y-4">

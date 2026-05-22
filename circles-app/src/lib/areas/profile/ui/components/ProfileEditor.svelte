@@ -17,7 +17,8 @@
     showCustomizableFields?: boolean;
   }
 
-  let { profile = $bindable(), showCustomizableFields = true }: Props = $props();
+  let { profile = $bindable(), showCustomizableFields = true }: Props =
+    $props();
 
   const onnewimage = (dataUrl: string) => {
     profile.previewImageUrl = dataUrl;
@@ -37,13 +38,23 @@
   {#if avatarState.avatar}
     <label class="form-control">
       <span class="label-text">Circles address</span>
-      <input type="text" readonly class="input input-bordered w-full" value={avatarState.avatar?.avatarInfo?.avatar} />
+      <input
+        type="text"
+        readonly
+        class="input input-bordered w-full"
+        value={avatarState.avatar?.avatarInfo?.avatar}
+      />
     </label>
 
     {#if avatarState.avatar?.avatarInfo?.v1Token && !avatarState.avatar?.avatarInfo?.v1Stopped}
       <label class="form-control">
         <span class="label-text">Token address</span>
-        <input type="text" readonly class="input input-bordered w-full" value={avatarState.avatar.avatarInfo.v1Token} />
+        <input
+          type="text"
+          readonly
+          class="input input-bordered w-full"
+          value={avatarState.avatar.avatarInfo.v1Token}
+        />
       </label>
     {/if}
   {/if}
@@ -51,7 +62,13 @@
   {#if showCustomizableFields}
     <label class="form-control">
       <span class="label-text">Name</span>
-      <input id="name" type="text" class="input input-bordered w-full" bind:value={profile.name} placeholder="Name" />
+      <input
+        id="name"
+        type="text"
+        class="input input-bordered w-full"
+        bind:value={profile.name}
+        placeholder="Name"
+      />
     </label>
 
     <label class="form-control">
@@ -64,20 +81,25 @@
 
     <label class="form-control">
       <span class="label-text">Location</span>
-      <input type="text" class="input input-bordered w-full" bind:value={profile.location} placeholder="Location" />
+      <input
+        type="text"
+        class="input input-bordered w-full"
+        bind:value={profile.location}
+        placeholder="Location"
+      />
     </label>
 
     <div>
       <span class="label-text">Image</span>
-      <ImageUpload 
+      <ImageUpload
         imageDataUrls={profile.previewImageUrl ? [profile.previewImageUrl] : []}
         cropWidth={PROFILE_IMAGE_CROP_WIDTH}
         cropHeight={PROFILE_IMAGE_CROP_HEIGHT}
         cropMime={PROFILE_IMAGE_OUTPUT_MIME}
         cropQuality={PROFILE_IMAGE_OUTPUT_QUALITY}
         maxBytes={PROFILE_IMAGE_MAX_BYTES}
-        onnewimage={onnewimage} 
-        onclearall={oncleared} 
+        {onnewimage}
+        onclearall={oncleared}
       />
     </div>
   {/if}

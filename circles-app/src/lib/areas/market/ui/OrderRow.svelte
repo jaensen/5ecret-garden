@@ -32,7 +32,9 @@
 <MarketOrderListRow onOpen={openPopup}>
   <div class="font-mono text-sm truncate" title={idText}>{idText}</div>
   <div class="text-xs text-base-content/70 flex items-center gap-2 mt-0.5">
-    <span class="badge badge-ghost badge-sm whitespace-nowrap">{statusText}</span>
+    <span class="badge badge-ghost badge-sm whitespace-nowrap"
+      >{statusText}</span
+    >
     {#if totalText}
       <span class="opacity-60">•</span>
       <span class="truncate" title={totalText}>Total: {totalText}</span>

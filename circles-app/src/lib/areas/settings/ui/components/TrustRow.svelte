@@ -25,18 +25,29 @@
   }
 
   function focusSearchInput(anchor?: HTMLElement | null): void {
-    const scope = anchor?.closest<HTMLElement>('[data-gateway-trust-list-scope]')
-      ?? document.querySelector<HTMLElement>('[data-gateway-trust-list-scope]');
-    const input = scope?.querySelector<HTMLInputElement>('[data-gateway-trust-search-input]')
-      ?? document.querySelector<HTMLInputElement>('[data-gateway-trust-search-input]');
+    const scope =
+      anchor?.closest<HTMLElement>('[data-gateway-trust-list-scope]') ??
+      document.querySelector<HTMLElement>('[data-gateway-trust-list-scope]');
+    const input =
+      scope?.querySelector<HTMLInputElement>(
+        '[data-gateway-trust-search-input]'
+      ) ??
+      document.querySelector<HTMLInputElement>(
+        '[data-gateway-trust-search-input]'
+      );
     input?.focus();
   }
 
   const listNavigator = createKeyboardListNavigator({
     getRows: (anchor) => {
-      const scope = anchor?.closest<HTMLElement>('[data-gateway-trust-list-scope]')
-        ?? document.querySelector<HTMLElement>('[data-gateway-trust-list-scope]');
-      return Array.from((scope ?? document).querySelectorAll<HTMLElement>('[data-gateway-trust-row]'));
+      const scope =
+        anchor?.closest<HTMLElement>('[data-gateway-trust-list-scope]') ??
+        document.querySelector<HTMLElement>('[data-gateway-trust-list-scope]');
+      return Array.from(
+        (scope ?? document).querySelectorAll<HTMLElement>(
+          '[data-gateway-trust-row]'
+        )
+      );
     },
     focusInput: focusSearchInput,
     onActivateRow: () => openProfile(),
@@ -50,7 +61,6 @@
     listNavigator.onRowClick(event);
     openProfile();
   }
-
 </script>
 
 <div
@@ -85,7 +95,12 @@
               item.onRemove?.();
             }}
           >
-            <img src="/trash.svg" alt="" class="h-3.5 w-3.5" aria-hidden="true" />
+            <img
+              src="/trash.svg"
+              alt=""
+              class="h-3.5 w-3.5"
+              aria-hidden="true"
+            />
           </button>
         {/if}
       </div>

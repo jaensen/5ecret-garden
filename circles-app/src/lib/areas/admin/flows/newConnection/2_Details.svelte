@@ -16,7 +16,9 @@
   let { context, onCreate }: Props = $props();
 
   const normalizedSeller = $derived(
-    context.seller ? (normalizeAddress(String(context.seller)) as Address) : undefined
+    context.seller
+      ? (normalizeAddress(String(context.seller)) as Address)
+      : undefined
   );
 
   let saving = $state(false);
@@ -51,12 +53,17 @@
           odooKey: (context.odooKey ?? '').trim(),
           salePartnerId: context.salePartnerId ?? undefined,
           jsonrpcTimeoutMs: context.jsonrpcTimeoutMs ?? 30000,
-          fulfillInheritRequestAbort: Boolean(context.fulfillInheritRequestAbort),
+          fulfillInheritRequestAbort: Boolean(
+            context.fulfillInheritRequestAbort
+          ),
           enabled: Boolean(context.enabled),
         },
       });
     } catch (e: unknown) {
-      formError = e instanceof Error ? e.message : 'Failed to create connection. Please try again.';
+      formError =
+        e instanceof Error
+          ? e.message
+          : 'Failed to create connection. Please try again.';
     } finally {
       saving = false;
     }

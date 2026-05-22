@@ -22,9 +22,15 @@
     <h1 class="text-xl font-semibold">Leaving this app</h1>
 
     {#if destination}
-      <div class="bg-base-100 border border-base-content/10 rounded-lg p-4 space-y-3">
-        <div class="text-sm opacity-70">You are about to open this link in a new tab:</div>
-        <div class="relative font-mono text-sm bg-base-200/50 border border-base-content/10 rounded-md p-3 pr-10">
+      <div
+        class="bg-base-100 border border-base-content/10 rounded-lg p-4 space-y-3"
+      >
+        <div class="text-sm opacity-70">
+          You are about to open this link in a new tab:
+        </div>
+        <div
+          class="relative font-mono text-sm bg-base-200/50 border border-base-content/10 rounded-md p-3 pr-10"
+        >
           <div class="whitespace-nowrap overflow-x-auto">
             {destination}
           </div>
@@ -41,16 +47,27 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <a class="btn btn-primary" href={destination} target="_blank" rel="noopener noreferrer">Continue</a>
-          <button type="button" class="btn btn-ghost" onclick={() => history.back()}>Back</button>
+          <a
+            class="btn btn-primary"
+            href={destination}
+            target="_blank"
+            rel="noopener noreferrer">Continue</a
+          >
+          <button
+            type="button"
+            class="btn btn-ghost"
+            onclick={() => history.back()}>Back</button
+          >
         </div>
       </div>
     {:else}
       <div class="space-y-3">
-        <div class="alert alert-error">
-          Invalid or unsupported link.
-        </div>
-        <button type="button" class="btn btn-ghost" onclick={() => history.back()}>Back</button>
+        <div class="alert alert-error">Invalid or unsupported link.</div>
+        <button
+          type="button"
+          class="btn btn-ghost"
+          onclick={() => history.back()}>Back</button
+        >
       </div>
     {/if}
   </div>

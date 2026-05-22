@@ -21,8 +21,16 @@
   let { context = $bindable(), returnMode = 'next' }: Props = $props();
 
   let query = $state('');
-  let includeSet = $state(new Set<string>((context.fromTokens ?? []).map((v) => String(v).toLowerCase())));
-  let excludeSet = $state(new Set<string>((context.excludeFromTokens ?? []).map((v) => String(v).toLowerCase())));
+  let includeSet = $state(
+    new Set<string>(
+      (context.fromTokens ?? []).map((v) => String(v).toLowerCase())
+    )
+  );
+  let excludeSet = $state(
+    new Set<string>(
+      (context.excludeFromTokens ?? []).map((v) => String(v).toLowerCase())
+    )
+  );
 
   const tokenOptions = $derived.by(() => {
     const map = new Map<string, TokenBalanceRow>();
@@ -133,7 +141,6 @@
       props: { context },
     });
   }
-
 </script>
 
 <FlowStepScaffold
@@ -154,22 +161,40 @@
     <div class="flex items-center justify-between text-xs text-base-content/70">
       <span>Included: {includeSet.size} · Excluded: {excludeSet.size}</span>
       <div class="join">
-        <button type="button" class="btn btn-ghost btn-xs join-item" onclick={includeAll}>Include all</button>
-        <button type="button" class="btn btn-ghost btn-xs join-item" onclick={excludeAll}>Exclude all</button>
+        <button
+          type="button"
+          class="btn btn-ghost btn-xs join-item"
+          onclick={includeAll}>Include all</button
+        >
+        <button
+          type="button"
+          class="btn btn-ghost btn-xs join-item"
+          onclick={excludeAll}>Exclude all</button
+        >
       </div>
     </div>
 
-    <div class="max-h-72 overflow-y-auto border border-base-300 rounded-lg divide-y divide-base-300">
+    <div
+      class="max-h-72 overflow-y-auto border border-base-300 rounded-lg divide-y divide-base-300"
+    >
       {#if tokenOptions.length === 0}
-        <div class="p-3 text-sm text-base-content/70">No matching tokens found.</div>
+        <div class="p-3 text-sm text-base-content/70">
+          No matching tokens found.
+        </div>
       {:else}
         {#each tokenOptions as item (String(item.tokenAddress))}
           {@const tokenAddress = String(item.tokenAddress ?? '')}
           {@const key = tokenAddress.toLowerCase()}
           <div class="p-3 flex items-center justify-between gap-2">
             <div class="min-w-0">
-              <Avatar address={item.tokenOwner} clickable={true} view="horizontal" />
-              <div class="text-xs text-base-content/65 break-all mt-1">{tokenAddress}</div>
+              <Avatar
+                address={item.tokenOwner}
+                clickable={true}
+                view="horizontal"
+              />
+              <div class="text-xs text-base-content/65 break-all mt-1">
+                {tokenAddress}
+              </div>
             </div>
             <div class="join">
               <button
@@ -197,7 +222,11 @@
     </div>
 
     <div class="mt-4 flex justify-end">
-      <button type="button" class="btn btn-primary btn-sm" onclick={applyFilters}>Apply</button>
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        onclick={applyFilters}>Apply</button
+      >
     </div>
   </div>
 </FlowStepScaffold>

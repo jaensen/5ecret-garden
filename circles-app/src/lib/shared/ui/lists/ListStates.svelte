@@ -22,7 +22,7 @@
     loadingLabel = 'Loading…',
     emptyLabel = 'No entries',
     noMatchesLabel = 'No matches',
-    children
+    children,
   }: Props = $props();
 </script>
 
@@ -33,7 +33,9 @@
 {:else if isEmpty}
   <div class="w-full py-6 text-center text-base-content/60">{emptyLabel}</div>
 {:else if isNoMatches}
-  <div class="w-full py-6 text-center text-base-content/60">{noMatchesLabel}</div>
+  <div class="w-full py-6 text-center text-base-content/60">
+    {noMatchesLabel}
+  </div>
 {:else}
   {@render children?.()}
 {/if}

@@ -184,11 +184,7 @@
         {imageDataUrls.length} image{imageDataUrls.length === 1 ? '' : 's'}
       </span>
       {#if !readonly}
-        <button
-          type="button"
-          class="btn btn-ghost btn-xs"
-          onclick={clearAll}
-        >
+        <button type="button" class="btn btn-ghost btn-xs" onclick={clearAll}>
           Clear all
         </button>
       {/if}
@@ -196,7 +192,9 @@
 
     <div class="mt-2 grid grid-cols-3 sm:grid-cols-4 gap-2">
       {#each imageDataUrls as url, idx}
-        <div class="relative group rounded-md overflow-hidden border border-base-300">
+        <div
+          class="relative group rounded-md overflow-hidden border border-base-300"
+        >
           <img
             src={url}
             alt={`image-${idx}`}
@@ -207,7 +205,10 @@
             <button
               type="button"
               class="absolute top-1 right-1 btn btn-xs btn-circle btn-error opacity-0 group-hover:opacity-100 transition-opacity"
-              onclick={(e) => {removeAt(idx); e.stopPropagation();}}
+              onclick={(e) => {
+                removeAt(idx);
+                e.stopPropagation();
+              }}
             >
               ✕
             </button>

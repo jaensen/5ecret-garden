@@ -54,7 +54,14 @@
   {/if}
 
   <div class="mt-5 flex justify-end gap-2">
-    <button type="button" class="btn btn-ghost btn-sm" onclick={onCancel}>{cancelLabel}</button>
-    <button type="button" class="btn btn-primary btn-sm" disabled={!!error} onclick={submit}>{confirmLabel}</button>
+    <button type="button" class="btn btn-ghost btn-sm" onclick={onCancel}
+      >{cancelLabel}</button
+    >
+    <button
+      type="button"
+      class="btn btn-primary btn-sm"
+      disabled={!!error}
+      onclick={submit}>{confirmLabel}</button
+    >
   </div>
 </div>

@@ -1,7 +1,9 @@
 export { default as AddSigningKey } from './AddSigningKey.svelte';
 export { default as ProfileFormStep } from './ProfileFormStep.svelte';
 export { default as ProfileHeaderEditor } from './ProfileHeaderEditor.svelte';
+export { default as ProfileHeroCard } from './ProfileHeroCard.svelte';
 export { default as ProfileNamespaces } from './ProfileNamespaces.svelte';
+export { default as ProfileScoreDonut } from './ProfileScoreDonut.svelte';
 export { default as ProfileSigningKeys } from './ProfileSigningKeys.svelte';
 export { default as TrustScoreBadge } from './TrustScoreBadge.svelte';
 export * from './components';

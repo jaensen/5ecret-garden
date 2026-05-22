@@ -15,6 +15,11 @@
 {#if originAddress}
   <div>
     <div class="text-xs opacity-60 mb-1">Trust originated from</div>
-    <Avatar address={originAddress} view="horizontal" clickable={true} showTypeInfo={true} />
+    <Avatar
+      address={originAddress}
+      view="horizontal"
+      clickable={true}
+      showTypeInfo={true}
+    />
   </div>
 {/if}

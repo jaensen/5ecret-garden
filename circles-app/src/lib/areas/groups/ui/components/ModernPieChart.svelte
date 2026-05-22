@@ -9,12 +9,7 @@
     title?: string;
   }
 
-  let {
-    data,
-    labelKey,
-    valueKey,
-    title = '',
-  }: Props = $props();
+  let { data, labelKey, valueKey, title = '' }: Props = $props();
 
   let canvas: HTMLCanvasElement;
   let chart: Chart<'doughnut', number[], string>;
@@ -40,7 +35,8 @@
     probe.style.pointerEvents = 'none';
     probe.style.opacity = '0';
     document.body.appendChild(probe);
-    const resolved = getComputedStyle(probe).color || `rgba(99, 102, 241, ${alpha})`;
+    const resolved =
+      getComputedStyle(probe).color || `rgba(99, 102, 241, ${alpha})`;
     probe.remove();
     colorCache.set(key, resolved);
     return resolved;
@@ -73,7 +69,7 @@
           borderColor: data.map((_, i) => generateColors(i).border),
           borderWidth: 1,
           borderRadius: 4,
-          hoverOffset: 8
+          hoverOffset: 8,
         },
       ],
     };
@@ -93,7 +89,7 @@
         maintainAspectRatio: false,
         cutout: '70%',
         plugins: {
-          legend: { 
+          legend: {
             position: 'bottom',
             labels: {
               usePointStyle: true,
@@ -101,9 +97,9 @@
               padding: 20,
               color: legendColor,
               font: {
-                size: 12
-              }
-            }
+                size: 12,
+              },
+            },
           },
           tooltip: {
             backgroundColor: tooltipBg,
@@ -115,15 +111,18 @@
             boxPadding: 6,
             usePointStyle: true,
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 const label = context.label || '';
                 const value = context.formattedValue;
-                const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+                const total = context.dataset.data.reduce(
+                  (a: number, b: number) => a + b,
+                  0
+                );
                 const percentage = Math.round((context.parsed / total) * 100);
                 return `${value} (${percentage}%)`;
-              }
-            }
-          }
+              },
+            },
+          },
         },
       },
     });

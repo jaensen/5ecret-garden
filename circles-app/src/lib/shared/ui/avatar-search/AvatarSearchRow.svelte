@@ -22,18 +22,25 @@
   }
 
   function focusSearchInput(anchor?: HTMLElement | null): void {
-    const scope = anchor?.closest<HTMLElement>('[data-avatar-search-list-scope]')
-      ?? document.querySelector<HTMLElement>('[data-avatar-search-list-scope]');
-    const input = scope?.querySelector<HTMLInputElement>('[data-avatar-search-input]')
-      ?? document.querySelector<HTMLInputElement>('[data-avatar-search-input]');
+    const scope =
+      anchor?.closest<HTMLElement>('[data-avatar-search-list-scope]') ??
+      document.querySelector<HTMLElement>('[data-avatar-search-list-scope]');
+    const input =
+      scope?.querySelector<HTMLInputElement>('[data-avatar-search-input]') ??
+      document.querySelector<HTMLInputElement>('[data-avatar-search-input]');
     input?.focus();
   }
 
   const listNavigator = createKeyboardListNavigator({
     getRows: (anchor) => {
-      const scope = anchor?.closest<HTMLElement>('[data-avatar-search-list-scope]')
-        ?? document.querySelector<HTMLElement>('[data-avatar-search-list-scope]');
-      return Array.from((scope ?? document).querySelectorAll<HTMLElement>('[data-avatar-search-row]'));
+      const scope =
+        anchor?.closest<HTMLElement>('[data-avatar-search-list-scope]') ??
+        document.querySelector<HTMLElement>('[data-avatar-search-list-scope]');
+      return Array.from(
+        (scope ?? document).querySelectorAll<HTMLElement>(
+          '[data-avatar-search-row]'
+        )
+      );
     },
     focusInput: focusSearchInput,
     onActivateRow: runActivate,
@@ -48,7 +55,9 @@
     runActivate();
   }
 
-  const bottomInfo = $derived(item.trustRelation ? formatTrustRelation(item.trustRelation as any) : '');
+  const bottomInfo = $derived(
+    item.trustRelation ? formatTrustRelation(item.trustRelation as any) : ''
+  );
 
   const avatarInfo = $derived.by(() => {
     if (!item.avatarType) return undefined;
@@ -74,14 +83,19 @@
         address={item.address}
         {avatarInfo}
         view="horizontal"
-        bottomInfo={bottomInfo}
+        {bottomInfo}
         showTypeInfo={true}
         showBookmarkBadge={item.isVipBookmarked}
         clickable={true}
       />
     </div>
     {#snippet trailing()}<div aria-hidden="true">
-      <img src="/chevron-right.svg" alt="" class="h-4 w-4 opacity-70" aria-hidden="true" />
-    </div>{/snippet}
+        <img
+          src="/chevron-right.svg"
+          alt=""
+          class="h-4 w-4 opacity-70"
+          aria-hidden="true"
+        />
+      </div>{/snippet}
   </RowFrame>
 </div>

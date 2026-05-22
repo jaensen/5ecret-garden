@@ -11,7 +11,9 @@
 </script>
 
 <div class="flex items-start gap-4">
-  <div class="w-24 h-24 rounded-lg bg-base-200 overflow-hidden flex items-center justify-center text-base-content/50">
+  <div
+    class="w-24 h-24 rounded-lg bg-base-200 overflow-hidden flex items-center justify-center text-base-content/50"
+  >
     {#if profile?.previewImageUrl}
       <img
         src={profile.previewImageUrl}
@@ -37,7 +39,10 @@
     {#if profile?.description}
       <div>
         <div class="text-xs text-base-content/60 mb-0.5">Description</div>
-        <Markdown content={profile.description} class="prose prose-sm max-w-none" />
+        <Markdown
+          content={profile.description}
+          class="prose prose-sm max-w-none"
+        />
       </div>
     {:else}
       <div>
@@ -46,5 +51,4 @@
       </div>
     {/if}
   </div>
-
 </div>

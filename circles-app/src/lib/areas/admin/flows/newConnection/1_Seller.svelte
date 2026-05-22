@@ -48,11 +48,10 @@
   title="Seller"
   subtitle="Choose the seller for this Odoo connection."
 >
-
-    <SearchAvatar
-      avatarTypes={['CrcV2_RegisterHuman', 'CrcV2_RegisterOrganization']}
-      selectedAddress={context.seller}
-      onselect={handleSelect}
-      searchType="send"
-    />
-  </FlowStepScaffold>
+  <SearchAvatar
+    avatarTypes={['CrcV2_RegisterHuman', 'CrcV2_RegisterOrganization']}
+    selectedAddress={context.seller}
+    onselect={handleSelect}
+    searchType="send"
+  />
+</FlowStepScaffold>

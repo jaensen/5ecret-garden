@@ -34,7 +34,9 @@
     showExplainerDetails = true,
   }: Props = $props();
 
-  const hasQuickHelp = $derived(Boolean(quickHelpTitle && quickHelpLines.length > 0));
+  const hasQuickHelp = $derived(
+    Boolean(quickHelpTitle && quickHelpLines.length > 0)
+  );
 
   async function runAction(): Promise<void> {
     await action();
@@ -46,17 +48,29 @@
 
   <RowFrame clickable={false} dense={true} noLeading={true}>
     <div class="min-w-0">
-      <Avatar {address} clickable={false} view="horizontal" bottomInfo={address} />
+      <Avatar
+        {address}
+        clickable={false}
+        view="horizontal"
+        bottomInfo={address}
+      />
     </div>
   </RowFrame>
 
-  <div class="rounded-xl border border-warning/30 bg-warning/10 p-3">
-    <div class="text-xs font-semibold text-base-content/60 mb-1">What this means</div>
+  <div class="rounded-3xl border border-warning/30 bg-warning/10 p-3">
+    <div class="text-xs font-semibold text-base-content/60 mb-1">
+      What this means
+    </div>
     <p class="text-sm text-base-content/85">{warning}</p>
 
     {#if hasQuickHelp}
-      <details class="mt-2 rounded-lg border border-warning/20 bg-base-100/70 p-2">
-        <summary class="cursor-pointer text-xs font-semibold text-base-content/75">{quickHelpTitle}</summary>
+      <details
+        class="mt-2 rounded-lg border border-warning/20 bg-base-100/70 p-2"
+      >
+        <summary
+          class="cursor-pointer text-xs font-semibold text-base-content/75"
+          >{quickHelpTitle}</summary
+        >
         <ul class="mt-2 space-y-1 text-xs text-base-content/80">
           {#each quickHelpLines as line}
             <li>{line}</li>
@@ -73,9 +87,13 @@
   </div>
 
   {#if showExplainerDetails}
-    <details class="bg-base-100 border border-base-300 rounded-xl p-3">
-      <summary class="cursor-pointer text-sm font-semibold">{explainerTitle}</summary>
-      <ul class="list-disc list-inside mt-2 text-sm text-base-content/80 space-y-1">
+    <details class="bg-base-100 border border-base-300 rounded-3xl p-3">
+      <summary class="cursor-pointer text-sm font-semibold"
+        >{explainerTitle}</summary
+      >
+      <ul
+        class="list-disc list-inside mt-2 text-sm text-base-content/80 space-y-1"
+      >
         {#each explainerPoints as point}
           <li>{point}</li>
         {/each}

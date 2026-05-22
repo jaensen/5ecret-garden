@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import { avatarState } from '$lib/shared/state/avatar.svelte';
   import { circles } from '$lib/shared/state/circles';
   import { type Address, uint256ToAddress } from '@circles-sdk/utils';
@@ -11,7 +10,7 @@
   import type { TokenBalanceRow, TrustRelation } from '@circles-sdk/data';
   import { contacts } from '$lib/shared/state/contacts';
   import {
-  getGroupCollateral,
+    getGroupCollateral,
     getTreasuryAddress,
     getVaultAddress,
   } from '$lib/shared/utils/vault';
@@ -105,7 +104,7 @@
 
   async function load() {
     if (!$circles) return;
-    
+
     const vaultAddress = await getVaultAddress(
       $circles.circlesRpc,
       asset.tokenOwner
@@ -181,7 +180,7 @@
         asset.tokenOwner,
         collateralAddresses,
         redeemAmounts
-      )
+      ),
     });
 
     try {

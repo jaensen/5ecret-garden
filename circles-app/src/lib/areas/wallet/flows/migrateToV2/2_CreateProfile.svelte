@@ -7,10 +7,7 @@
   import MigrateContacts from './3_MigrateContacts.svelte';
   import { onMount } from 'svelte';
   import { avatarState } from '$lib/shared/state/avatar.svelte';
-  import {
-    FallbackImageUrl,
-    profilesEqual,
-  } from '$lib/shared/utils/profile';
+  import { FallbackImageUrl, profilesEqual } from '$lib/shared/utils/profile';
   import { openStep } from '$lib/shared/flow';
   import type { Profile } from '@circles-sdk/profiles';
   import { requireAvatar } from '$lib/shared/flow';
@@ -66,19 +63,23 @@
     });
   }
 </script>
+
 <FlowStepScaffold
   {...MIGRATE_FLOW_SCAFFOLD_BASE}
   step={2}
   title="Create profile"
   subtitle="Create your Circles V2 profile details."
 >
-
   <p class="text-base-content/70 mt-2">
     Create a profile for your new Circles v2 avatar.
   </p>
 
   {#if errors && errors.length > 0}
-    <StepAlert variant="error" title="Profile validation error" className="mt-6">
+    <StepAlert
+      variant="error"
+      title="Profile validation error"
+      className="mt-6"
+    >
       <ul class="list-disc ml-4">
         {#each errors as error}
           <li>{error}</li>
@@ -96,5 +97,4 @@
     onSubmit={next}
     submitContainerClass="flex justify-end w-full mt-2"
   />
-  </FlowStepScaffold>
-
+</FlowStepScaffold>

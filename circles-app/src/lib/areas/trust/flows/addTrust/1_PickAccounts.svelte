@@ -36,7 +36,13 @@
     search: searchProfiles,
     debounceMs: SEARCH_POLICY.REMOTE_DEBOUNCE_MS,
   });
-  const { query, searchOpen, searching, error: searchError, result: searchResult } = searchController;
+  const {
+    query,
+    searchOpen,
+    searching,
+    error: searchError,
+    result: searchResult,
+  } = searchController;
 
   let selected: PickedAvatar[] = $state([]);
   let searchInputEl: HTMLInputElement | null = $state(null);
@@ -62,12 +68,18 @@
 
   $effect(() => {
     if (selected.length > 0) return;
-    if (!Array.isArray(context.selectedTrustees) || context.selectedTrustees.length === 0) return;
+    if (
+      !Array.isArray(context.selectedTrustees) ||
+      context.selectedTrustees.length === 0
+    )
+      return;
     selected = context.selectedTrustees.map((a) => ({ address: asAddress(a) }));
   });
 
   const isEmptySelection = $derived(selected.length === 0);
-  const selectedSet = $derived(new Set(selected.map((a) => a.address.toLowerCase())));
+  const selectedSet = $derived(
+    new Set(selected.map((a) => a.address.toLowerCase()))
+  );
 
   function asAddress(value: unknown): Address {
     return String(value).toLowerCase() as Address;
@@ -95,7 +107,11 @@
   }
 
   const searchListNavigator = createKeyboardListNavigator({
-    getRows: () => Array.from(overlayEl?.querySelectorAll<HTMLElement>('[data-search-result-row]') ?? []),
+    getRows: () =>
+      Array.from(
+        overlayEl?.querySelectorAll<HTMLElement>('[data-search-result-row]') ??
+          []
+      ),
     focusInput: focusSearchInput,
     onActivateRow: (row) => {
       const addr = row.dataset.searchResultAddress;
@@ -109,7 +125,10 @@
   }
 
   const pickedListNavigator = createKeyboardListNavigator({
-    getRows: () => Array.from(pickedListEl?.querySelectorAll<HTMLElement>('[data-picked-row]') ?? []),
+    getRows: () =>
+      Array.from(
+        pickedListEl?.querySelectorAll<HTMLElement>('[data-picked-row]') ?? []
+      ),
     focusInput: focusSearchInput,
   });
 
@@ -139,7 +158,8 @@
 
     return registerOutsidePointerClose({
       isEnabled: () => $searchOpen,
-      isInside: (target) => !!(searchInputEl?.contains(target) || overlayEl?.contains(target)),
+      isInside: (target) =>
+        !!(searchInputEl?.contains(target) || overlayEl?.contains(target)),
       onOutside: closeSearchNow,
     });
   });
@@ -154,7 +174,11 @@
       query: q,
       limit: SEARCH_POLICY.DEFAULT_REMOTE_LIMIT,
       offset: 0,
-      avatarTypes: ['CrcV2_RegisterHuman', 'CrcV2_RegisterOrganization', 'CrcV2_RegisterGroup'],
+      avatarTypes: [
+        'CrcV2_RegisterHuman',
+        'CrcV2_RegisterOrganization',
+        'CrcV2_RegisterGroup',
+      ],
     })) as SearchProfileResult[];
   }
 
@@ -198,7 +222,9 @@
   }
 
   function removePicked(address: Address) {
-    selected = selected.filter((a) => a.address.toLowerCase() !== address.toLowerCase());
+    selected = selected.filter(
+      (a) => a.address.toLowerCase() !== address.toLowerCase()
+    );
   }
 
   function parseBulkInput(input: string): Address[] {
@@ -231,7 +257,9 @@
       return;
     }
 
-    const next = new Map(selected.map((item) => [item.address.toLowerCase(), item]));
+    const next = new Map(
+      selected.map((item) => [item.address.toLowerCase(), item])
+    );
     for (const address of parsed) {
       const key = address.toLowerCase();
       if (!next.has(key)) {
@@ -259,7 +287,6 @@
       key: `add-trust:confirm:${context.actorType}:${context.actorAddress}`,
     });
   }
-
 </script>
 
 <FlowStepScaffold {...ADD_TRUST_FLOW_SCAFFOLD_BASE} step={1} title="Add trust">
@@ -285,10 +312,18 @@
         {/if}
 
         <div class="flex items-center justify-between">
-          <button type="button" class="btn btn-ghost btn-sm" onclick={closeBulkEditor}>
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm"
+            onclick={closeBulkEditor}
+          >
             Back to list
           </button>
-          <button type="button" class="btn btn-primary btn-sm" onclick={applyBulkInput}>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            onclick={applyBulkInput}
+          >
             Apply
           </button>
         </div>
@@ -296,7 +331,7 @@
     {:else}
       <div role="group" aria-label="Global avatar search">
         <ListShell
-          query={query}
+          {query}
           searchPlaceholder="Search by name or address"
           bind:inputEl={searchInputEl}
           onInputKeydown={onSearchInputArrowDown}
@@ -308,7 +343,7 @@
       {#if $searchOpen}
         <div
           bind:this={overlayEl}
-          class="absolute left-0 right-0 top-[64px] z-20 rounded-xl border border-base-300 bg-base-100 p-3 shadow-xl"
+          class="absolute left-0 right-0 top-[64px] z-20 rounded-3xl border border-base-300 bg-base-100 p-3 shadow-xl"
         >
           <ListStates loading={$searching} error={$searchError}>
             {#if $query.trim() === ''}
@@ -332,7 +367,11 @@
                       clickable={true}
                       dense={true}
                       noLeading={true}
-                      onclick={() => addPicked(asAddress(profile.address), profile.avatarType)}
+                      onclick={() =>
+                        addPicked(
+                          asAddress(profile.address),
+                          profile.avatarType
+                        )}
                     >
                       <div class="min-w-0">
                         <Avatar
@@ -344,7 +383,11 @@
                       </div>
                       {#snippet trailing()}
                         <div class="text-xs opacity-70">
-                          {selectedSet.has(String(profile.address).toLowerCase()) ? 'Added' : 'Add'}
+                          {selectedSet.has(
+                            String(profile.address).toLowerCase()
+                          )
+                            ? 'Added'
+                            : 'Add'}
                         </div>
                       {/snippet}
                     </RowFrame>
@@ -357,7 +400,11 @@
       {/if}
 
       {#if !isEmptySelection}
-        <div class={$searchOpen ? 'opacity-20 pointer-events-none select-none' : ''}>
+        <div
+          class={$searchOpen
+            ? 'opacity-20 pointer-events-none select-none'
+            : ''}
+        >
           <div class="text-sm opacity-70 mb-2">
             {#if mode === 'single'}
               Selected account
@@ -366,7 +413,11 @@
             {/if}
           </div>
 
-          <div bind:this={pickedListEl} class="w-full flex flex-col gap-y-1.5" role="list">
+          <div
+            bind:this={pickedListEl}
+            class="w-full flex flex-col gap-y-1.5"
+            role="list"
+          >
             {#each selected as picked (picked.address)}
               <div
                 tabindex={0}
@@ -409,11 +460,19 @@
 
     <div class="flex items-center justify-between gap-2">
       {#if mode === 'single'}
-        <button type="button" class="btn btn-ghost btn-sm" onclick={switchToBatch}>
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          onclick={switchToBatch}
+        >
           Add multiple…
         </button>
       {:else if batchView === 'list'}
-        <button type="button" class="btn btn-ghost btn-sm" onclick={openBulkEditor}>
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          onclick={openBulkEditor}
+        >
           Bulk import…
         </button>
       {/if}

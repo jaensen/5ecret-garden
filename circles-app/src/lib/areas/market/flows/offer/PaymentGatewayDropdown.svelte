@@ -35,11 +35,15 @@
     if (!rootEl || activeIndex < 0) {
       return;
     }
-    const target = rootEl.querySelector<HTMLButtonElement>(`[data-gateway-option="${activeIndex}"]`);
+    const target = rootEl.querySelector<HTMLButtonElement>(
+      `[data-gateway-option="${activeIndex}"]`
+    );
     target?.focus();
   }
 
-  async function openMenu(focus: 'selected' | 'first' = 'selected'): Promise<void> {
+  async function openMenu(
+    focus: 'selected' | 'first' = 'selected'
+  ): Promise<void> {
     if (disabled || options.length === 0) {
       return;
     }
@@ -175,7 +179,7 @@
     aria-haspopup="listbox"
     aria-expanded={open}
     aria-label={ariaLabel}
-    disabled={disabled}
+    {disabled}
     onclick={() => (open ? closeMenu(false) : openMenu('selected'))}
     onkeydown={onTriggerKeydown}
   >
@@ -217,7 +221,12 @@
               activeIndex = index;
             }}
           >
-            <Avatar address={asAddress(option)} view="horizontal" bottomInfo={option} clickable={false} />
+            <Avatar
+              address={asAddress(option)}
+              view="horizontal"
+              bottomInfo={option}
+              clickable={false}
+            />
           </button>
         </li>
       {/each}
@@ -234,7 +243,11 @@
   .gateway-option:hover,
   .gateway-option:focus-visible,
   .gateway-option[data-active='true'] {
-    background: color-mix(in oklab, var(--fallback-b2, oklch(var(--b2))), #000 6%) !important;
+    background: color-mix(
+      in oklab,
+      var(--fallback-b2, oklch(var(--b2))),
+      #000 6%
+    ) !important;
     color: inherit !important;
     outline: none;
   }

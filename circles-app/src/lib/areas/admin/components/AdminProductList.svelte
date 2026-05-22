@@ -27,7 +27,9 @@
   }: Props = $props();
 
   const productTypes = $derived(
-    productTypesProp.length > 0 ? productTypesProp : (['odoo', 'codedispenser', 'unlock'] as AdminProductType[])
+    productTypesProp.length > 0
+      ? productTypesProp
+      : (['odoo', 'codedispenser', 'unlock'] as AdminProductType[])
   );
   let selectedType: AdminProductType | null = $state(null);
 
@@ -39,10 +41,13 @@
   );
 
   const counts = $derived(
-    productTypes.reduce((acc, type) => {
-      acc[type] = typedProducts.filter((item) => item.type === type).length;
-      return acc;
-    }, {} as Record<AdminProductType, number>)
+    productTypes.reduce(
+      (acc, type) => {
+        acc[type] = typedProducts.filter((item) => item.type === type).length;
+        return acc;
+      },
+      {} as Record<AdminProductType, number>
+    )
   );
 
   const filteredProducts = $derived(
@@ -52,7 +57,9 @@
   );
 
   const isGroupedView = $derived(
-    selectedType === 'odoo' || selectedType === 'codedispenser' || selectedType === 'unlock'
+    selectedType === 'odoo' ||
+      selectedType === 'codedispenser' ||
+      selectedType === 'unlock'
   );
 
   type SellerGroup = {
@@ -70,7 +77,10 @@
 
     const map = new Map<string, SellerGroup>();
     for (const item of filteredProducts) {
-      const key = adminOdooConnectionKey(item.product.chainId, item.product.seller);
+      const key = adminOdooConnectionKey(
+        item.product.chainId,
+        item.product.seller
+      );
       const existing = map.get(key);
       if (existing) {
         existing.products = [...existing.products, item];
@@ -86,7 +96,10 @@
           selectedType === 'odoo'
             ? connections.find(
                 (connection) =>
-                  adminOdooConnectionKey(connection.chainId, connection.seller) === key
+                  adminOdooConnectionKey(
+                    connection.chainId,
+                    connection.seller
+                  ) === key
               )
             : undefined,
       });
@@ -98,7 +111,10 @@
     });
   });
 
-  function summarizeGroup(group: SellerGroup): { label: string; variant: 'success' | 'warning' | 'error' } {
+  function summarizeGroup(group: SellerGroup): {
+    label: string;
+    variant: 'success' | 'warning' | 'error';
+  } {
     const total = group.products.length;
     let disabled = 0;
     let revoked = 0;
@@ -172,7 +188,11 @@
   {#if productTypes.length > 1}
     <Tabs bind:selected={selectedType} size="sm" variant="boxed">
       {#each productTypes as type}
-        <Tab id={type} title={adminProductTypeLabels[type]} badge={counts[type]} />
+        <Tab
+          id={type}
+          title={adminProductTypeLabels[type]}
+          badge={counts[type]}
+        />
       {/each}
     </Tabs>
   {/if}
@@ -186,17 +206,27 @@
       {#each groupedProducts() as group (group.key)}
         {@const summary = summarizeGroup(group)}
         <details
-          class="group rounded-xl border bg-base-100"
+          class="group rounded-3xl border bg-base-100"
           bind:open={expandedGroups[group.key]}
         >
           <summary class="list-none cursor-pointer">
-            <div class="flex flex-col gap-3 p-3 sm:p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+              class="flex flex-col gap-3 p-3 sm:p-4 sm:flex-row sm:items-center sm:justify-between"
+            >
               <div class="min-w-0 space-y-1">
                 <div class="flex items-center gap-2 min-w-0">
-                  <Avatar address={group.seller} view="small" clickable={true} />
-                  <span class="font-semibold truncate">{shortenAddress(group.seller)}</span>
+                  <Avatar
+                    address={group.seller}
+                    view="small"
+                    clickable={true}
+                  />
+                  <span class="font-semibold truncate"
+                    >{shortenAddress(group.seller)}</span
+                  >
                 </div>
-                <div class="text-xs opacity-70 truncate">{resolveGroupSubtitle(group)}</div>
+                <div class="text-xs opacity-70 truncate">
+                  {resolveGroupSubtitle(group)}
+                </div>
                 <div class="text-xs opacity-60">{resolveGroupMeta(group)}</div>
               </div>
               <div class="flex flex-col items-start sm:items-end gap-2">
@@ -212,7 +242,9 @@
                     {group.connection ? 'Edit connection' : 'Add connection'}
                   </button>
                 {/if}
-                <div class="flex flex-wrap items-center gap-1.5 justify-start sm:justify-end">
+                <div
+                  class="flex flex-wrap items-center gap-1.5 justify-start sm:justify-end"
+                >
                   <AdminStatusBadge
                     label={`Products ${group.products.length}`}
                     variant="neutral"
@@ -224,14 +256,21 @@
                   {#if selectedType === 'odoo'}
                     {#if group.connection}
                       <AdminStatusBadge
-                        label={group.connection.enabled ? 'Conn on' : 'Conn off'}
-                        variant={group.connection.enabled ? 'success' : 'warning'}
+                        label={group.connection.enabled
+                          ? 'Conn on'
+                          : 'Conn off'}
+                        variant={group.connection.enabled
+                          ? 'success'
+                          : 'warning'}
                       />
                       {#if group.connection.revokedAt}
                         <AdminStatusBadge label="Revoked" variant="warning" />
                       {/if}
                     {:else}
-                      <AdminStatusBadge label="No connection" variant="warning" />
+                      <AdminStatusBadge
+                        label="No connection"
+                        variant="warning"
+                      />
                     {/if}
                   {/if}
                 </div>
@@ -259,7 +298,7 @@
                 <AdminProductRow
                   product={item.product}
                   productType={item.type}
-                  onSelect={onSelect}
+                  {onSelect}
                   hideSeller={true}
                 />
               {/each}
@@ -273,7 +312,7 @@
       <AdminProductRow
         product={item.product}
         productType={item.type}
-        onSelect={onSelect}
+        {onSelect}
       />
     {/each}
   {/if}

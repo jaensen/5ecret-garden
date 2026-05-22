@@ -7,6 +7,6 @@
   }
 
   let { item }: Props = $props();
-
 </script>
+
 <SharedAvatarSearchRow {item} />

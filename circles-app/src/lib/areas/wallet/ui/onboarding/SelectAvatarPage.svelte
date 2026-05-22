@@ -72,11 +72,11 @@
     />
   {:else if safeOwnerAddress && sdk && initSdk}
     <ConnectSafe
-      safeOwnerAddress={safeOwnerAddress}
-      initSdk={initSdk}
-      sdk={sdk}
-      safeCreationMode={safeCreationMode}
-      refreshGroupsCallback={refreshGroupsCallback}
+      {safeOwnerAddress}
+      {initSdk}
+      {sdk}
+      {safeCreationMode}
+      {refreshGroupsCallback}
     />
   {/if}
 </div>

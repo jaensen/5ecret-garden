@@ -19,22 +19,33 @@
   let { asset }: Props = $props();
 
   let amount: number = $state(0);
-  const maxUnwrapAmount = $derived(asset.isWrapped ? asset.staticCircles : asset.circles);
+  const maxUnwrapAmount = $derived(
+    asset.isWrapped ? asset.staticCircles : asset.circles
+  );
   const canUseMax = $derived(
     Number.isFinite(Number(maxUnwrapAmount)) && Number(maxUnwrapAmount) > 0
   );
 
-  async function unwrapViaRunner(tokenAddress: string, amountWei: bigint): Promise<void> {
+  async function unwrapViaRunner(
+    tokenAddress: string,
+    amountWei: bigint
+  ): Promise<void> {
     const runner = get(wallet) as any;
 
-    const wrapperInterface = new ethers.Interface(['function unwrap(uint256 amount)']);
+    const wrapperInterface = new ethers.Interface([
+      'function unwrap(uint256 amount)',
+    ]);
     const data = wrapperInterface.encodeFunctionData('unwrap', [amountWei]);
 
-    await sendRunnerTransactionAndWait(runner, {
-      to: tokenAddress,
-      value: 0n,
-      data,
-    }, { label: 'Unwrap transaction' });
+    await sendRunnerTransactionAndWait(
+      runner,
+      {
+        to: tokenAddress,
+        value: 0n,
+        data,
+      },
+      { label: 'Unwrap transaction' }
+    );
   }
 
   async function unwrap() {

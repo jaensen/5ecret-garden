@@ -1,7 +1,11 @@
 <script lang="ts">
   import OrderDetailsView from '$lib/areas/market/orders/OrderDetailsView.svelte';
   import { onMount, onDestroy } from 'svelte';
-  import { getOrderStatusHistory, subscribeBuyerOrderEvents, getOrder } from '$lib/areas/market/orders/ordersQueries';
+  import {
+    getOrderStatusHistory,
+    subscribeBuyerOrderEvents,
+    getOrder,
+  } from '$lib/areas/market/orders/ordersQueries';
   import type { OrderStatusChange } from '$lib/areas/market/orders/types';
   import { createLoadable } from '$lib/areas/market/utils/loadable';
   import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
@@ -45,7 +49,9 @@
     return out;
   }
 
-  const jsonText: string = $derived.by(() => JSON.stringify(snapshot ?? {}, null, 2));
+  const jsonText: string = $derived.by(() =>
+    JSON.stringify(snapshot ?? {}, null, 2)
+  );
 
   let statusEvents: OrderStatusChange[] = $state([]);
   let loadingHistory: boolean = $state(false);
@@ -56,16 +62,20 @@
   const seenKeys = new Set<string>();
   const isAuthHistoryError = $derived.by(() => {
     const msg = (historyError ?? '').toLowerCase();
-    return msg.includes('auth') || msg.includes('401') || msg.includes('unauthor');
+    return (
+      msg.includes('auth') || msg.includes('401') || msg.includes('unauthor')
+    );
   });
-
 
   async function loadSellerOrder(): Promise<void> {
     if (!orderId || typeof orderId !== 'string') return;
     await sellerLoader.run(async () => {
       const market = getMarketClient();
       const res = await market.sales.get(orderId as any);
-      if (!res) throw new Error('Order not found or not associated with your seller account');
+      if (!res)
+        throw new Error(
+          'Order not found or not associated with your seller account'
+        );
       return normalizeSnapshot(res);
     });
     if ($sellerLoader.value) {
@@ -96,17 +106,37 @@
 
       // Subscribe to live SSE events for this buyer; filter this order
       const unsubscribe = subscribeBuyerOrderEvents(async (evt) => {
-        if (!evt || evt.orderId !== buyerOrderId || !evt.newStatus || !evt.changedAt) return;
+        if (
+          !evt ||
+          evt.orderId !== buyerOrderId ||
+          !evt.newStatus ||
+          !evt.changedAt
+        )
+          return;
         const key = `${evt.orderId}|${evt.newStatus}|${evt.changedAt}`;
         if (seenKeys.has(key)) return;
         seenKeys.add(key);
-        statusEvents = [...statusEvents, { oldStatus: evt.oldStatus ?? null, newStatus: evt.newStatus, changedAt: evt.changedAt }];
-        if (evt.newStatus === 'https://schema.org/PaymentComplete' || evt.newStatus === 'https://schema.org/OrderDelivered') {
+        statusEvents = [
+          ...statusEvents,
+          {
+            oldStatus: evt.oldStatus ?? null,
+            newStatus: evt.newStatus,
+            changedAt: evt.changedAt,
+          },
+        ];
+        if (
+          evt.newStatus === 'https://schema.org/PaymentComplete' ||
+          evt.newStatus === 'https://schema.org/OrderDelivered'
+        ) {
           try {
             const fresh = await getOrder(buyerOrderId);
             snapshot = fresh;
           } catch (e) {
-            console.debug('[orders] live refresh failed', { orderId: buyerOrderId }, e);
+            console.debug(
+              '[orders] live refresh failed',
+              { orderId: buyerOrderId },
+              e
+            );
           }
         }
       });
@@ -158,17 +188,24 @@
     {#if isAuthHistoryError}
       <div class="alert alert-warning mt-1 text-sm">
         <span>Sign in to view order status history.</span>
-        <a class="btn btn-xs btn-primary" href="/settings?tab=orders">Sign in</a>
+        <a class="btn btn-xs btn-primary" href="/settings?tab=orders">Sign in</a
+        >
       </div>
     {:else}
-      <div class="text-xs text-error mt-1">Failed to load status history: {historyError}</div>
+      <div class="text-xs text-error mt-1">
+        Failed to load status history: {historyError}
+      </div>
     {/if}
   {/if}
 
   {#if showAdvanced}
     <details class="mt-2">
-      <summary class="cursor-pointer text-sm opacity-70 hover:opacity-100">Advanced details</summary>
-      <div class="bg-base-100 border rounded-xl shadow-sm overflow-hidden mt-2">
+      <summary class="cursor-pointer text-sm opacity-70 hover:opacity-100"
+        >Advanced details</summary
+      >
+      <div
+        class="bg-base-100 border rounded-3xl shadow-sm overflow-hidden mt-2"
+      >
         <pre class="m-0 p-4 text-xs overflow-auto"><code>{jsonText}</code></pre>
       </div>
     </details>

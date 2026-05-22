@@ -44,14 +44,16 @@
   });
 </script>
 
-<div class="border border-base-200 rounded-xl p-3">
+<div class="border border-base-200 rounded-3xl p-3">
   <button
     type="button"
     class="flex items-center justify-between w-full text-xs font-semibold text-left"
     onclick={() => (open = !open)}
   >
     <span>On-chain name</span>
-    <span class={open ? 'rotate-180 transition-transform' : 'transition-transform'}>
+    <span
+      class={open ? 'rotate-180 transition-transform' : 'transition-transform'}
+    >
       <img src="/chevron-down.svg" alt="Toggle" class="w-4 h-4" />
     </span>
   </button>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {popupControls} from '$lib/shared/state/popup';
+  import { popupControls } from '$lib/shared/state/popup';
   import { openStep } from '$lib/shared/flow';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
   import StepActionButtons from '$lib/shared/ui/flow/StepActionButtons.svelte';
@@ -7,34 +7,38 @@
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import MarkdownEditor from '$lib/shared/ui/content/markdown/MarkdownEditor.svelte';
   import OfferStep2 from './2_Pricing.svelte';
-  import type {OfferDraft, OfferFlowContext} from './types';
+  import type { OfferDraft, OfferFlowContext } from './types';
   import ImageUpload from '$lib/shared/ui/profile/components/ImageUpload.svelte';
-  import {normalizeEvmAddress as normalizeAddress} from '@circles-market/sdk';
-  import {generateSku, isValidSku} from '$lib/areas/market/utils/offer';
-  import {get} from 'svelte/store';
-  import {circles} from '$lib/shared/state/circles';
-  import {wallet} from '$lib/shared/state/wallet.svelte';
+  import { normalizeEvmAddress as normalizeAddress } from '@circles-market/sdk';
+  import { generateSku, isValidSku } from '$lib/areas/market/utils/offer';
+  import { get } from 'svelte/store';
+  import { circles } from '$lib/shared/state/circles';
+  import { wallet } from '$lib/shared/state/wallet.svelte';
   import { fetchGatewayRowsByOwner } from '$lib/shared/data/circles/paymentGateways';
-  import {onMount} from 'svelte';
-  import {goto} from '$app/navigation';
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
 
   interface Props {
     context: OfferFlowContext;
   }
 
-  let {context}: Props = $props();
+  let { context }: Props = $props();
 
   // Hard guard: we must know which namespace/operator to publish under
   let hasOperator = false;
   try {
-    (context as any).operator = normalizeAddress(String((context as any)?.operator ?? '')); // store normalized value once
+    (context as any).operator = normalizeAddress(
+      String((context as any)?.operator ?? '')
+    ); // store normalized value once
     hasOperator = true;
   } catch {
     hasOperator = false;
   }
 
   if (!hasOperator) {
-    throw new Error('Marketplace operator address is required to create an offer.');
+    throw new Error(
+      'Marketplace operator address is required to create an offer.'
+    );
   }
 
   if (!context.draft) {
@@ -115,17 +119,21 @@
     const nameOk = name.trim().length > 0;
 
     if (!skuOk) {
-      throw new Error('SKU must be [a-z0-9-_], max 63 chars, no leading "-" or "_".');
+      throw new Error(
+        'SKU must be [a-z0-9-_], max 63 chars, no leading "-" or "_".'
+      );
     }
     if (!nameOk) {
       throw new Error('Name is required.');
     }
 
-    const imgs = images
-      .map((x) => x.trim())
-      .filter((x) => x.length > 0);
+    const imgs = images.map((x) => x.trim()).filter((x) => x.length > 0);
 
-    const nextSku = editMode ? (context.draft!.sku || sku) : (hasManualSku ? sku : autoSku);
+    const nextSku = editMode
+      ? context.draft!.sku || sku
+      : hasManualSku
+        ? sku
+        : autoSku;
 
     context.draft = {
       ...context.draft!,
@@ -155,102 +163,132 @@
   title="Product"
   subtitle="Set core product information for this offer."
 >
+  {#if $wallet?.address}
+    {#if hasGateway}
+      <div class="space-y-3">
+        <!-- Name first; SKU is optional and hidden under Advanced -->
+        <label class="form-control">
+          <span class="label-text">Name</span>
+          <input
+            class="input input-bordered"
+            bind:value={name}
+            placeholder="Coffee 250g"
+            data-popup-initial-input
+          />
+        </label>
 
-{#if $wallet?.address}
-  {#if hasGateway}
-    <div class="space-y-3">
-      <!-- Name first; SKU is optional and hidden under Advanced -->
-      <label class="form-control">
-        <span class="label-text">Name</span>
-        <input class="input input-bordered" bind:value={name} placeholder="Coffee 250g" data-popup-initial-input/>
-      </label>
-
-      <!-- Show live auto-generated SKU preview when no manual SKU provided -->
-      {#if !(sku && sku.trim().length > 0)}
-        <div class="text-sm opacity-70">sku: {autoSku}</div>
-      {/if}
-      <label class="form-control">
-        <span class="label-text">Description</span>
-        <MarkdownEditor
-          bind:value={description}
-          rows={3}
-          placeholder="Write a description (Markdown supported)…"
-        />
-      </label>
-      <!-- Images: either upload multiple or paste a single URL (legacy) -->
-      <div class="space-y-2">
-        <div class="label">
-          <span class="label-text">Images</span>
-          <span class="label-text-alt opacity-70">You can add multiple images</span>
-        </div>
-        <ImageUpload
+        <!-- Show live auto-generated SKU preview when no manual SKU provided -->
+        {#if !(sku && sku.trim().length > 0)}
+          <div class="text-sm opacity-70">sku: {autoSku}</div>
+        {/if}
+        <label class="form-control">
+          <span class="label-text">Description</span>
+          <MarkdownEditor
+            bind:value={description}
+            rows={3}
+            placeholder="Write a description (Markdown supported)…"
+          />
+        </label>
+        <!-- Images: either upload multiple or paste a single URL (legacy) -->
+        <div class="space-y-2">
+          <div class="label">
+            <span class="label-text">Images</span>
+            <span class="label-text-alt opacity-70"
+              >You can add multiple images</span
+            >
+          </div>
+          <ImageUpload
             imageDataUrls={images}
-            onnewimage={(dataUrl) => { images = [...images, dataUrl]; }}
-            onremoveimage={(index) => { images = images.filter((_, i) => i !== index); }}
-            onclearall={() => { images = []; }}
+            onnewimage={(dataUrl) => {
+              images = [...images, dataUrl];
+            }}
+            onremoveimage={(index) => {
+              images = images.filter((_, i) => i !== index);
+            }}
+            onclearall={() => {
+              images = [];
+            }}
             mode="fit"
             cropWidth={1600}
             cropHeight={1600}
-        />
-      </div>
+          />
+        </div>
 
-      <!-- Advanced section -->
-      <div class="collapse bg-base-200">
-        <input type="checkbox" bind:checked={showAdvanced}/>
-        <div class="collapse-title text-md font-medium">Advanced</div>
-        <div class="collapse-content space-y-3">
-          <label class="form-control">
-            <span class="label-text">Product URL</span>
-            <input class="input input-bordered" bind:value={url} placeholder="https://…"/>
-          </label>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <!-- Advanced section -->
+        <div class="collapse bg-base-200">
+          <input type="checkbox" bind:checked={showAdvanced} />
+          <div class="collapse-title text-md font-medium">Advanced</div>
+          <div class="collapse-content space-y-3">
             <label class="form-control">
-              <span class="label-text">Brand</span>
-              <input class="input input-bordered" bind:value={brand}/>
+              <span class="label-text">Product URL</span>
+              <input
+                class="input input-bordered"
+                bind:value={url}
+                placeholder="https://…"
+              />
+            </label>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label class="form-control">
+                <span class="label-text">Brand</span>
+                <input class="input input-bordered" bind:value={brand} />
+              </label>
+              <label class="form-control">
+                <span class="label-text">MPN</span>
+                <input class="input input-bordered" bind:value={mpn} />
+              </label>
+              <label class="form-control">
+                <span class="label-text">GTIN-13</span>
+                <input class="input input-bordered" bind:value={gtin13} />
+              </label>
+            </div>
+
+            <label class="form-control">
+              <span class="label-text">Category</span>
+              <input
+                class="input input-bordered"
+                bind:value={category}
+                placeholder="Grocery"
+              />
             </label>
             <label class="form-control">
-              <span class="label-text">MPN</span>
-              <input class="input input-bordered" bind:value={mpn}/>
-            </label>
-            <label class="form-control">
-              <span class="label-text">GTIN-13</span>
-              <input class="input input-bordered" bind:value={gtin13}/>
+              <span class="label-text"
+                >SKU
+                {#if editMode}(locked){/if}</span
+              >
+              <input
+                class="input input-bordered"
+                bind:value={sku}
+                placeholder={autoSku}
+                disabled={editMode}
+                readonly={editMode}
+              />
+              <span class="label-text-alt opacity-70">
+                {#if editMode}
+                  SKU cannot be changed for existing products.
+                {:else}
+                  Leave empty to auto-generate from name. Allowed: a–z, 0–9,
+                  dashes and underscores; max 63 chars.
+                {/if}
+              </span>
             </label>
           </div>
-
-          <label class="form-control">
-            <span class="label-text">Category</span>
-            <input class="input input-bordered" bind:value={category} placeholder="Grocery"/>
-          </label>
-          <label class="form-control">
-            <span class="label-text">SKU
-              {#if editMode}(locked){/if}</span>
-            <input class="input input-bordered" bind:value={sku} placeholder={autoSku} disabled={editMode}
-                   readonly={editMode}/>
-            <span class="label-text-alt opacity-70">
-              {#if editMode}
-                SKU cannot be changed for existing products.
-              {:else}
-                Leave empty to auto-generate from name. Allowed: a–z, 0–9, dashes and underscores; max 63 chars.
-              {/if}
-            </span>
-          </label>
         </div>
-      </div>
 
-      <StepActionButtons primaryLabel="Continue" onPrimary={next} />
-    </div>
+        <StepActionButtons primaryLabel="Continue" onPrimary={next} />
+      </div>
+    {:else}
+      <StepAlert variant="info" title="Payment gateway required">
+        <span>
+          You need a payment gateway to create an offer. Please
+          <button type="button" class="link ml-1" onclick={goToPaymentSettings}
+            >create a gateway</button
+          >
+          and come back.
+        </span>
+      </StepAlert>
+    {/if}
   {:else}
-    <StepAlert variant="info" title="Payment gateway required">
-      <span>
-        You need a payment gateway to create an offer. Please
-        <button type="button" class="link ml-1" onclick={goToPaymentSettings}>create a gateway</button>
-        and come back.
-      </span>
-    </StepAlert>
+    <StepAlert variant="warning" message="Connect your wallet to continue." />
   {/if}
-{:else}
-  <StepAlert variant="warning" message="Connect your wallet to continue." />
-{/if}
 </FlowStepScaffold>

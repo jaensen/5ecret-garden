@@ -4,7 +4,10 @@
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
   import SearchAvatar from '$lib/areas/contacts/ui/pages/SearchAvatar.svelte';
   import { NEW_PRODUCT_FLOW_SCAFFOLD_BASE } from './constants';
-  import type { AdminUnifiedProduct, AdminOdooConnection } from '$lib/areas/admin/types';
+  import type {
+    AdminUnifiedProduct,
+    AdminOdooConnection,
+  } from '$lib/areas/admin/types';
   import type { AdminNewProductFlowContext } from './context';
   import CatalogStep from './2_Catalog.svelte';
   import { shortenAddress } from '$lib/shared/utils/shared';
@@ -20,7 +23,9 @@
       code?: any;
       unlock?: any;
     }) => Promise<void>;
-    onCreateConnection: (payload: { connection: any }) => Promise<AdminOdooConnection>;
+    onCreateConnection: (payload: {
+      connection: any;
+    }) => Promise<AdminOdooConnection>;
   }
 
   let {
@@ -58,16 +63,24 @@
     openStep({
       title: (name ?? '').trim() || shortenAddress(String(addr)),
       component: CatalogStep,
-      props: { context, connections, existingProducts, onExecute, onCreateConnection },
+      props: {
+        context,
+        connections,
+        existingProducts,
+        onExecute,
+        onCreateConnection,
+      },
       key: 'admin-new-product-catalog',
     });
   }
 
-  function handleSelect(addr: unknown, profile?: { name?: string | null; registeredName?: string | null }): void {
+  function handleSelect(
+    addr: unknown,
+    profile?: { name?: string | null; registeredName?: string | null }
+  ): void {
     const name = profile?.name || profile?.registeredName || '';
-    goNext(addr as Address, "Products: " + name);
+    goNext(addr as Address, 'Products: ' + name);
   }
-
 </script>
 
 <FlowStepScaffold
@@ -76,11 +89,10 @@
   title="Seller"
   subtitle="Select the avatar that created the product you want to offer."
 >
-
-    <SearchAvatar
-      avatarTypes={['CrcV2_RegisterHuman', 'CrcV2_RegisterOrganization']}
-      selectedAddress={context.seller}
-      onselect={handleSelect}
-      searchType="send"
-    />
-  </FlowStepScaffold>
+  <SearchAvatar
+    avatarTypes={['CrcV2_RegisterHuman', 'CrcV2_RegisterOrganization']}
+    selectedAddress={context.seller}
+    onselect={handleSelect}
+    searchType="send"
+  />
+</FlowStepScaffold>

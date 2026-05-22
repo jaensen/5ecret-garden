@@ -16,17 +16,23 @@
   }
 
   function focusGroupsSearchInput(current?: HTMLElement | null): void {
-    const scope = current?.closest<HTMLElement>('[data-groups-list-scope]')
-      ?? document.querySelector<HTMLElement>('[data-groups-list-scope]');
-    const input = scope?.querySelector<HTMLInputElement>('[data-groups-search-input]');
+    const scope =
+      current?.closest<HTMLElement>('[data-groups-list-scope]') ??
+      document.querySelector<HTMLElement>('[data-groups-list-scope]');
+    const input = scope?.querySelector<HTMLInputElement>(
+      '[data-groups-search-input]'
+    );
     input?.focus();
   }
 
   const listNavigator = createKeyboardListNavigator({
     getRows: (anchor) => {
-      const scope = anchor?.closest<HTMLElement>('[data-groups-list-scope]')
-        ?? document.querySelector<HTMLElement>('[data-groups-list-scope]');
-      return Array.from((scope ?? document).querySelectorAll<HTMLElement>('[data-group-row]'));
+      const scope =
+        anchor?.closest<HTMLElement>('[data-groups-list-scope]') ??
+        document.querySelector<HTMLElement>('[data-groups-list-scope]');
+      return Array.from(
+        (scope ?? document).querySelectorAll<HTMLElement>('[data-group-row]')
+      );
     },
     focusInput: focusGroupsSearchInput,
     onActivateRow: openMembers,

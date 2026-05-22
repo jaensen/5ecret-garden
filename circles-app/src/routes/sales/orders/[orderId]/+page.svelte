@@ -3,12 +3,16 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { popupControls, popupState } from '$lib/shared/state/popup';
-import { SalesOrderDetailsPopup } from '$lib/areas/market/ui';
+  import { SalesOrderDetailsPopup } from '$lib/areas/market/ui';
   const orderId = $derived(decodeURIComponent($page.params.orderId || ''));
 
   onMount(() => {
     // Open the popup immediately for deep-link support
-    popupControls.open({ title: 'Sales order', component: SalesOrderDetailsPopup, props: { orderId } });
+    popupControls.open({
+      title: 'Sales order',
+      component: SalesOrderDetailsPopup,
+      props: { orderId },
+    });
 
     const unsub = popupState.subscribe((s) => {
       if (!s?.content) {
@@ -16,7 +20,9 @@ import { SalesOrderDetailsPopup } from '$lib/areas/market/ui';
         goto('/sales/orders');
       }
     });
-    return () => { unsub(); };
+    return () => {
+      unsub();
+    };
   });
 </script>
 

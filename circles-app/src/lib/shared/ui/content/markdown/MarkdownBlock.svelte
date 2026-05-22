@@ -47,7 +47,8 @@
       </ul>
     {/if}
   {:else if n.type === 'code'}
-    <pre><code class={n.lang ? `language-${n.lang}` : undefined}>{n.value}</code></pre>
+    <pre><code class={n.lang ? `language-${n.lang}` : undefined}>{n.value}</code
+      ></pre>
   {/if}
 {/snippet}
 

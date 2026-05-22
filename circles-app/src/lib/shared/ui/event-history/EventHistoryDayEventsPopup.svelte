@@ -41,7 +41,9 @@
   let histogramScrollEl: HTMLDivElement | null = $state(null);
 
   const filteredEventsStore = writable<EventHistoryListItem[]>([]);
-  const paginatedRows = createPaginatedList(filteredEventsStore as any, { pageSize: 25 });
+  const paginatedRows = createPaginatedList(filteredEventsStore as any, {
+    pageSize: 25,
+  });
   const eventKey = (item: EventHistoryListItem) => item.key;
   const listStoreAny = paginatedRows as any;
   const rowComponentAny = $derived(rowComponent as any);
@@ -83,7 +85,9 @@
   }
 
   function defaultHaystack(row: CirclesBaseEventRow): string {
-    return [String(row.transactionHash ?? ''), String(row.$event ?? '')].join(' ').toLowerCase();
+    return [String(row.transactionHash ?? ''), String(row.$event ?? '')]
+      .join(' ')
+      .toLowerCase();
   }
 
   function timestampFor(row: CirclesBaseEventRow): number {
@@ -105,7 +109,9 @@
     const needle = searchQuery.trim().toLowerCase();
     if (!needle) return events;
     return events.filter((row) => {
-      const haystack = searchHaystack ? searchHaystack(row) : defaultHaystack(row);
+      const haystack = searchHaystack
+        ? searchHaystack(row)
+        : defaultHaystack(row);
       return haystack.toLowerCase().includes(needle);
     });
   });
@@ -172,9 +178,17 @@
     if (!histogramScrollEl) return;
 
     const minuteIndex = Math.max(0, Math.min(23, hour)) * 60;
-    const targetLeft = minuteIndex * (MINUTE_BAR_WIDTH + BAR_GAP) - histogramScrollEl.clientWidth / 2;
-    const maxLeft = Math.max(0, histogramScrollEl.scrollWidth - histogramScrollEl.clientWidth);
-    histogramScrollEl.scrollTo({ left: Math.max(0, Math.min(targetLeft, maxLeft)), behavior: 'smooth' });
+    const targetLeft =
+      minuteIndex * (MINUTE_BAR_WIDTH + BAR_GAP) -
+      histogramScrollEl.clientWidth / 2;
+    const maxLeft = Math.max(
+      0,
+      histogramScrollEl.scrollWidth - histogramScrollEl.clientWidth
+    );
+    histogramScrollEl.scrollTo({
+      left: Math.max(0, Math.min(targetLeft, maxLeft)),
+      behavior: 'smooth',
+    });
   }
 </script>
 
@@ -194,7 +208,8 @@
     <div class="rounded-lg border border-base-300 p-2">
       <div class="flex items-center justify-between mb-2 gap-2">
         <div class="text-xs opacity-60">
-          {labels.histogramTitle ?? `Events by ${histogramGranularity === 'hour' ? 'hour' : 'minute'}`}
+          {labels.histogramTitle ??
+            `Events by ${histogramGranularity === 'hour' ? 'hour' : 'minute'}`}
         </div>
         <div class="join">
           <button
@@ -227,14 +242,15 @@
                 style={`height: ${Math.max(2, Math.round((count / maxHistogramCount) * 100))}%`}
                 title={`${bucketLabel(index)} · ${count} event${count === 1 ? '' : 's'}`}
                 aria-label={`${bucketLabel(index)}: ${count} events`}
-                onclick={() => histogramGranularity === 'hour' && drillDownToMinute(index)}
+                onclick={() =>
+                  histogramGranularity === 'hour' && drillDownToMinute(index)}
               ></button>
             {/each}
           </div>
 
           {#if histogramGranularity === 'minute'}
             <div class="mt-1 flex text-[10px] opacity-60 min-w-[5760px]">
-              {#each Array.from({ length: 24 }) as _, hour (`hour-label-${hour}`)}
+              {#each Array.from( { length: 24 } ) as _, hour (`hour-label-${hour}`)}
                 <div class="w-[240px] shrink-0 text-left">
                   {hour.toString().padStart(2, '0')}:00
                 </div>
@@ -244,9 +260,14 @@
         </div>
       </div>
 
-      <div class="flex justify-between text-[10px] opacity-60 mt-1" class:hidden={histogramGranularity === 'minute'}>
+      <div
+        class="flex justify-between text-[10px] opacity-60 mt-1"
+        class:hidden={histogramGranularity === 'minute'}
+      >
         {#if histogramGranularity === 'hour'}
-          <span>00</span><span>06</span><span>12</span><span>18</span><span>23</span>
+          <span>00</span><span>06</span><span>12</span><span>18</span><span
+            >23</span
+          >
         {/if}
       </div>
     </div>
@@ -256,17 +277,22 @@
     <input
       type="text"
       class="input input-bordered w-full"
-      placeholder={labels.searchPlaceholder ?? 'Search by transaction hash or event type'}
+      placeholder={labels.searchPlaceholder ??
+        'Search by transaction hash or event type'}
       bind:value={searchQuery}
     />
   </div>
 
   {#if events.length === 0}
-    <div class="text-sm opacity-70">{labels.dayEmpty ?? 'No events in this day.'}</div>
+    <div class="text-sm opacity-70">
+      {labels.dayEmpty ?? 'No events in this day.'}
+    </div>
   {:else if filteredEvents.length === 0}
     <div class="text-sm opacity-70">{labels.dayNoMatches ?? 'No matches.'}</div>
   {:else}
-    <div class="overflow-auto rounded-lg border border-base-300 max-h-[calc(80vh-14rem)]">
+    <div
+      class="overflow-auto rounded-lg border border-base-300 max-h-[calc(80vh-14rem)]"
+    >
       <div class="px-2">
         <GenericList
           store={listStoreAny}

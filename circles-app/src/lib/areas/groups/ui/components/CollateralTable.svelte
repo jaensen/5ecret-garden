@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { formatUnits, parseEther } from 'ethers';
+  import { formatUnits, parseEther } from 'ethers';
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
   import type { Address } from '@circles-sdk/utils';
   import type { TrustRelation } from '@circles-sdk/data';
@@ -23,13 +23,16 @@
 
   let { collateralInTreasury, redeemable = false }: Props = $props();
 
-  function onRedeemInput(item: {
-    avatar: Address;
-    amount: bigint;
-    amountToRedeem: bigint;
-    amountToRedeemInCircles: number;
-    trustRelation?: TrustRelation;
-  }, e: Event) {
+  function onRedeemInput(
+    item: {
+      avatar: Address;
+      amount: bigint;
+      amountToRedeem: bigint;
+      amountToRedeemInCircles: number;
+      trustRelation?: TrustRelation;
+    },
+    e: Event
+  ) {
     const input = e.target as HTMLInputElement | null;
     const newValue = parseFloat(input?.value ?? '0');
     const safeValue = isNaN(newValue) ? 0 : newValue;
@@ -37,14 +40,19 @@
     item.amountToRedeem = parseEther(safeValue.toString());
   }
 
-    function openProfile(addr: Address): void {
-        openProfilePopup(addr);
-    }
+  function openProfile(addr: Address): void {
+    openProfilePopup(addr);
+  }
 </script>
 
 <div class="w-full">
   {#each collateralInTreasury as item}
-      <RowFrame clickable={true} dense={true} noLeading={true} onclick={() => openProfile(item.avatar)}>
+    <RowFrame
+      clickable={true}
+      dense={true}
+      noLeading={true}
+      onclick={() => openProfile(item.avatar)}
+    >
       <div class="min-w-0">
         <Avatar
           address={item.avatar}
@@ -55,20 +63,22 @@
       </div>
 
       {#snippet trailing()}<div class="flex items-center gap-3 md:gap-4">
-        <div class="text-right tabular-nums">
-          <div class="font-medium">{formatEtherTwoDecimals(item.amount)} CRC</div>
-        </div>
+          <div class="text-right tabular-nums">
+            <div class="font-medium">
+              {formatEtherTwoDecimals(item.amount)} CRC
+            </div>
+          </div>
 
-        {#if redeemable}
-          <input
-            type="number"
-            class="input input-bordered w-36"
-            value={item.amountToRedeemInCircles}
-            oninput={(e) => onRedeemInput(item, e)}
-            min="0"
-          />
-        {/if}
-      </div>{/snippet}
+          {#if redeemable}
+            <input
+              type="number"
+              class="input input-bordered w-36"
+              value={item.amountToRedeemInCircles}
+              oninput={(e) => onRedeemInput(item, e)}
+              min="0"
+            />
+          {/if}
+        </div>{/snippet}
     </RowFrame>
   {/each}
 </div>

@@ -5,19 +5,23 @@
     showText?: boolean;
   }
 
-  let {
-    reverse = false,
-    showAvatar = true,
-    showText = true,
-  }: Props = $props();
+  let { reverse = false, showAvatar = true, showText = true }: Props = $props();
 </script>
 
-<div class={`avatar-skeleton inline-flex items-center gap-2 ${reverse ? 'flex-row-reverse' : ''}`}>
+<div
+  class={`avatar-skeleton inline-flex items-center gap-2 ${reverse ? 'flex-row-reverse' : ''}`}
+>
   {#if showText}
-    <div class="avatar-skeleton-block h-5 w-20 rounded inline-block align-middle" aria-hidden="true"></div>
+    <div
+      class="avatar-skeleton-block h-5 w-20 rounded inline-block align-middle"
+      aria-hidden="true"
+    ></div>
   {/if}
   {#if showAvatar}
-    <div class="avatar-skeleton-block w-6 h-6 rounded-full inline-block align-middle" aria-hidden="true"></div>
+    <div
+      class="avatar-skeleton-block w-6 h-6 rounded-full inline-block align-middle"
+      aria-hidden="true"
+    ></div>
   {/if}
 </div>
 
@@ -36,7 +40,12 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.12),
+        transparent
+      );
       transform: translateX(-100%);
       animation: avatar-shimmer 1.1s infinite;
       pointer-events: none;

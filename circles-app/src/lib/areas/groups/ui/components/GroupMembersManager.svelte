@@ -97,11 +97,15 @@
     try {
       const trustDataSource = createTrustDataSource(sdk);
       const avatarDataSource = createAvatarDataSource(sdk);
-      const relations = await trustDataSource.getAggregatedTrustRelations(group);
+      const relations =
+        await trustDataSource.getAggregatedTrustRelations(group);
       const trustedAddresses = Array.from(
         new Set(
           relations
-            .filter((row) => row.relation === 'trusts' || row.relation === 'mutuallyTrusts')
+            .filter(
+              (row) =>
+                row.relation === 'trusts' || row.relation === 'mutuallyTrusts'
+            )
             .map((row) => row.objectAvatar as Address)
             .filter((addr) => addr.toLowerCase() !== group.toLowerCase())
         )
@@ -158,7 +162,10 @@
   }
 
   const trustedListNavigator = createKeyboardListNavigator({
-    getRows: () => Array.from(trustedListEl?.querySelectorAll<HTMLElement>('[data-trusted-row]') ?? []),
+    getRows: () =>
+      Array.from(
+        trustedListEl?.querySelectorAll<HTMLElement>('[data-trusted-row]') ?? []
+      ),
     focusInput: focusSearchInput,
     onActivateRow: (row) => {
       const address = row.dataset.trustedAddress as Address | undefined;
@@ -220,7 +227,9 @@
   <div class="flex items-center justify-between">
     <div>
       <div class="text-sm font-semibold">{groupDisplayName} members</div>
-      <div class="text-xs opacity-70">Manage trusted avatars for this group.</div>
+      <div class="text-xs opacity-70">
+        Manage trusted avatars for this group.
+      </div>
     </div>
     <div class="flex items-center gap-2">
       {#if selectedCount > 0}
@@ -234,7 +243,9 @@
     </div>
   </div>
 
-  <div class="text-xs opacity-70">{trusted.length} trusted avatar{trusted.length === 1 ? '' : 's'}</div>
+  <div class="text-xs opacity-70">
+    {trusted.length} trusted avatar{trusted.length === 1 ? '' : 's'}
+  </div>
 
   <div role="group" aria-label="Search trusted avatars">
     <ListShell
@@ -250,7 +261,11 @@
       noMatchesLabel="No matches"
       wrapInListContainer={false}
     >
-      <div bind:this={trustedListEl} class="w-full flex flex-col gap-y-1.5" role="list">
+      <div
+        bind:this={trustedListEl}
+        class="w-full flex flex-col gap-y-1.5"
+        role="list"
+      >
         {#each $filteredItems as address (address)}
           <div
             tabindex={0}
@@ -266,7 +281,7 @@
             <RowFrame clickable={false} dense={true} noLeading={true}>
               <div class="min-w-0">
                 <Avatar
-                  address={address}
+                  {address}
                   avatarInfo={avatarInfoFor(address)}
                   view="horizontal"
                   clickable={true}
@@ -285,7 +300,12 @@
                       void untrustOne(address);
                     }}
                   >
-                    <img src="/trash.svg" alt="" class="h-3.5 w-3.5" aria-hidden="true" />
+                    <img
+                      src="/trash.svg"
+                      alt=""
+                      class="h-3.5 w-3.5"
+                      aria-hidden="true"
+                    />
                   </button>
                   <input
                     type="checkbox"
@@ -302,4 +322,3 @@
     </ListShell>
   </div>
 </div>
-

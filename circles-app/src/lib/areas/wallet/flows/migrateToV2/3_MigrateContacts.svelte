@@ -39,32 +39,34 @@
     });
   }
 
-  let orderedContacts = $derived(Object.keys($contacts?.data ?? {}).sort((a, b) => {
-    /*
+  let orderedContacts = $derived(
+    Object.keys($contacts?.data ?? {}).sort((a, b) => {
+      /*
             // Alphabetical sorting by contact name
             const aRelation = $contacts?.data[a]?.contactProfile?.name;
             const bRelation = $contacts?.data[b]?.contactProfile?.name;
             return aRelation.localeCompare(bRelation);
          */
-    const aRelation = $contacts?.data[a].row.relation;
-    const bRelation = $contacts?.data[b].row.relation;
-    if (aRelation === 'mutuallyTrusts' && bRelation !== 'mutuallyTrusts') {
-      return -1;
-    }
-    if (aRelation === 'trusts' && bRelation === 'trustedBy') {
-      return -1;
-    }
-    if (aRelation === bRelation) {
+      const aRelation = $contacts?.data[a].row.relation;
+      const bRelation = $contacts?.data[b].row.relation;
+      if (aRelation === 'mutuallyTrusts' && bRelation !== 'mutuallyTrusts') {
+        return -1;
+      }
+      if (aRelation === 'trusts' && bRelation === 'trustedBy') {
+        return -1;
+      }
+      if (aRelation === bRelation) {
+        return 0;
+      }
+      if (bRelation === 'mutuallyTrusts' && aRelation !== 'mutuallyTrusts') {
+        return 1;
+      }
+      if (bRelation === 'trusts' && aRelation === 'trustedBy') {
+        return 1;
+      }
       return 0;
-    }
-    if (bRelation === 'mutuallyTrusts' && aRelation !== 'mutuallyTrusts') {
-      return 1;
-    }
-    if (bRelation === 'trusts' && aRelation === 'trustedBy') {
-      return 1;
-    }
-    return 0;
-  }));
+    })
+  );
 
   $effect(() => {
     contactStore.set(orderedContacts);
@@ -82,7 +84,9 @@
         ? selectedAddresses
         : [...selectedAddresses, address];
     } else {
-      selectedAddresses = selectedAddresses.filter((value) => value !== address);
+      selectedAddresses = selectedAddresses.filter(
+        (value) => value !== address
+      );
     }
     context.trustList = selectedAddresses;
   }
@@ -97,7 +101,12 @@
   }
 
   const listNavigator = createKeyboardListNavigator({
-    getRows: () => Array.from(contactsListEl?.querySelectorAll<HTMLElement>('[data-migrate-contact-row]') ?? []),
+    getRows: () =>
+      Array.from(
+        contactsListEl?.querySelectorAll<HTMLElement>(
+          '[data-migrate-contact-row]'
+        ) ?? []
+      ),
     focusInput: focusSearchInput,
     onActivateRow: (row) => {
       const address = row.dataset.migrateContactAddress;
@@ -110,13 +119,13 @@
     listNavigator.onRowClick(event);
   }
 </script>
+
 <FlowStepScaffold
   {...MIGRATE_FLOW_SCAFFOLD_BASE}
   step={3}
   title="Migrate contacts"
   subtitle="Choose which trusted contacts to migrate to V2."
 >
-
   <p class="text-base-content/70 mt-2">
     Select the contacts you want to keep in your new Circles V2 profile.
   </p>
@@ -137,7 +146,11 @@
       wrapInListContainer={false}
       data-contacts-list-scope
     >
-      <div bind:this={contactsListEl} class="w-full flex flex-col gap-y-1.5" role="list">
+      <div
+        bind:this={contactsListEl}
+        class="w-full flex flex-col gap-y-1.5"
+        role="list"
+      >
         {#each $filteredItems as address (address)}
           <div
             tabindex={0}
@@ -146,7 +159,9 @@
             onkeydown={listNavigator.onRowKeydown}
             onclick={onRowClick}
             role="button"
-            aria-pressed={selectedAddresses.includes(address) ? 'true' : 'false'}
+            aria-pressed={selectedAddresses.includes(address)
+              ? 'true'
+              : 'false'}
             aria-label={`Contact ${address}`}
             class="rounded-[var(--row-radius)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
           >
@@ -156,7 +171,9 @@
                   {address}
                   clickable={false}
                   view="horizontal"
-                  bottomInfo={formatTrustRelation($contacts?.data[address].row.relation)}
+                  bottomInfo={formatTrustRelation(
+                    $contacts?.data[address].row.relation
+                  )}
                   showTypeInfo={true}
                 />
               </div>
@@ -165,7 +182,8 @@
                   type="checkbox"
                   class="checkbox checkbox-sm"
                   checked={selectedAddresses.includes(address)}
-                  onchange={(event) => onToggleSelectedFromCheckbox(address, event)}
+                  onchange={(event) =>
+                    onToggleSelectedFromCheckbox(address, event)}
                 />
               {/snippet}
             </RowFrame>

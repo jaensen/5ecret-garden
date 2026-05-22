@@ -30,7 +30,6 @@
   title="Trust status"
   subtitle="Review current trust relationship and choose next action."
 >
-
   <StepAlert
     variant="info"
     title="Trust already exists"
@@ -39,7 +38,13 @@
 
   {#if context.selectedAddress}
     <AdvancedDetails title="Advanced details" subtitle="Selected account">
-      <Avatar address={context.selectedAddress} view="horizontal" clickable={false} bottomInfo={context.selectedAddress} showTypeInfo={true} />
+      <Avatar
+        address={context.selectedAddress}
+        view="horizontal"
+        clickable={false}
+        bottomInfo={context.selectedAddress}
+        showTypeInfo={true}
+      />
     </AdvancedDetails>
   {/if}
 
@@ -68,9 +73,12 @@
     {/snippet}
 
     {#snippet primary()}
-      <button class="btn btn-primary btn-sm" onclick={() => popupControls.close()}>
+      <button
+        class="btn btn-primary btn-sm"
+        onclick={() => popupControls.close()}
+      >
         Done
       </button>
     {/snippet}
   </StepActionBar>
-  </FlowStepScaffold>
+</FlowStepScaffold>

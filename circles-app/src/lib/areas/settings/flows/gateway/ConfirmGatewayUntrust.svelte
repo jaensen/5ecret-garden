@@ -9,7 +9,10 @@
   import ActionButton from '$lib/shared/ui/primitives/ActionButton.svelte';
   import { wallet } from '$lib/shared/state/wallet.svelte';
   import { runTask } from '$lib/shared/utils/tasks';
-  import { isAddress, sendRunnerTransactionAndWait } from '$lib/shared/utils/tx';
+  import {
+    isAddress,
+    sendRunnerTransactionAndWait,
+  } from '$lib/shared/utils/tx';
   import { popupControls } from '$lib/shared/state/popup';
 
   interface Props {
@@ -22,14 +25,16 @@
 
   const gatewayAbi = [
     'function setTrust(address trustReceiver, uint96 expiry)',
-    'function clearTrust(address trustReceiver)'
+    'function clearTrust(address trustReceiver)',
   ];
   const gatewayIface = new ethers.Interface(gatewayAbi);
 
   const gatewayValid = $derived(isAddress((gateway ?? '').trim()));
   const trustReceiverValid = $derived(isAddress((trustReceiver ?? '').trim()));
   const walletConnected = $derived(Boolean($wallet));
-  const canClear = $derived(walletConnected && gatewayValid && trustReceiverValid);
+  const canClear = $derived(
+    walletConnected && gatewayValid && trustReceiverValid
+  );
 
   async function clearTrust() {
     if (!$wallet) {
@@ -45,15 +50,21 @@
     await runTask({
       name: 'Clearing trust…',
       promise: (async () => {
-        const data = gatewayIface.encodeFunctionData('clearTrust', [trustReceiver]);
-        await sendRunnerTransactionAndWait(runner, {
-          to: gatewayAddress,
-          value: 0n,
-          data
-        }, { label: 'Gateway clear trust' });
+        const data = gatewayIface.encodeFunctionData('clearTrust', [
+          trustReceiver,
+        ]);
+        await sendRunnerTransactionAndWait(
+          runner,
+          {
+            to: gatewayAddress,
+            value: 0n,
+            data,
+          },
+          { label: 'Gateway clear trust' }
+        );
         await onDone?.();
         popupControls.close();
-      })()
+      })(),
     });
   }
 
@@ -68,15 +79,26 @@
   title="Remove trust"
   subtitle="Review receiver details before revoking trust."
 >
-
   <div class="space-y-4">
     <StepSection
       title="Remove trust"
       subtitle="This will revoke trust for the following account."
     >
-      <Avatar address={trustReceiver} view="horizontal" clickable={false} bottomInfo={trustReceiver} showTypeInfo={true} />
+      <Avatar
+        address={trustReceiver}
+        view="horizontal"
+        clickable={false}
+        bottomInfo={trustReceiver}
+        showTypeInfo={true}
+      />
       <div class="text-xs text-base-content/60">Gateway</div>
-      <Avatar address={gateway} view="horizontal" clickable={false} bottomInfo={gateway} showTypeInfo={true} />
+      <Avatar
+        address={gateway}
+        view="horizontal"
+        clickable={false}
+        bottomInfo={gateway}
+        showTypeInfo={true}
+      />
 
       {#if !walletConnected}
         <StepAlert
@@ -95,7 +117,11 @@
 
     <StepActionBar>
       {#snippet secondary()}
-        <button type="button" class="btn btn-ghost btn-sm" onclick={changeAccount}>
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          onclick={changeAccount}
+        >
           Change account
         </button>
       {/snippet}
@@ -111,7 +137,7 @@
             Error: 'btn-warning',
             Retry: 'btn-warning',
             Done: 'btn-success',
-            Disabled: 'btn-disabled'
+            Disabled: 'btn-disabled',
           }}
         >
           {#snippet children()}Remove{/snippet}
@@ -119,4 +145,4 @@
       {/snippet}
     </StepActionBar>
   </div>
-  </FlowStepScaffold>
+</FlowStepScaffold>

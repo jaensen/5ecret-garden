@@ -10,7 +10,11 @@
   let { homeLink = '/' }: Props = $props();
 
   import { page } from '$app/stores';
-  import { openFlowPopup, popupControls, popupState } from '$lib/shared/state/popup';
+  import {
+    openFlowPopup,
+    popupControls,
+    popupState,
+  } from '$lib/shared/state/popup';
   import { writable, type Unsubscriber } from 'svelte/store';
   import GlobalAvatarSearchPopup from '$lib/shared/ui/avatar-search/GlobalAvatarSearchPopup.svelte';
 
@@ -19,17 +23,19 @@
 
   async function ensureCartCountSubscription(): Promise<void> {
     if (cartCountUnsub) return;
-    const { cartItemCount: cartItemCountStore } = await import('$lib/areas/market/cart/store');
+    const { cartItemCount: cartItemCountStore } =
+      await import('$lib/areas/market/cart/store');
     cartCountUnsub = cartItemCountStore.subscribe((value) => {
       cartItemCount.set(value);
     });
   }
 
   async function openBasket(): Promise<void> {
-    const [{ default: CartPanel }, { cartItemCount: cartItemCountStore }] = await Promise.all([
-      import('$lib/areas/market/flows/checkout/CartPanel.svelte'),
-      import('$lib/areas/market/cart/store'),
-    ]);
+    const [{ default: CartPanel }, { cartItemCount: cartItemCountStore }] =
+      await Promise.all([
+        import('$lib/areas/market/flows/checkout/CartPanel.svelte'),
+        import('$lib/areas/market/cart/store'),
+      ]);
 
     if (!cartCountUnsub) {
       cartCountUnsub = cartItemCountStore.subscribe((value) => {
@@ -85,12 +91,15 @@
       return;
     }
 
-    const isOpenShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
+    const isOpenShortcut =
+      (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
     if (!isOpenShortcut) return;
 
     if ($popupState.content) return;
     const target = event.target as HTMLElement | null;
-    const isTypingContext = !!target?.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]');
+    const isTypingContext = !!target?.closest(
+      'input, textarea, select, [contenteditable="true"], [role="textbox"]'
+    );
     if (isTypingContext) return;
 
     event.preventDefault();
@@ -128,13 +137,15 @@
   });
 </script>
 
-<div class="navbar bg-base-100 px-4 sticky top-0 z-10">
+<div class="navbar px-4 sticky top-0 z-10">
   <div class="flex-1">
     <a class="flex items-center text-xl font-bold" href={homeLink}>
       <img src="/logo.svg" alt="Circles" class="w-8 h-8" />
       <span class="inline-block overflow-hidden text-primary">
         Circles
-        <span class="ml-1 text-xs font-semibold text-base-content/60">(beta)</span>
+        <span class="ml-1 text-xs font-semibold text-base-content/60"
+          >(beta)</span
+        >
       </span>
     </a>
   </div>
@@ -150,7 +161,7 @@
   {/if}
   <button
     type="button"
-    class="btn btn-circle btn-ghost btn-sm mr-1"
+    class="btn btn-circle btn-ghost btn-sm btn-touch-square mr-1"
     aria-label="Search"
     title="Search (Ctrl/Cmd+K)"
     onclick={onSearchButtonClick}
@@ -159,7 +170,10 @@
     <Lucide icon={LSearch} size={16} ariaLabel="" />
   </button>
   <details class="dropdown dropdown-end flex-none" bind:this={menuEl}>
-    <summary class="btn btn-circle btn-ghost btn-sm" aria-haspopup="menu" aria-expanded={menuEl?.open ? 'true' : 'false'}
+    <summary
+      class="btn btn-circle btn-ghost btn-sm btn-touch-square"
+      aria-haspopup="menu"
+      aria-expanded={menuEl?.open ? 'true' : 'false'}
       ><svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -175,29 +189,48 @@
       </svg></summary
     >
     <ul
-      class="menu dropdown-content bg-base-100 rounded-box z-[1] w-64 p-2 shadow"
+      class="menu header-menu dropdown-content rounded-3xl z-[1] w-72 p-2 shadow"
     >
       <li>
-        <a class="link link-hover" href="/settings">Settings</a>
-        <ul>
-          <li><a class="link link-hover" href="/settings?tab=personal">Profile</a></li>
-          <li><a class="link link-hover" href="/settings?tab=bookmarks">Bookmarks</a></li>
-          <li><a class="link link-hover" href="/settings?tab=orders">Orders</a></li>
-          <li><a class="link link-hover" href="/settings?tab=sales">Sales</a></li>
-          <li><a class="link link-hover" href="/settings?tab=marketplace">Offers</a></li>
-          <li><a class="link link-hover" href="/settings?tab=payment">Payment gateways</a></li>
-          <li><a class="link link-hover" href="/settings?tab=namespaces">Namespaces</a></li>
-          <li><a class="link link-hover" href="/settings?tab=keys">Signing keys</a></li>
-        </ul>
+        <details>
+          <summary class="btn-muted-outline">Settings</summary>
+          <ul class="submenu-card">
+            <li>
+              <a href="/settings?tab=personal">Profile</a>
+            </li>
+            <li>
+              <a href="/settings?tab=bookmarks">Bookmarks</a>
+            </li>
+            <li>
+              <a href="/settings?tab=orders">Orders</a>
+            </li>
+            <li>
+              <a href="/settings?tab=sales">Sales</a>
+            </li>
+            <li>
+              <a href="/settings?tab=marketplace">Offers</a>
+            </li>
+            <li>
+              <a href="/settings?tab=payment">Payment gateways</a>
+            </li>
+            <li>
+              <a href="/settings?tab=namespaces">Namespaces</a>
+            </li>
+            <li>
+              <a href="/settings?tab=keys">Signing keys</a>
+            </li>
+          </ul>
+        </details>
       </li>
-      <li><a class="link link-hover" href="/terms">Terms of use</a></li>
+      <li><a href="/terms">Terms of use</a></li>
       <li>
-        <a class="link link-hover" href="/privacy-policy">Privacy policy</a>
+        <a href="/privacy-policy">Privacy policy</a>
       </li>
       {#if dev}
-        <li><a class="link link-hover" href="/kitchen-sink">Kitchen sink</a></li>
+        <li>
+          <a href="/kitchen-sink">Kitchen sink</a>
+        </li>
       {/if}
     </ul>
   </details>
 </div>
-

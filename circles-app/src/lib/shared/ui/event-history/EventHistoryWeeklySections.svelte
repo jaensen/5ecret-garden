@@ -37,14 +37,26 @@
 
   function weekRangeEvents(weekStartSec: number): RangeOverlayEvent[] {
     const weekEndSec = weekStartSec + 7 * 24 * 60 * 60 - 1;
-    return rangeEvents.filter((event) => event.startDaySec <= weekEndSec && event.endDaySec >= weekStartSec);
+    return rangeEvents.filter(
+      (event) =>
+        event.startDaySec <= weekEndSec && event.endDaySec >= weekStartSec
+    );
   }
 
-  function isWeekRangeStart(event: RangeOverlayEvent, weekStartSec: number): boolean {
-    return event.startDaySec >= weekStartSec && event.startDaySec < weekStartSec + 7 * 24 * 60 * 60;
+  function isWeekRangeStart(
+    event: RangeOverlayEvent,
+    weekStartSec: number
+  ): boolean {
+    return (
+      event.startDaySec >= weekStartSec &&
+      event.startDaySec < weekStartSec + 7 * 24 * 60 * 60
+    );
   }
 
-  function isWeekRangeEnd(event: RangeOverlayEvent, weekStartSec: number): boolean {
+  function isWeekRangeEnd(
+    event: RangeOverlayEvent,
+    weekStartSec: number
+  ): boolean {
     const weekEndSec = weekStartSec + 7 * 24 * 60 * 60 - 1;
     return event.endDaySec >= weekStartSec && event.endDaySec <= weekEndSec;
   }
@@ -61,14 +73,19 @@
   async function scrollToSelectedWeek(weekStartSec: number): Promise<void> {
     await tick();
     if (!containerEl) return;
-    const el = containerEl.querySelector<HTMLElement>(`[data-week-start="${weekStartSec}"]`);
+    const el = containerEl.querySelector<HTMLElement>(
+      `[data-week-start="${weekStartSec}"]`
+    );
     if (!el) return;
     const top = el.offsetTop - containerEl.offsetTop - 8;
     containerEl.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   }
 </script>
 
-<div class="rounded-lg border border-base-300 p-3 overflow-auto max-h-[calc(80vh-14rem)]" bind:this={containerEl}>
+<div
+  class="rounded-lg border border-base-300 p-3 overflow-auto max-h-[calc(80vh-14rem)]"
+  bind:this={containerEl}
+>
   <div class="space-y-4">
     {#each weeklySections as section (section.key)}
       <section class="space-y-2">
@@ -86,7 +103,9 @@
             >
               <div class="font-medium">Week</div>
               <div class="opacity-80">{formatWeekRange(week.startSec)}</div>
-              <div class="mt-1">{week.count} event{week.count === 1 ? '' : 's'}</div>
+              <div class="mt-1">
+                {week.count} event{week.count === 1 ? '' : 's'}
+              </div>
 
               {#if overlappingEvents.length > 0}
                 <div class="mt-2 space-y-1">

@@ -35,12 +35,16 @@
     const privateKey = sessionSigner.privateKey;
     const useLocalPrivateKey = safeCreationMode === 'importedKey';
     if (useLocalPrivateKey && !privateKey) {
-      error = 'No imported key available. Please import your circles.garden keyphrase again.';
+      error =
+        'No imported key available. Please import your circles.garden keyphrase again.';
       isCreating = false;
       return;
     }
 
-    if (!useLocalPrivateKey && (typeof window === 'undefined' || !(window as any).ethereum)) {
+    if (
+      !useLocalPrivateKey &&
+      (typeof window === 'undefined' || !(window as any).ethereum)
+    ) {
       error = 'No Ethereum provider found. Please connect a browser wallet.';
       isCreating = false;
       return;
@@ -81,7 +85,9 @@
       const protocolKit = await Safe.init({
         provider: useLocalPrivateKey ? rpcUrl : (window as any).ethereum,
         predictedSafe,
-        signer: useLocalPrivateKey ? (privateKey as `0x${string}`) : ownerAddress,
+        signer: useLocalPrivateKey
+          ? (privateKey as `0x${string}`)
+          : ownerAddress,
       });
 
       const safeAddress = await protocolKit.getAddress();
@@ -128,10 +134,8 @@
 <button
   class="btn btm-nav-xs btn-outline btn-primary"
   class:loading={isCreating}
-  disabled={
-    isCreating ||
-    (safeCreationMode === 'importedKey' ? !hasLocalPrivateKey : !hasProvider)
-  }
+  disabled={isCreating ||
+    (safeCreationMode === 'importedKey' ? !hasLocalPrivateKey : !hasProvider)}
   onclick={createSafe}
 >
   {#if isCreating}

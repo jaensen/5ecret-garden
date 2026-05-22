@@ -18,7 +18,9 @@
   }: Props = $props();
 </script>
 
-<section class={`bg-base-100 border border-base-300 rounded-xl p-4 space-y-3 ${className}`.trim()}>
+<section
+  class={`bg-base-100 border border-base-300 rounded-3xl p-4 space-y-3 ${className}`.trim()}
+>
   {#if title || subtitle}
     <header class={titleClassName}>
       {#if title}

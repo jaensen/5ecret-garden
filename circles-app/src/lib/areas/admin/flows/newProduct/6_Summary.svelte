@@ -18,34 +18,59 @@
   import TypeStep from './3_Type.svelte';
   import DetailsStep from './5_Details.svelte';
   import type { AdminNewProductFlowContext } from './context';
-  import type { AdminOdooConnection, AdminUnifiedProduct } from '$lib/areas/admin/types';
+  import type {
+    AdminOdooConnection,
+    AdminUnifiedProduct,
+  } from '$lib/areas/admin/types';
 
   interface Props {
     context: AdminNewProductFlowContext;
     connections: AdminOdooConnection[];
     existingProducts: AdminUnifiedProduct[];
     onExecute: (payload: any) => Promise<void>;
-    onCreateConnection: (payload: { connection: any }) => Promise<AdminOdooConnection>;
+    onCreateConnection: (payload: {
+      connection: any;
+    }) => Promise<AdminOdooConnection>;
   }
 
-  let { context, connections, existingProducts, onExecute, onCreateConnection }: Props = $props();
+  let {
+    context,
+    connections,
+    existingProducts,
+    onExecute,
+    onCreateConnection,
+  }: Props = $props();
 
   let executing = $state(false);
   let formError = $state<string | null>(null);
 
   const normalizedSeller = $derived(
-    context.seller ? (normalizeAddress(String(context.seller)) as Address) : undefined
+    context.seller
+      ? (normalizeAddress(String(context.seller)) as Address)
+      : undefined
   );
-  const normalizedSku = $derived(normalizeSku(context.catalogItem?.product?.sku ?? '') ?? '');
-  const productCore = $derived(context.catalogItem ? getProduct(context.catalogItem) : undefined);
-  const productImageUrl = $derived(productCore ? pickProductImageUrl(productCore) : null);
-  const productTitle = $derived(productCore?.name ?? productCore?.sku ?? normalizedSku ?? 'Selected product');
-  const productSubtitle = $derived(productCore?.sku ? `SKU: ${productCore?.sku}` : undefined);
+  const normalizedSku = $derived(
+    normalizeSku(context.catalogItem?.product?.sku ?? '') ?? ''
+  );
+  const productCore = $derived(
+    context.catalogItem ? getProduct(context.catalogItem) : undefined
+  );
+  const productImageUrl = $derived(
+    productCore ? pickProductImageUrl(productCore) : null
+  );
+  const productTitle = $derived(
+    productCore?.name ?? productCore?.sku ?? normalizedSku ?? 'Selected product'
+  );
+  const productSubtitle = $derived(
+    productCore?.sku ? `SKU: ${productCore?.sku}` : undefined
+  );
 
   const sellerConnections = $derived.by(() => {
     if (!normalizedSeller) return [];
     const s = normalizedSeller.toLowerCase();
-    return (connections ?? []).filter((c) => String(c.seller).toLowerCase() === s);
+    return (connections ?? []).filter(
+      (c) => String(c.seller).toLowerCase() === s
+    );
   });
 
   const summaryTypeLabel = $derived(
@@ -59,7 +84,13 @@
   function editSeller(): void {
     popToOrOpen(SellerStep, {
       title: 'Select seller',
-      props: { context, connections, existingProducts, onExecute, onCreateConnection },
+      props: {
+        context,
+        connections,
+        existingProducts,
+        onExecute,
+        onCreateConnection,
+      },
       key: 'admin-new-product-seller',
     });
   }
@@ -67,7 +98,13 @@
   function editCatalog(): void {
     popToOrOpen(CatalogStep, {
       title: 'Select catalog product',
-      props: { context, connections, existingProducts, onExecute, onCreateConnection },
+      props: {
+        context,
+        connections,
+        existingProducts,
+        onExecute,
+        onCreateConnection,
+      },
       key: 'admin-new-product-catalog',
     });
   }
@@ -75,7 +112,13 @@
   function editType(): void {
     popToOrOpen(TypeStep, {
       title: 'Choose fulfillment type',
-      props: { context, connections, existingProducts, onExecute, onCreateConnection },
+      props: {
+        context,
+        connections,
+        existingProducts,
+        onExecute,
+        onCreateConnection,
+      },
       key: 'admin-new-product-type',
     });
   }
@@ -88,7 +131,13 @@
           : (context.selectedType ?? 'codedispenser') === 'unlock'
             ? 'Configure unlock'
             : 'Add codes',
-      props: { context, connections, existingProducts, onExecute, onCreateConnection },
+      props: {
+        context,
+        connections,
+        existingProducts,
+        onExecute,
+        onCreateConnection,
+      },
       key: 'admin-new-product-details',
     });
   }
@@ -127,7 +176,8 @@
         seller: normalizedSeller,
         sku: normalizedSku,
         poolId: (context.poolId ?? '').trim(),
-        downloadUrlTemplate: (context.downloadUrlTemplate ?? '').trim() || undefined,
+        downloadUrlTemplate:
+          (context.downloadUrlTemplate ?? '').trim() || undefined,
         codes: parseCodes(),
         enabled: Boolean(context.enabled),
       };
@@ -135,7 +185,9 @@
     }
 
     if (selectedType === 'unlock') {
-      const lockAddress = normalizeAddress(String(context.lockAddress ?? '')) as Address | undefined;
+      const lockAddress = normalizeAddress(
+        String(context.lockAddress ?? '')
+      ) as Address | undefined;
       if (!lockAddress) {
         formError = 'Lock address is required.';
         return null;
@@ -149,8 +201,13 @@
         return null;
       }
       const totalInventory = context.totalInventory;
-      if (totalInventory == null || !Number.isInteger(totalInventory) || totalInventory < 0) {
-        formError = 'Total inventory must be a whole number greater than or equal to 0.';
+      if (
+        totalInventory == null ||
+        !Number.isInteger(totalInventory) ||
+        totalInventory < 0
+      ) {
+        formError =
+          'Total inventory must be a whole number greater than or equal to 0.';
         return null;
       }
 
@@ -159,14 +216,20 @@
       if ((context.unlockTimingMode ?? 'duration') === 'duration') {
         const duration = context.durationSeconds;
         if (duration == null || !Number.isInteger(duration) || duration < 0) {
-          formError = 'Duration seconds must be a whole number greater than or equal to 0.';
+          formError =
+            'Duration seconds must be a whole number greater than or equal to 0.';
           return null;
         }
         durationSeconds = duration;
       } else {
         const expiration = context.expirationUnix;
-        if (expiration == null || !Number.isInteger(expiration) || expiration < 0) {
-          formError = 'Expiration unix must be a whole number greater than or equal to 0.';
+        if (
+          expiration == null ||
+          !Number.isInteger(expiration) ||
+          expiration < 0
+        ) {
+          formError =
+            'Expiration unix must be a whole number greater than or equal to 0.';
           return null;
         }
         expirationUnix = expiration;
@@ -174,9 +237,12 @@
 
       let fixedKeyManager: Address | undefined;
       if ((context.keyManagerMode ?? 'buyer') === 'fixed') {
-        fixedKeyManager = normalizeAddress(String(context.fixedKeyManager ?? '')) as Address | undefined;
+        fixedKeyManager = normalizeAddress(
+          String(context.fixedKeyManager ?? '')
+        ) as Address | undefined;
         if (!fixedKeyManager) {
-          formError = 'Fixed key manager is required for fixed key manager mode.';
+          formError =
+            'Fixed key manager is required for fixed key manager mode.';
           return null;
         }
       }
@@ -213,17 +279,20 @@
       return null;
     }
 
-    let odooStock: {
-      chainId: number;
-      seller: Address;
-      sku: string;
-      availableQty: number;
-    } | undefined;
+    let odooStock:
+      | {
+          chainId: number;
+          seller: Address;
+          sku: string;
+          availableQty: number;
+        }
+      | undefined;
 
     if (Boolean(context.useLocalStock)) {
       const qty = context.localAvailableQty;
       if (qty == null || !Number.isInteger(qty) || qty < 0) {
-        formError = 'Local stock quantity must be a whole number greater than or equal to 0.';
+        formError =
+          'Local stock quantity must be a whole number greater than or equal to 0.';
         return null;
       }
       odooStock = {
@@ -266,7 +335,10 @@
     <StepAlert variant="error" message={formError} />
   {/if}
 
-  <StepSection title="Review configuration" subtitle="Use Change to jump back to a specific setup step.">
+  <StepSection
+    title="Review configuration"
+    subtitle="Use Change to jump back to a specific setup step."
+  >
     <StepReviewRow
       label="Seller"
       value={normalizedSeller ?? ''}
@@ -293,20 +365,20 @@
     />
     <StepReviewRow
       label="Details"
-      value={
-        (context.selectedType ?? 'codedispenser') === 'codedispenser'
-          ? 'Code pool configuration'
-          : (context.selectedType ?? 'codedispenser') === 'unlock'
-            ? 'Unlock ticket mapping'
-            : 'Odoo product mapping'
-      }
+      value={(context.selectedType ?? 'codedispenser') === 'codedispenser'
+        ? 'Code pool configuration'
+        : (context.selectedType ?? 'codedispenser') === 'unlock'
+          ? 'Unlock ticket mapping'
+          : 'Odoo product mapping'}
       onChange={editDetails}
       changeLabel="Change"
     />
     {#if (context.selectedType ?? 'codedispenser') === 'odoo'}
       <StepReviewRow
         label="Local stock"
-        value={context.useLocalStock ? `Enabled (${context.localAvailableQty ?? 0})` : 'Not configured'}
+        value={context.useLocalStock
+          ? `Enabled (${context.localAvailableQty ?? 0})`
+          : 'Not configured'}
         onChange={editDetails}
         changeLabel="Change"
       />
@@ -320,7 +392,10 @@
     {/if}
   </StepSection>
 
-  <StepSection title="Selected product" subtitle="Verify the product you are configuring.">
+  <StepSection
+    title="Selected product"
+    subtitle="Verify the product you are configuring."
+  >
     <ProductPreviewCard
       title={productTitle}
       subtitle={productSubtitle}
@@ -332,12 +407,22 @@
 
   <StepActionBar>
     {#snippet secondary()}
-      <button class="btn btn-outline btn-sm" type="button" onclick={() => popupControls.close()} disabled={executing}>
+      <button
+        class="btn btn-outline btn-sm"
+        type="button"
+        onclick={() => popupControls.close()}
+        disabled={executing}
+      >
         Cancel
       </button>
     {/snippet}
     {#snippet primary()}
-      <button class="btn btn-primary btn-sm" type="button" onclick={execute} disabled={executing}>
+      <button
+        class="btn btn-primary btn-sm"
+        type="button"
+        onclick={execute}
+        disabled={executing}
+      >
         {executing ? 'Applying…' : 'Confirm & apply'}
       </button>
     {/snippet}

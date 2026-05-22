@@ -58,16 +58,16 @@
   }: Props = $props();
 
   const effectiveIsEmpty = $derived(
-    emptyRequiresEnd ? (ended && isEmpty) : isEmpty
+    emptyRequiresEnd ? ended && isEmpty : isEmpty
   );
 </script>
 
 <ListToolbar
-  query={query}
+  {query}
   placeholder={searchPlaceholder}
   class={toolbarClass}
   actions={toolbarActions}
-  bind:inputEl={inputEl}
+  bind:inputEl
   {onInputKeydown}
   {onInputFocus}
   {inputDataAttribute}

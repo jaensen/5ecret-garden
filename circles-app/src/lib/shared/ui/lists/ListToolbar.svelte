@@ -21,7 +21,7 @@
     onInputKeydown,
     onInputFocus,
     inputDataAttribute,
-    inputEl = $bindable(null)
+    inputEl = $bindable(null),
   }: Props = $props();
 
   function handleInputKeydown(event: KeyboardEvent): void {
@@ -50,7 +50,7 @@
   <input
     type="text"
     bind:this={inputEl}
-    class="input input-bordered w-full"
+    class="input input-bordered w-full rounded-3xl"
     {placeholder}
     bind:value={$query}
     onkeydown={handleInputKeydown}

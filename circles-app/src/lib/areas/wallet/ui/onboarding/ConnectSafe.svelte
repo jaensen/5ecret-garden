@@ -34,10 +34,12 @@
     refreshGroupsCallback,
   }: Props = $props();
 
-  const { state: safeState, refresh, addSafe, ensureSafeLoaded } = createSafeDiscoveryStore(
-    safeOwnerAddress,
-    sdk
-  );
+  const {
+    state: safeState,
+    refresh,
+    addSafe,
+    ensureSafeLoaded,
+  } = createSafeDiscoveryStore(safeOwnerAddress, sdk);
   const unsubscribe = safeState.subscribe((value) => {
     safes = value.safes;
     profileBySafe = value.profileBySafe;
@@ -86,7 +88,8 @@
 
   function resolveSafeName(address: Address): string {
     const row = profileBySafe[address.toLowerCase()] as any;
-    const candidate = row?.name ?? row?.registeredName ?? row?.profile?.name ?? '';
+    const candidate =
+      row?.name ?? row?.registeredName ?? row?.profile?.name ?? '';
     return typeof candidate === 'string' ? candidate : '';
   }
 
@@ -112,7 +115,9 @@
   </div>
 
   <label class="form-control w-full gap-2">
-    <span class="label-text text-sm text-base-content/70">Search by Safe address</span>
+    <span class="label-text text-sm text-base-content/70"
+      >Search by Safe address</span
+    >
     <div class="flex gap-2">
       <input
         type="text"
@@ -122,7 +127,11 @@
         autocomplete="off"
         spellcheck="false"
       />
-      <button type="button" class="btn btn-primary" onclick={lookupSafeByAddress}>
+      <button
+        type="button"
+        class="btn btn-primary"
+        onclick={lookupSafeByAddress}
+      >
         Find
       </button>
     </div>
@@ -142,7 +151,11 @@
         class="h-4 w-4 opacity-70"
         aria-hidden="true"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.1-4.4a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M21 21l-4.35-4.35m1.1-4.4a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"
+        />
       </svg>
       <input
         type="text"
@@ -184,30 +197,38 @@
   {#if isLoadingSafes}
     <div class="space-y-2" aria-hidden="true">
       {#each Array.from({ length: 2 }) as _}
-        <div class="h-16 rounded-xl border border-base-300 bg-base-200/60 animate-pulse"></div>
+        <div
+          class="h-16 rounded-3xl border border-base-300 bg-base-200/60 animate-pulse"
+        ></div>
       {/each}
     </div>
   {:else if loadError}
-    <div class="rounded-xl border border-error/30 bg-error/10 p-4 space-y-3">
+    <div class="rounded-3xl border border-error/30 bg-error/10 p-4 space-y-3">
       <p class="text-sm text-error">{loadError}</p>
-      <button class="btn btn-sm btn-outline" type="button" onclick={() => refresh({ forceRefresh: true })}>
+      <button
+        class="btn btn-sm btn-outline"
+        type="button"
+        onclick={() => refresh({ forceRefresh: true })}
+      >
         Retry
       </button>
     </div>
   {:else if directLookupAddress && getFilteredSafes().length === 0}
-    <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
+    <div class="rounded-3xl border border-base-300 bg-base-200/40 p-4">
       <p class="text-sm text-base-content/70">
         No Safe found for “{directLookupAddress}”.
       </p>
     </div>
   {:else if (safes ?? []).length === 0}
-    <div class="rounded-xl border border-dashed border-base-300 bg-base-200/40 p-4">
+    <div
+      class="rounded-3xl border border-dashed border-base-300 bg-base-200/40 p-4"
+    >
       <p class="text-sm text-base-content/70">
         No Safe found for this wallet yet. Create one below to continue.
       </p>
     </div>
   {:else if getFilteredSafes().length === 0}
-    <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
+    <div class="rounded-3xl border border-base-300 bg-base-200/40 p-4">
       <p class="text-sm text-base-content/70">
         No avatar matches “{searchQuery.trim()}”.
       </p>
@@ -220,7 +241,7 @@
           isRegistered={profileBySafe[item.toLowerCase()] !== undefined}
           isV1={profileBySafe[item]?.version === 1}
           groups={groupsByOwner[item.toLowerCase()] ?? []}
-          initSdk={initSdk}
+          {initSdk}
           refreshGroupsCallback={refreshGroupsLocal}
         />
       {/each}
@@ -230,7 +251,9 @@
 
 <section class="section space-y-3">
   <div class="space-y-1">
-    <h3 class="text-base md:text-lg font-semibold tracking-tight">Need a new Safe?</h3>
+    <h3 class="text-base md:text-lg font-semibold tracking-tight">
+      Need a new Safe?
+    </h3>
     <p class="text-sm text-base-content/70">
       Create a Safe in-app and it will appear in your list automatically.
     </p>
@@ -239,4 +262,4 @@
   <div class="w-full">
     <CreateSafe {onsafecreated} {safeCreationMode} />
   </div>
- </section>
+</section>

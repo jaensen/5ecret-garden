@@ -12,7 +12,9 @@
 </script>
 
 <section class="card bg-base-200 p-5 space-y-4">
-  <header class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+  <header
+    class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
+  >
     <div>
       <h2 class="font-bold">{title}</h2>
       {#if description}

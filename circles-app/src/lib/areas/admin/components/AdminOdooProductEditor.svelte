@@ -1,6 +1,10 @@
 <script lang="ts">
   import AdminProductFormBase from './AdminProductFormBase.svelte';
-  import type { AdminProductType, AdminUnifiedProduct, AdminOdooConnection } from '../types';
+  import type {
+    AdminProductType,
+    AdminUnifiedProduct,
+    AdminOdooConnection,
+  } from '../types';
   import {
     listOdooProductCatalog,
     type OdooConnectionConfig,
@@ -55,11 +59,17 @@
   let odooKey: string = $state('');
   let salePartnerId: number | null = $state(connection?.salePartnerId ?? null);
   let jsonrpcTimeoutMs: number = $state(connection?.jsonrpcTimeoutMs ?? 30000);
-  let fulfillInheritRequestAbort: boolean = $state(connection?.fulfillInheritRequestAbort ?? false);
+  let fulfillInheritRequestAbort: boolean = $state(
+    connection?.fulfillInheritRequestAbort ?? false
+  );
   let odooEnabled: boolean = $state(product?.odoo?.enabled ?? true);
-  let localStockEnabled: boolean = $state(product?.odoo?.localAvailableQty != null);
+  let localStockEnabled: boolean = $state(
+    product?.odoo?.localAvailableQty != null
+  );
   let localAvailableQtyInput: string = $state(
-    product?.odoo?.localAvailableQty != null ? String(product.odoo.localAvailableQty) : ''
+    product?.odoo?.localAvailableQty != null
+      ? String(product.odoo.localAvailableQty)
+      : ''
   );
   let connectionEnabled: boolean = $state(connection?.enabled ?? true);
 
@@ -99,7 +109,8 @@
       }
       catalogHasMore = r.items.length === catalogLimit;
     } catch (e) {
-      catalogError = e instanceof Error ? e.message : 'Failed to load Odoo product catalog.';
+      catalogError =
+        e instanceof Error ? e.message : 'Failed to load Odoo product catalog.';
     } finally {
       catalogLoading = false;
     }
@@ -114,12 +125,15 @@
   );
 
   const selectedConnection = $derived(
-    connectionOptions.find((option) => option.key === selectedConnectionKey)?.connection ?? null
+    connectionOptions.find((option) => option.key === selectedConnectionKey)
+      ?.connection ?? null
   );
 
   const isConnectionMode = $derived(mode === 'connection');
   const isProductMode = $derived(mode === 'product');
-  const needsConnectionSelection = $derived(isProductMode && !selectedConnection);
+  const needsConnectionSelection = $derived(
+    isProductMode && !selectedConnection
+  );
   const hasConnectionChoice = $derived(connectionOptions.length > 0);
 
   $effect(() => {
@@ -130,7 +144,8 @@
     odooUid = selectedConnection.odooUid;
     salePartnerId = selectedConnection.salePartnerId ?? null;
     jsonrpcTimeoutMs = selectedConnection.jsonrpcTimeoutMs ?? 30000;
-    fulfillInheritRequestAbort = selectedConnection.fulfillInheritRequestAbort ?? false;
+    fulfillInheritRequestAbort =
+      selectedConnection.fulfillInheritRequestAbort ?? false;
     connectionEnabled = selectedConnection.enabled;
 
     // Reset catalog state when switching connection.
@@ -152,7 +167,12 @@
       const name = (item.display_name ?? '').toLowerCase();
       const barcode = (item.barcode ?? '').toLowerCase();
       const tmpl = (item.product_tmpl_id?.[1] ?? '').toLowerCase();
-      return code.includes(q) || name.includes(q) || barcode.includes(q) || tmpl.includes(q);
+      return (
+        code.includes(q) ||
+        name.includes(q) ||
+        barcode.includes(q) ||
+        tmpl.includes(q)
+      );
     });
   });
 
@@ -221,8 +241,13 @@
       let odooStock: OdooStockConfig | undefined;
       if (localStockEnabled) {
         const parsed = Number(localAvailableQtyInput);
-        if (!Number.isFinite(parsed) || parsed < 0 || !Number.isInteger(parsed)) {
-          formError = 'Local stock must be a whole number greater than or equal to 0.';
+        if (
+          !Number.isFinite(parsed) ||
+          parsed < 0 ||
+          !Number.isInteger(parsed)
+        ) {
+          formError =
+            'Local stock must be a whole number greater than or equal to 0.';
           return;
         }
         odooStock = {
@@ -243,32 +268,26 @@
 </script>
 
 <AdminProductFormBase
-  title={
-    isConnectionMode
-      ? connection
-        ? 'Edit Odoo connection'
-        : 'Create Odoo connection'
-      : product
-        ? 'Edit Odoo product'
-        : 'Create Odoo product'
-  }
-  subtitle={
-    isConnectionMode
-      ? 'Store credentials for a seller/chain. Products can be added after the connection exists.'
-      : 'Configure the Odoo mapping; routes are handled automatically.'
-  }
+  title={isConnectionMode
+    ? connection
+      ? 'Edit Odoo connection'
+      : 'Create Odoo connection'
+    : product
+      ? 'Edit Odoo product'
+      : 'Create Odoo product'}
+  subtitle={isConnectionMode
+    ? 'Store credentials for a seller/chain. Products can be added after the connection exists.'
+    : 'Configure the Odoo mapping; routes are handled automatically.'}
   onSubmit={submit}
-  onCancel={onCancel}
+  {onCancel}
   loading={saving}
-  submitLabel={
-    isConnectionMode
-      ? connection
-        ? 'Save connection'
-        : 'Create connection'
-      : product
-        ? 'Save changes'
-        : 'Create product'
-  }
+  submitLabel={isConnectionMode
+    ? connection
+      ? 'Save connection'
+      : 'Create connection'
+    : product
+      ? 'Save changes'
+      : 'Create product'}
 >
   {#if formError}
     <p class="text-error text-sm">{formError}</p>
@@ -302,13 +321,20 @@
     <div class="divider text-xs">Connection</div>
     <label class="form-control">
       <span class="label-text">Use existing connection</span>
-      <select class="select select-bordered select-sm" bind:value={selectedConnectionKey}>
-        <option value="" disabled={needsConnectionSelection}>Select connection</option>
+      <select
+        class="select select-bordered select-sm"
+        bind:value={selectedConnectionKey}
+      >
+        <option value="" disabled={needsConnectionSelection}
+          >Select connection</option
+        >
         {#each connectionOptions as option (option.key)}
           <option value={option.key}>{option.label}</option>
         {/each}
       </select>
-      <span class="label-text-alt text-xs opacity-70">Odoo products require a connection.</span>
+      <span class="label-text-alt text-xs opacity-70"
+        >Odoo products require a connection.</span
+      >
     </label>
   {/if}
 
@@ -316,7 +342,11 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <label class="form-control">
         <span class="label-text">Odoo URL *</span>
-        <input class="input input-bordered input-sm" bind:value={odooUrl} placeholder="https://your-odoo" />
+        <input
+          class="input input-bordered input-sm"
+          bind:value={odooUrl}
+          placeholder="https://your-odoo"
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Database *</span>
@@ -324,11 +354,19 @@
       </label>
       <label class="form-control">
         <span class="label-text">UID *</span>
-        <input type="number" class="input input-bordered input-sm" bind:value={odooUid} />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          bind:value={odooUid}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">API key *</span>
-        <input type="password" class="input input-bordered input-sm" bind:value={odooKey} />
+        <input
+          type="password"
+          class="input input-bordered input-sm"
+          bind:value={odooKey}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Sale partner ID</span>
@@ -351,25 +389,40 @@
       </label>
       <label class="form-control">
         <span class="label-text">Fulfill inherit request abort</span>
-        <input type="checkbox" class="checkbox checkbox-sm" bind:checked={fulfillInheritRequestAbort} />
+        <input
+          type="checkbox"
+          class="checkbox checkbox-sm"
+          bind:checked={fulfillInheritRequestAbort}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Connection enabled</span>
-        <input type="checkbox" class="checkbox checkbox-sm" bind:checked={connectionEnabled} />
+        <input
+          type="checkbox"
+          class="checkbox checkbox-sm"
+          bind:checked={connectionEnabled}
+        />
       </label>
     </div>
   {:else}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <label class="form-control">
         <span class="label-text">Odoo product code *</span>
-        <div class="dropdown dropdown-bottom w-full" class:dropdown-open={catalogOpen}>
+        <div
+          class="dropdown dropdown-bottom w-full"
+          class:dropdown-open={catalogOpen}
+        >
           <input
             class="input input-bordered input-sm font-mono w-full"
             bind:value={odooProductCode}
             placeholder="Select from catalog or paste code"
             onfocus={async () => {
               catalogOpen = true;
-              if (selectedConnection && catalogItems.length === 0 && !catalogLoading) {
+              if (
+                selectedConnection &&
+                catalogItems.length === 0 &&
+                !catalogLoading
+              ) {
                 await loadCatalogPage(true);
               }
             }}
@@ -382,7 +435,9 @@
           />
 
           {#if catalogOpen}
-            <div class="dropdown-content z-[50] card card-compact w-full bg-base-100 shadow border border-base-300 mt-1">
+            <div
+              class="dropdown-content z-[50] card card-compact w-full bg-base-100 shadow border border-base-300 mt-1"
+            >
               <div class="card-body gap-2">
                 <input
                   class="input input-bordered input-xs"
@@ -397,7 +452,9 @@
                 {:else if catalogLoading && catalogItems.length === 0}
                   <p class="text-xs opacity-70">Loading…</p>
                 {:else if filteredCatalogItems.length === 0}
-                  <p class="text-xs opacity-70">No matches in loaded catalog.</p>
+                  <p class="text-xs opacity-70">
+                    No matches in loaded catalog.
+                  </p>
                 {:else}
                   <div class="max-h-64 overflow-auto">
                     <ul class="menu menu-sm bg-base-100 w-full">
@@ -415,9 +472,13 @@
                           >
                             <span class="flex flex-col items-start">
                               <span class="font-mono">{item.default_code}</span>
-                              <span class="text-xs opacity-70">{item.display_name}</span>
+                              <span class="text-xs opacity-70"
+                                >{item.display_name}</span
+                              >
                             </span>
-                            <span class="text-xs opacity-70">{item.qty_available}</span>
+                            <span class="text-xs opacity-70"
+                              >{item.qty_available}</span
+                            >
                           </button>
                         </li>
                       {/each}
@@ -444,37 +505,73 @@
       </label>
       <label class="form-control">
         <span class="label-text">Connection URL</span>
-        <input class="input input-bordered input-sm" bind:value={odooUrl} disabled={true} />
+        <input
+          class="input input-bordered input-sm"
+          bind:value={odooUrl}
+          disabled={true}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Database</span>
-        <input class="input input-bordered input-sm" bind:value={odooDb} disabled={true} />
+        <input
+          class="input input-bordered input-sm"
+          bind:value={odooDb}
+          disabled={true}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">UID</span>
-        <input type="number" class="input input-bordered input-sm" bind:value={odooUid} disabled={true} />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          bind:value={odooUid}
+          disabled={true}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Sale partner ID</span>
-        <input type="number" class="input input-bordered input-sm" bind:value={salePartnerId} disabled={true} />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          bind:value={salePartnerId}
+          disabled={true}
+        />
       </label>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <label class="form-control">
         <span class="label-text">JSON-RPC timeout (ms)</span>
-        <input type="number" class="input input-bordered input-sm" bind:value={jsonrpcTimeoutMs} disabled={true} />
+        <input
+          type="number"
+          class="input input-bordered input-sm"
+          bind:value={jsonrpcTimeoutMs}
+          disabled={true}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Fulfill inherit request abort</span>
-        <input type="checkbox" class="checkbox checkbox-sm" bind:checked={fulfillInheritRequestAbort} disabled={true} />
+        <input
+          type="checkbox"
+          class="checkbox checkbox-sm"
+          bind:checked={fulfillInheritRequestAbort}
+          disabled={true}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Product enabled</span>
-        <input type="checkbox" class="checkbox checkbox-sm" bind:checked={odooEnabled} />
+        <input
+          type="checkbox"
+          class="checkbox checkbox-sm"
+          bind:checked={odooEnabled}
+        />
       </label>
       <label class="form-control">
         <span class="label-text">Use local stock</span>
-        <input type="checkbox" class="checkbox checkbox-sm" bind:checked={localStockEnabled} />
+        <input
+          type="checkbox"
+          class="checkbox checkbox-sm"
+          bind:checked={localStockEnabled}
+        />
         <span class="label-text-alt text-xs opacity-70">
           When enabled, checkout availability uses this local counter.
         </span>
@@ -496,7 +593,8 @@
 
   {#if !isConnectionMode && needsConnectionSelection}
     <p class="text-xs text-warning">
-      Select a connection first. You can create a new connection from the Odoo connections section.
+      Select a connection first. You can create a new connection from the Odoo
+      connections section.
     </p>
   {/if}
 

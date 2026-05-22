@@ -14,19 +14,24 @@
     popupControls.open({
       title: `Demo popup step ${step + 1}`,
       component: currentComponent,
-      props: { step: step + 1 }
+      props: { step: step + 1 },
     });
   }
 </script>
 
 <div class="space-y-4">
   <p class="text-sm opacity-80">
-    This is popup stack step <strong>{step}</strong>. Use “Open next” to push another popup and test back-stack behavior.
+    This is popup stack step <strong>{step}</strong>. Use “Open next” to push
+    another popup and test back-stack behavior.
   </p>
 
   <div class="flex flex-wrap justify-end gap-2">
     <button class="btn btn-sm btn-primary" onclick={openNext}>Open next</button>
-    <button class="btn btn-sm btn-outline" onclick={() => popupControls.back()}>Back</button>
-    <button class="btn btn-sm btn-ghost" onclick={() => popupControls.close()}>Close all</button>
+    <button class="btn btn-sm btn-outline" onclick={() => popupControls.back()}
+      >Back</button
+    >
+    <button class="btn btn-sm btn-ghost" onclick={() => popupControls.close()}
+      >Close all</button
+    >
   </div>
 </div>

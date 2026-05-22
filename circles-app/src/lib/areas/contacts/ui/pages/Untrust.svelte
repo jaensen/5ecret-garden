@@ -1,35 +1,41 @@
 <script lang="ts">
-    import { avatarState } from '$lib/shared/state/avatar.svelte';
-    import { executeTxSubmitFirst } from '$lib/shared/utils/txExecution';
-    import { shortenAddress } from '$lib/shared/utils/shared';
-    import { V1Avatar } from '@circles-sdk/sdk';
-    import { circles } from '$lib/shared/state/circles';
-    import TrustActionCard from '$lib/areas/contacts/ui/components/TrustActionCard.svelte';
-    import { popupControls } from '$lib/shared/state/popup';
-    import { UNTRUST_EXPLAINER_POINTS, UNTRUST_QUICK_HELP_LINES } from '$lib/shared/content/trustRoutingCopy';
+  import { avatarState } from '$lib/shared/state/avatar.svelte';
+  import { executeTxSubmitFirst } from '$lib/shared/utils/txExecution';
+  import { shortenAddress } from '$lib/shared/utils/shared';
+  import { V1Avatar } from '@circles-sdk/sdk';
+  import { circles } from '$lib/shared/state/circles';
+  import TrustActionCard from '$lib/areas/contacts/ui/components/TrustActionCard.svelte';
+  import { popupControls } from '$lib/shared/state/popup';
+  import {
+    UNTRUST_EXPLAINER_POINTS,
+    UNTRUST_QUICK_HELP_LINES,
+  } from '$lib/shared/content/trustRoutingCopy';
 
-    interface Props { address: `0x${string}`; trustVersion: number; }
-    let { address, trustVersion }: Props = $props();
+  interface Props {
+    address: `0x${string}`;
+    trustVersion: number;
+  }
+  let { address, trustVersion }: Props = $props();
 
-    async function untrust() {
-        if (!avatarState.avatar) {
-            throw new Error('Avatar store not available');
-        }
-        if (trustVersion == 1) {
-            const v1Avatar = new V1Avatar($circles!, avatarState.avatar.avatarInfo!);
-            void executeTxSubmitFirst({
-                name: `Untrusting V1 ${shortenAddress(address)} ...`,
-                submit: () => v1Avatar.untrust(address),
-                onSubmitted: () => popupControls.close(),
-            });
-        } else {
-            void executeTxSubmitFirst({
-                name: `Untrusting V2 ${shortenAddress(address)} ...`,
-                submit: () => avatarState.avatar!.untrust(address),
-                onSubmitted: () => popupControls.close(),
-            });
-        }
+  async function untrust() {
+    if (!avatarState.avatar) {
+      throw new Error('Avatar store not available');
     }
+    if (trustVersion == 1) {
+      const v1Avatar = new V1Avatar($circles!, avatarState.avatar.avatarInfo!);
+      void executeTxSubmitFirst({
+        name: `Untrusting V1 ${shortenAddress(address)} ...`,
+        submit: () => v1Avatar.untrust(address),
+        onSubmitted: () => popupControls.close(),
+      });
+    } else {
+      void executeTxSubmitFirst({
+        name: `Untrusting V2 ${shortenAddress(address)} ...`,
+        submit: () => avatarState.avatar!.untrust(address),
+        onSubmitted: () => popupControls.close(),
+      });
+    }
+  }
 </script>
 
 <TrustActionCard

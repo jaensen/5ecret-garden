@@ -51,8 +51,18 @@
   <label class="form-control">
     <span class="label-text">Service address</span>
     <div class="join">
-      <input id="circlesAddress" type="text" class="input input-bordered join-item w-full" bind:value={serviceAddress} placeholder="0x…" />
-      <button type="button" class="btn btn-primary join-item btn-xs" onclick={handleSetService}>
+      <input
+        id="circlesAddress"
+        type="text"
+        class="input input-bordered join-item w-full"
+        bind:value={serviceAddress}
+        placeholder="0x…"
+      />
+      <button
+        type="button"
+        class="btn btn-primary join-item btn-xs"
+        onclick={handleSetService}
+      >
         <Lucide icon={LCheck} size={16} class="shrink-0" ariaLabel="" />
       </button>
     </div>
@@ -61,8 +71,18 @@
   <label class="form-control">
     <span class="label-text">Mint handler address</span>
     <div class="join">
-      <input id="tokenAddress" type="text" class="input input-bordered join-item w-full" bind:value={mintHandlerAddress} placeholder="0x…" />
-      <button type="button" class="btn btn-primary join-item btn-xs" onclick={handleSetMintHandler}>
+      <input
+        id="tokenAddress"
+        type="text"
+        class="input input-bordered join-item w-full"
+        bind:value={mintHandlerAddress}
+        placeholder="0x…"
+      />
+      <button
+        type="button"
+        class="btn btn-primary join-item btn-xs"
+        onclick={handleSetMintHandler}
+      >
         <Lucide icon={LCheck} size={16} class="shrink-0" ariaLabel="" />
       </button>
     </div>
@@ -72,8 +92,18 @@
     <label class="form-control">
       <span class="label-text">Redemption handler address</span>
       <div class="join">
-        <input id="redemption" type="text" class="input input-bordered join-item w-full" bind:value={redemptionHandlerAddress} placeholder="0x…" />
-        <button type="button" class="btn btn-primary join-item btn-xs" onclick={handleSetRedemptionHandler}>
+        <input
+          id="redemption"
+          type="text"
+          class="input input-bordered join-item w-full"
+          bind:value={redemptionHandlerAddress}
+          placeholder="0x…"
+        />
+        <button
+          type="button"
+          class="btn btn-primary join-item btn-xs"
+          onclick={handleSetRedemptionHandler}
+        >
           <Lucide icon={LCheck} size={16} class="shrink-0" ariaLabel="" />
         </button>
       </div>

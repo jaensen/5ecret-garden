@@ -10,7 +10,9 @@
 
   function focusDemoSearchInput(current: HTMLElement): void {
     const scope = current.closest<HTMLElement>('[data-demo-list-scope]');
-    const input = scope?.querySelector<HTMLInputElement>('[data-demo-list-search-input]');
+    const input = scope?.querySelector<HTMLInputElement>(
+      '[data-demo-list-search-input]'
+    );
     input?.focus();
   }
 
@@ -19,7 +21,11 @@
     if (!current) return;
 
     const scope = current.closest<HTMLElement>('[data-demo-list-scope]');
-    const rows = Array.from((scope ?? document).querySelectorAll<HTMLElement>('[data-demo-generic-row]'));
+    const rows = Array.from(
+      (scope ?? document).querySelectorAll<HTMLElement>(
+        '[data-demo-generic-row]'
+      )
+    );
     const index = rows.indexOf(current);
     if (index === -1) return;
 

@@ -14,4 +14,6 @@
   };
 </script>
 
-<span class={`badge badge-sm font-medium text-xs ${classes[variant]}`}>{label}</span>
+<span class={`badge badge-sm font-medium text-xs ${classes[variant]}`}
+  >{label}</span
+>

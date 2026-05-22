@@ -26,14 +26,14 @@
     emptyLabel = 'No trusted accounts yet.',
     noMatchesLabel = 'No matching trusted accounts.',
     rowHeight = 72,
-    pageSize = 25
+    pageSize = 25,
   }: Props = $props();
 
   let trustListScopeEl: HTMLDivElement | null = $state(null);
 
   const onInputArrowDown = createListInputArrowDownHandler({
     getScope: () => trustListScopeEl,
-    rowSelector: '[data-gateway-trust-row]'
+    rowSelector: '[data-gateway-trust-row]',
   });
 </script>
 
@@ -46,10 +46,10 @@
     onInputKeydown={onInputArrowDown}
     inputDataAttribute="data-gateway-trust-search-input"
     {loading}
-    emptyLabel={emptyLabel}
-    noMatchesLabel={noMatchesLabel}
-    rowHeight={rowHeight}
-    pageSize={pageSize}
+    {emptyLabel}
+    {noMatchesLabel}
+    {rowHeight}
+    {pageSize}
     searchPlaceholder="Search by address or name"
     placeholderRow={AvatarRowPlaceholder}
   />

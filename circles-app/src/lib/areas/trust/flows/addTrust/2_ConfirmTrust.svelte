@@ -19,7 +19,9 @@
 
   let { context, onCompleted }: Props = $props();
 
-  const selected = $derived(Array.isArray(context.selectedTrustees) ? context.selectedTrustees : []);
+  const selected = $derived(
+    Array.isArray(context.selectedTrustees) ? context.selectedTrustees : []
+  );
   const canConfirm = $derived(selected.length > 0);
 
   async function confirm() {
@@ -43,7 +45,12 @@
   }
 </script>
 
-<FlowStepScaffold {...ADD_TRUST_FLOW_SCAFFOLD_BASE} step={2} title="Confirm trust" subtitle="Review your selection before confirming.">
+<FlowStepScaffold
+  {...ADD_TRUST_FLOW_SCAFFOLD_BASE}
+  step={2}
+  title="Confirm trust"
+  subtitle="Review your selection before confirming."
+>
   <div class="space-y-4">
     <StepSection
       title={`Selected accounts (${selected.length})`}
@@ -55,7 +62,12 @@
         <div class="w-full flex flex-col gap-y-1.5" role="list">
           {#each selected as address (address)}
             <div class="rounded-[var(--row-radius)]" role="listitem">
-              <Avatar {address} view="horizontal" clickable={false} showTypeInfo={true} />
+              <Avatar
+                {address}
+                view="horizontal"
+                clickable={false}
+                showTypeInfo={true}
+              />
             </div>
           {/each}
         </div>
@@ -64,7 +76,11 @@
 
     <StepActionBar>
       {#snippet secondary()}
-        <button type="button" class="btn btn-ghost btn-sm" onclick={changeSelection}>
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          onclick={changeSelection}
+        >
           Change selection
         </button>
       {/snippet}

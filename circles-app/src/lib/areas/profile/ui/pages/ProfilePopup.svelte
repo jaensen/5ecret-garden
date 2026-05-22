@@ -7,4 +7,4 @@
   }>();
 </script>
 
-<Profile {address} {trustVersion} />
+<Profile {address} {trustVersion} isPopup={true} />

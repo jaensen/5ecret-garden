@@ -1,8 +1,8 @@
-export type ButtonVariant = 'primary' | 'ghost';
+export type ButtonVariant = 'primary' | 'ghost' | 'muted';
 
 export interface ActionButton {
   id: string;
-  label: string; 
+  label: string;
   iconNode?: any; // Lucide component
   onClick: () => void | Promise<void>;
   variant?: ButtonVariant;

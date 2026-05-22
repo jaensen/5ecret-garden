@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Address } from '@circles-sdk/utils';
-import { ProfileNamespaces } from '$lib/shared/ui/profile';
+  import { ProfileNamespaces } from '$lib/shared/ui/profile';
   type Props = {
     avatarAddress: Address | '';
     pinApiBase: string;
@@ -24,7 +24,7 @@ import { ProfileNamespaces } from '$lib/shared/ui/profile';
   }: Props = $props();
 </script>
 
-<section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+<section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
   <div class="flex items-center justify-between">
     <div>
       <h3 class="text-sm font-semibold m-0">App data</h3>
@@ -33,9 +33,11 @@ import { ProfileNamespaces } from '$lib/shared/ui/profile';
   </div>
 </section>
 
-<section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+<section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
   {#if !avatarAddress}
-    <div class="text-sm opacity-70">Connect a Circles avatar first to edit your namespaces.</div>
+    <div class="text-sm opacity-70">
+      Connect a Circles avatar first to edit your namespaces.
+    </div>
   {:else if nsError}
     <div class="alert alert-error text-xs">{nsError}</div>
   {:else if nsLoading}
@@ -46,7 +48,10 @@ import { ProfileNamespaces } from '$lib/shared/ui/profile';
       {pinApiBase}
       namespaces={nsNamespaces}
       readonly={!nsIsOwner}
-      on:namespacesChanged={(e) => onNamespacesChanged(new CustomEvent('namespacesChanged', { detail: e.detail }))}
+      on:namespacesChanged={(e) =>
+        onNamespacesChanged(
+          new CustomEvent('namespacesChanged', { detail: e.detail })
+        )}
     />
   {:else}
     <div class="text-sm opacity-70">No avatar resolved.</div>

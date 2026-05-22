@@ -21,13 +21,15 @@
     context?: MigrateToV2Context;
   }
 
-  let { context = $bindable({
-    inviter: undefined,
-    profile: <Profile>{
-      name: ''
-    },
-    trustList: []
-  }) }: Props = $props();
+  let {
+    context = $bindable({
+      inviter: undefined,
+      profile: <Profile>{
+        name: '',
+      },
+      trustList: [],
+    }),
+  }: Props = $props();
   let canSelfMigrate = $state(false);
   let invitations: AvatarRow[] | undefined = $state();
   onMount(async () => {
@@ -40,7 +42,9 @@
       await next();
       return;
     }
-    canSelfMigrate = settings.ring ? true : await sdk.canSelfMigrate(avatar.avatarInfo);
+    canSelfMigrate = settings.ring
+      ? true
+      : await sdk.canSelfMigrate(avatar.avatarInfo);
     invitations = await sdk.data.getInvitations(avatar.avatarInfo.avatar);
   });
   async function next() {
@@ -57,13 +61,13 @@
     next();
   }
 </script>
+
 <FlowStepScaffold
   {...MIGRATE_FLOW_SCAFFOLD_BASE}
   step={1}
   title="Get invited"
   subtitle="Choose how to start your Circles V2 migration."
 >
-
   {#if !invitations}
     <p class="text-base-content/70 mt-2">Loading invitations...</p>
   {:else if invitations.length > 0}
@@ -75,7 +79,11 @@
       />
     </div>
   {:else}
-    <StepAlert variant="info" message="You have no invitations." className="mt-2" />
+    <StepAlert
+      variant="info"
+      message="You have no invitations."
+      className="mt-2"
+    />
     {#if canSelfMigrate}
       <p class="text-base-content/70 mt-2">You can migrate to v2.</p>
       <StepActionButtons

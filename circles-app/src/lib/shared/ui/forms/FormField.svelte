@@ -24,9 +24,10 @@
   {/if}
   <slot />
   {#if help || hasIssues}
-    <span class={`label-text-alt ${hasIssues ? 'text-error' : 'text-base-content/60'}`}>
+    <span
+      class={`label-text-alt ${hasIssues ? 'text-error' : 'text-base-content/60'}`}
+    >
       {hasIssues ? issueMessage : help}
     </span>
   {/if}
 </label>
-

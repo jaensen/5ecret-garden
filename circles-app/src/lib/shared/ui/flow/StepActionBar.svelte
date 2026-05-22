@@ -22,7 +22,7 @@
   const layoutClass = $derived(
     stackOnMobile
       ? `flex flex-col sm:flex-row gap-2 ${align === 'between' ? 'sm:justify-between' : 'sm:justify-end'}`
-      : `flex flex-row gap-2 ${align === 'between' ? 'justify-between' : 'justify-end'}`,
+      : `flex flex-row gap-2 ${align === 'between' ? 'justify-between' : 'justify-end'}`
   );
 </script>
 

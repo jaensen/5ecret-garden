@@ -12,7 +12,8 @@
     salesStore: PaginatedReadable<MarketSalesListItem>;
   };
 
-  let { avatarAddress, salesAuthed, ensureSalesAuthed, salesStore }: Props = $props();
+  let { avatarAddress, salesAuthed, ensureSalesAuthed, salesStore }: Props =
+    $props();
 </script>
 
 <MarketAuthListSection

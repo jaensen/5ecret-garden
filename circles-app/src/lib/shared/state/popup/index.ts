@@ -6,6 +6,10 @@ export type PopupContentDefinition = {
    * If true, the popup shell will not render the title text (useful when the inner component already has its own header).
    */
   hideTitle?: boolean;
+  /**
+   * If true, the popup shell will not render the default header row at all.
+   */
+  hideHeader?: boolean;
   component: any; // Svelte component constructor (kept loose for app-wide compatibility)
   props?: Record<string, any>;
   key?: string | number;
@@ -22,7 +26,9 @@ export type PopupContentDefinition = {
   confirmDiscardMessage?: string;
 };
 
-export function resolvePopupDismiss(def: PopupContentDefinition | null | undefined): NonNullable<PopupContentDefinition['dismiss']> {
+export function resolvePopupDismiss(
+  def: PopupContentDefinition | null | undefined
+): NonNullable<PopupContentDefinition['dismiss']> {
   if (!def) return 'explicit';
   if (def.dismiss) return def.dismiss;
   if (!def.kind) return 'backdrop';
@@ -42,8 +48,10 @@ type PopupHistoryMarker = {
 
 const initialState: PopupState = { content: null, stack: [] };
 
-export const popupState: Writable<PopupState> = writable<PopupState>(initialState);
-export const popupHistoryForwardNoopTick: Writable<number> = writable<number>(0);
+export const popupState: Writable<PopupState> =
+  writable<PopupState>(initialState);
+export const popupHistoryForwardNoopTick: Writable<number> =
+  writable<number>(0);
 let popupIdentitySeq = 0;
 let popupFlowIdentitySeq = 0;
 let popupHistorySyncSessionId: string | null = null;
@@ -129,7 +137,11 @@ function hasActivePopupHistorySync(): boolean {
 }
 
 export function syncPopupHistoryToCurrentDepth(): void {
-  if (!hasActivePopupHistorySync() || popupHistorySyncHandlingPopstate || popupHistorySyncSkipStateSync) {
+  if (
+    !hasActivePopupHistorySync() ||
+    popupHistorySyncHandlingPopstate ||
+    popupHistorySyncSkipStateSync
+  ) {
     return;
   }
 
@@ -296,7 +308,10 @@ function closeAndThen(action: () => void): void {
 
 function replace(def: PopupContentDefinition): void {
   // Replace current content without changing the stack
-  popupState.update((s) => ({ content: normalizePopupDefinition(def, s.content), stack: s.stack.slice() }));
+  popupState.update((s) => ({
+    content: normalizePopupDefinition(def, s.content),
+    stack: s.stack.slice(),
+  }));
   syncPopupHistoryToCurrentDepth();
 }
 
@@ -317,7 +332,12 @@ export function isCurrentFlowDirty(state: PopupState): boolean {
     return true;
   }
 
-  return state.stack.some((entry) => entry.kind === 'flow' && String(entry.flowId ?? '') === flowId && isDirty(entry));
+  return state.stack.some(
+    (entry) =>
+      entry.kind === 'flow' &&
+      String(entry.flowId ?? '') === flowId &&
+      isDirty(entry)
+  );
 }
 
 function setCurrentDirty(isDirty: boolean): void {
@@ -325,7 +345,8 @@ function setCurrentDirty(isDirty: boolean): void {
     const content = s.content;
     if (!content) return s;
 
-    const activeFlowId = content.kind === 'flow' && content.flowId ? String(content.flowId) : null;
+    const activeFlowId =
+      content.kind === 'flow' && content.flowId ? String(content.flowId) : null;
     if (!activeFlowId) {
       if ((content.isDirty ?? false) === isDirty) return s;
       return {
@@ -335,8 +356,13 @@ function setCurrentDirty(isDirty: boolean): void {
     }
 
     let changed = false;
-    const mapEntry = (entry: PopupContentDefinition): PopupContentDefinition => {
-      if (entry.kind !== 'flow' || String(entry.flowId ?? '') !== activeFlowId) {
+    const mapEntry = (
+      entry: PopupContentDefinition
+    ): PopupContentDefinition => {
+      if (
+        entry.kind !== 'flow' ||
+        String(entry.flowId ?? '') !== activeFlowId
+      ) {
         return entry;
       }
       if ((entry.isDirty ?? false) === isDirty) {

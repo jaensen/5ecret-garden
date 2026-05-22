@@ -18,7 +18,9 @@
         checked={settings.legacy}
         onchange={() => (settings.legacy = !settings.legacy)}
       />
-      <p class="text-sm">LEGACY <Tooltip content="Use your EOA to control your avatar." /></p>
+      <p class="text-sm">
+        LEGACY <Tooltip content="Use your EOA to control your avatar." />
+      </p>
     </div>
   </div>
 </div>

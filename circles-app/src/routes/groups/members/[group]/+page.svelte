@@ -10,14 +10,15 @@
   import { getProfileDisplayName } from '$lib/areas/groups/ui/utils/profileDisplayName';
   import GroupMembersManager from '$lib/areas/groups/ui/components/GroupMembersManager.svelte';
 
-  const group = $derived(($page.params.group ?? '').toLowerCase() as Address | '');
-  const shortAddr = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '');
+  const group = $derived(
+    ($page.params.group ?? '').toLowerCase() as Address | ''
+  );
+  const shortAddr = (a?: string) =>
+    a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '';
   let groupName: string = $state('');
 
   const groupTitle = $derived(
-    group
-      ? `${groupName || shortAddr(group)} members`
-      : 'Group members'
+    group ? `${groupName || shortAddr(group)} members` : 'Group members'
   );
 
   $effect(() => {
@@ -79,7 +80,7 @@
   contentWidthClass="page page--lg"
   usePagePadding={true}
   headerTopGapClass="mt-4 md:mt-6"
-  >
+>
   {#snippet title()}
     <h1 class="h2">{groupTitle}</h1>
   {/snippet}
@@ -97,7 +98,9 @@
   {/snippet}
 
   {#snippet collapsedLeft()}
-    <span class="text-base md:text-lg font-semibold tracking-tight text-base-content">
+    <span
+      class="text-base md:text-lg font-semibold tracking-tight text-base-content"
+    >
       {groupTitle}
     </span>
   {/snippet}
@@ -107,11 +110,11 @@
   {/snippet}
 
   {#if group}
-    <section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
-      <GroupMembersManager group={group} />
+    <section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
+      <GroupMembersManager {group} />
     </section>
   {:else}
-    <section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+    <section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
       <div class="text-sm opacity-70">Invalid group route.</div>
     </section>
   {/if}

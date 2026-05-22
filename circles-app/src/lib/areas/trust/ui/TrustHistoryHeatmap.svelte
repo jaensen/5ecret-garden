@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { Address } from '@circles-sdk/utils';
-  import { EventHistoryHeatmap, type EventHistoryDataSource } from '$lib/shared/ui/event-history';
+  import {
+    EventHistoryHeatmap,
+    type EventHistoryDataSource,
+  } from '$lib/shared/ui/event-history';
   import TrustHistoryDayEventRow from '$lib/areas/trust/ui/history/TrustHistoryDayEventRow.svelte';
   import TrustHistoryDayPopupHeader from '$lib/areas/trust/ui/history/TrustHistoryDayPopupHeader.svelte';
   import { trustHistoryKnownRangeEvents } from '$lib/areas/trust/ui/history/knownRangeEvents';
@@ -27,7 +30,9 @@
   const knownRangeEvents = $derived(buildKnownRangeEvents());
   const dataSource = $derived(buildDataSource(address));
 
-  function buildDataSource(addr?: Address): EventHistoryDataSource<TrustHistoryEventRow> {
+  function buildDataSource(
+    addr?: Address
+  ): EventHistoryDataSource<TrustHistoryEventRow> {
     return {
       namespace: 'CrcV2',
       table: 'Trust',
@@ -62,22 +67,26 @@
   }
 
   function buildKnownRangeEvents(): TrustHistoryRangeEvent[] {
-    const mapped: Array<TrustHistoryRangeEvent | null> = trustHistoryKnownRangeEvents.events
-      .map((event) => {
+    const mapped: Array<TrustHistoryRangeEvent | null> =
+      trustHistoryKnownRangeEvents.events.map((event) => {
         const startDaySec = parseDateToDayStartSec(event.startDate);
         const endDaySec = parseDateToDayStartSec(event.endDate);
         if (startDaySec === null || endDaySec === null) return null;
 
         const eventTypeLabel = event.eventType
-          ? trustHistoryKnownRangeEvents.taxonomies?.eventType?.[event.eventType]?.label
+          ? trustHistoryKnownRangeEvents.taxonomies?.eventType?.[
+              event.eventType
+            ]?.label
           : undefined;
         const seriesLabel = event.seriesId
-          ? trustHistoryKnownRangeEvents.taxonomies?.series?.[event.seriesId]?.label
+          ? trustHistoryKnownRangeEvents.taxonomies?.series?.[event.seriesId]
+              ?.label
           : undefined;
 
-        const locationParts = [event.location?.city ?? null, event.location?.country ?? null].filter(
-          (v): v is string => Boolean(v)
-        );
+        const locationParts = [
+          event.location?.city ?? null,
+          event.location?.country ?? null,
+        ].filter((v): v is string => Boolean(v));
         const locationLabel =
           locationParts.length > 0
             ? locationParts.join(', ')
@@ -87,9 +96,11 @@
                 ? 'Hybrid'
                 : undefined;
 
-        const descriptionParts = [seriesLabel, eventTypeLabel, locationLabel].filter(
-          (v): v is string => Boolean(v)
-        );
+        const descriptionParts = [
+          seriesLabel,
+          eventTypeLabel,
+          locationLabel,
+        ].filter((v): v is string => Boolean(v));
 
         const normalizedStart = Math.min(startDaySec, endDaySec);
         const normalizedEnd = Math.max(startDaySec, endDaySec);
@@ -97,7 +108,11 @@
         return {
           id: event.id,
           title: event.title ?? event.name ?? event.id,
-          description: event.description ?? (descriptionParts.length > 0 ? descriptionParts.join(' · ') : undefined),
+          description:
+            event.description ??
+            (descriptionParts.length > 0
+              ? descriptionParts.join(' · ')
+              : undefined),
           startDaySec: normalizedStart,
           endDaySec: normalizedEnd,
         };
@@ -105,14 +120,21 @@
 
     return mapped
       .filter((event): event is TrustHistoryRangeEvent => event !== null)
-      .sort((a, b) => a.startDaySec - b.startDaySec || a.endDaySec - b.endDaySec || a.title.localeCompare(b.title));
+      .sort(
+        (a, b) =>
+          a.startDaySec - b.startDaySec ||
+          a.endDaySec - b.endDaySec ||
+          a.title.localeCompare(b.title)
+      );
   }
 
   function trustSearchHaystack(row: TrustHistoryEventRow): string {
     return [
       String(row.trustee ?? ''),
       String(row.transactionHash ?? ''),
-      Number(row.expiryTime) > Number(row.timestamp) ? 'trust set' : 'trust removed',
+      Number(row.expiryTime) > Number(row.timestamp)
+        ? 'trust set'
+        : 'trust removed',
     ]
       .join(' ')
       .toLowerCase();
@@ -129,7 +151,9 @@
     dayEmpty: 'No trust events in this day.',
     summary: (rows) => {
       const trustRows = rows as TrustHistoryEventRow[];
-      const setCount = trustRows.filter((row) => toNumber(row.expiryTime) > toNumber(row.timestamp)).length;
+      const setCount = trustRows.filter(
+        (row) => toNumber(row.expiryTime) > toNumber(row.timestamp)
+      ).length;
       const removedCount = trustRows.length - setCount;
       return `${trustRows.length} outgoing trust events · ${setCount} set · ${removedCount} removed`;
     },

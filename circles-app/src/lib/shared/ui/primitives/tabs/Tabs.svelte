@@ -1,8 +1,18 @@
 <script lang="ts">
-  import { setContext, tick, createEventDispatcher, onMount, onDestroy } from 'svelte';
+  import {
+    setContext,
+    tick,
+    createEventDispatcher,
+    onMount,
+    onDestroy,
+  } from 'svelte';
   import type { Snippet } from 'svelte';
   import { writable, type Readable } from 'svelte/store';
-  import { TABS_CTX, type TabRegistration, type TabsContext } from './tabs.context';
+  import {
+    TABS_CTX,
+    type TabRegistration,
+    type TabsContext,
+  } from './tabs.context';
 
   let uidCounter = 0;
   function nextUid() {
@@ -27,7 +37,7 @@
 
   // Bindable props
   let {
-    selected = $bindable<string | null>(null),   // external (optional) controlled value
+    selected = $bindable<string | null>(null), // external (optional) controlled value
     defaultValue = null as string | null,
     variant = 'bordered' as Variant,
     size = 'md' as Size,
@@ -35,7 +45,7 @@
     class: className = '',
     id = nextUid(),
     tabOrder = undefined as string[] | undefined,
-    children
+    children,
   }: Props = $props();
 
   const dispatch = createEventDispatcher<{ change: string | null }>();
@@ -149,7 +159,9 @@
 
   function isTabVisible(id_: string): boolean {
     if (!scroller) return true;
-    const el = document.querySelector<HTMLElement>(`#${id}-tab-${CSS.escape(id_)}`);
+    const el = document.querySelector<HTMLElement>(
+      `#${id}-tab-${CSS.escape(id_)}`
+    );
     if (!el) return true;
     const left = el.offsetLeft;
     const right = el.offsetLeft + el.offsetWidth;
@@ -160,12 +172,20 @@
 
   function centerOnTabId(id_: string, behavior: ScrollBehavior = 'smooth') {
     if (!scroller) return;
-    const el = document.querySelector<HTMLElement>(`#${id}-tab-${CSS.escape(id_)}`);
+    const el = document.querySelector<HTMLElement>(
+      `#${id}-tab-${CSS.escape(id_)}`
+    );
     if (!el) return;
     if (isTabVisible(id_)) return;
     const elCenter = el.offsetLeft + el.offsetWidth / 2;
     const containerCenter = scroller.clientWidth / 2;
-    const target = Math.max(0, Math.min(elCenter - containerCenter, scroller.scrollWidth - scroller.clientWidth));
+    const target = Math.max(
+      0,
+      Math.min(
+        elCenter - containerCenter,
+        scroller.scrollWidth - scroller.clientWidth
+      )
+    );
     scroller.scrollTo({ left: target, behavior });
   }
 
@@ -185,7 +205,9 @@
     void tick().then(() => {
       centerOnTabId(id_);
       if (focus) {
-        const el = document.querySelector<HTMLElement>(`#${id}-tab-${CSS.escape(id_)}`);
+        const el = document.querySelector<HTMLElement>(
+          `#${id}-tab-${CSS.escape(id_)}`
+        );
         el?.focus();
       }
     });
@@ -202,12 +224,36 @@
     };
 
     const key = e.key;
-    if (key === 'ArrowRight') { e.preventDefault(); move(1); return; }
-    if (key === 'ArrowLeft')  { e.preventDefault(); move(-1); return; }
-    if (key === 'ArrowDown')  { e.preventDefault(); focusFirstBelowTabs(); return; }
-    if (key === 'ArrowUp')    { e.preventDefault(); focusLastAboveTabs(); return; }
-    if (key === 'Home')                              { e.preventDefault(); select(enabled[0].id, true); return; }
-    if (key === 'End')                               { e.preventDefault(); select(enabled[enabled.length - 1].id, true); return; }
+    if (key === 'ArrowRight') {
+      e.preventDefault();
+      move(1);
+      return;
+    }
+    if (key === 'ArrowLeft') {
+      e.preventDefault();
+      move(-1);
+      return;
+    }
+    if (key === 'ArrowDown') {
+      e.preventDefault();
+      focusFirstBelowTabs();
+      return;
+    }
+    if (key === 'ArrowUp') {
+      e.preventDefault();
+      focusLastAboveTabs();
+      return;
+    }
+    if (key === 'Home') {
+      e.preventDefault();
+      select(enabled[0].id, true);
+      return;
+    }
+    if (key === 'End') {
+      e.preventDefault();
+      select(enabled[enabled.length - 1].id, true);
+      return;
+    }
   }
 
   // Reactive selected via store for children
@@ -230,7 +276,7 @@
     isSelected,
     select,
     selected$: selectedStore as Readable<string | null>,
-    hostId: id
+    hostId: id,
   };
   setContext(TABS_CTX, ctx);
 
@@ -241,18 +287,34 @@
       variant === 'bordered' ? 'tabs-bordered' : '',
       variant === 'lifted' ? 'tabs-lifted' : '',
       variant === 'boxed' ? 'tabs-boxed' : '',
-      size === 'xs' ? 'tabs-xs' : size === 'sm' ? 'tabs-sm' : size === 'lg' ? 'tabs-lg' : '',
+      size === 'xs'
+        ? 'tabs-xs'
+        : size === 'sm'
+          ? 'tabs-sm'
+          : size === 'lg'
+            ? 'tabs-lg'
+            : '',
       // make tabs horizontally scrollable when there are many
       'overflow-x-auto whitespace-nowrap',
       // Layout: use grid only when fitted, otherwise a left-aligned flex row
-      fitted ? 'grid grid-flow-col auto-cols-fr' : 'flex flex-nowrap justify-start',
-      className
-    ].filter(Boolean).join(' ')
+      fitted
+        ? 'grid grid-flow-col auto-cols-fr'
+        : 'flex flex-nowrap justify-start',
+      className,
+    ]
+      .filter(Boolean)
+      .join(' ')
   );
 
   // Consistent tab heights per size to avoid layout jumps between states
   let buttonSizeClass = $derived(
-    size === 'xs' ? 'h-6' : size === 'sm' ? 'h-8' : size === 'lg' ? 'h-12' : 'h-10'
+    size === 'xs'
+      ? 'h-6'
+      : size === 'sm'
+        ? 'h-8'
+        : size === 'lg'
+          ? 'h-12'
+          : 'h-10'
   );
 
   // Scroll indicators state
@@ -268,13 +330,17 @@
     'input:not([disabled]):not([type="hidden"])',
     'select:not([disabled])',
     'textarea:not([disabled])',
-    '[tabindex]:not([tabindex="-1"])'
+    '[tabindex]:not([tabindex="-1"])',
   ].join(',');
 
   function getFocusable(scope: ParentNode | null): HTMLElement[] {
     if (!scope) return [];
-    const all = Array.from(scope.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
-    return all.filter((el) => el.getClientRects().length > 0 && !el.hasAttribute('disabled'));
+    const all = Array.from(
+      scope.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+    );
+    return all.filter(
+      (el) => el.getClientRects().length > 0 && !el.hasAttribute('disabled')
+    );
   }
 
   function focusFirstBelowTabs(): void {
@@ -337,67 +403,83 @@
 </script>
 
 <div class="relative" bind:this={tabsNavEl}>
-  <div class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-base-300 z-0"></div>
+  <div
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-base-300 z-0"
+  ></div>
 
-  <div class={`pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-base-100 to-transparent transition-opacity duration-150 ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`}></div>
-  <div class={`pointer-events-none absolute left-0 bottom-0 w-10 h-6 bg-gradient-to-b from-base-100 to-transparent transition-opacity duration-150 z-10 ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`}></div>
+  <div
+    class={`pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-base-100 to-transparent transition-opacity duration-150 ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`}
+  ></div>
+  <div
+    class={`pointer-events-none absolute left-0 bottom-0 w-10 h-6 bg-gradient-to-b from-base-100 to-transparent transition-opacity duration-150 z-10 ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`}
+  ></div>
   <!-- Intentionally excluded from keyboard tab order: tabs are fully keyboard navigable via tab buttons + arrow keys. -->
   <button
-      type="button"
-      class={`btn btn-ghost btn-xs absolute left-1 top-1/2 -translate-y-1/2 z-10 ${canScrollLeft ? '' : 'opacity-0 pointer-events-none'}`}
-      aria-hidden={!canScrollLeft}
-      tabindex={-1}
-      onclick={() => nudge(-1)}
+    type="button"
+    class={`btn btn-ghost btn-xs absolute left-1 top-1/2 -translate-y-1/2 z-10 ${canScrollLeft ? '' : 'opacity-0 pointer-events-none'}`}
+    aria-hidden={!canScrollLeft}
+    tabindex={-1}
+    onclick={() => nudge(-1)}
   >
-    <img src="/chevron-right.svg" alt="Scroll left" class="w-4 h-4 rotate-180" />
+    <img
+      src="/chevron-right.svg"
+      alt="Scroll left"
+      class="w-4 h-4 rotate-180"
+    />
   </button>
 
-  <div class={`pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-base-100 to-transparent transition-opacity duration-150 ${canScrollRight ? 'opacity-100' : 'opacity-0'}`}></div>
-  <div class={`pointer-events-none absolute right-0 bottom-0 w-10 h-6 bg-gradient-to-b from-base-100 to-transparent transition-opacity duration-150 z-10 ${canScrollRight ? 'opacity-100' : 'opacity-0'}`}></div>
+  <div
+    class={`pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-base-100 to-transparent transition-opacity duration-150 ${canScrollRight ? 'opacity-100' : 'opacity-0'}`}
+  ></div>
+  <div
+    class={`pointer-events-none absolute right-0 bottom-0 w-10 h-6 bg-gradient-to-b from-base-100 to-transparent transition-opacity duration-150 z-10 ${canScrollRight ? 'opacity-100' : 'opacity-0'}`}
+  ></div>
   <!-- Intentionally excluded from keyboard tab order: tabs are fully keyboard navigable via tab buttons + arrow keys. -->
   <button
-      type="button"
-      class={`btn btn-ghost btn-xs absolute right-1 top-1/2 -translate-y-1/2 z-10 ${canScrollRight ? '' : 'opacity-0 pointer-events-none'}`}
-      aria-hidden={!canScrollRight}
-      tabindex={-1}
-      onclick={() => nudge(1)}
+    type="button"
+    class={`btn btn-ghost btn-xs absolute right-1 top-1/2 -translate-y-1/2 z-10 ${canScrollRight ? '' : 'opacity-0 pointer-events-none'}`}
+    aria-hidden={!canScrollRight}
+    tabindex={-1}
+    onclick={() => nudge(1)}
   >
     <img src="/chevron-right.svg" alt="Scroll right" class="w-4 h-4" />
   </button>
 
   <div
-      role="tablist"
-      tabindex="-1"
-      id={id}
-      aria-orientation="horizontal"
-      class={tablistClasses}
-      onkeydown={onKeydown}
-      bind:this={scroller}
-      onscroll={onScroll}
+    role="tablist"
+    tabindex="-1"
+    {id}
+    aria-orientation="horizontal"
+    class={tablistClasses}
+    onkeydown={onKeydown}
+    bind:this={scroller}
+    onscroll={onScroll}
   >
     {#each tabs as t (t.id)}
       <button
-          type="button"
-          role="tab"
-          id={`${id}-tab-${t.id}`}
-          data-popup-initial-focus={active === t.id ? 'true' : undefined}
-          class={`tab ${buttonSizeClass} flex-none whitespace-nowrap min-w-max max-w-[calc(100%-4rem)] overflow-hidden`}
-          class:tab-active={active === t.id}
-          class:tab-disabled={t.disabled}
-          aria-selected={active === t.id}
-          aria-controls={`${id}-panel-${t.id}`}
-          tabindex={active === t.id ? 0 : -1}
-          disabled={t.disabled}
-          onclick={() => { select(t.id); }}
-          data-tab-id={t.id}
-          aria-label={t.badge !== undefined ? `${t.title} (${t.badge})` : t.title}
+        type="button"
+        role="tab"
+        id={`${id}-tab-${t.id}`}
+        data-popup-initial-focus={active === t.id ? 'true' : undefined}
+        class={`tab ${buttonSizeClass} flex-none whitespace-nowrap min-w-max max-w-[calc(100%-4rem)] overflow-hidden`}
+        class:tab-active={active === t.id}
+        class:tab-disabled={t.disabled}
+        aria-selected={active === t.id}
+        aria-controls={`${id}-panel-${t.id}`}
+        tabindex={active === t.id ? 0 : -1}
+        disabled={t.disabled}
+        onclick={() => {
+          select(t.id);
+        }}
+        data-tab-id={t.id}
+        aria-label={t.badge !== undefined ? `${t.title} (${t.badge})` : t.title}
       >
-                <span class="inline-flex items-center gap-2 max-w-full">
-                    <span class="truncate">{t.title}</span>
-                  {#if t.badge !== undefined}
-                        <span class="badge badge-sm flex-none">{t.badge}</span>
-                    {/if}
-                </span>
+        <span class="inline-flex items-center gap-2 max-w-full">
+          <span class="truncate">{t.title}</span>
+          {#if t.badge !== undefined}
+            <span class="badge badge-sm flex-none">{t.badge}</span>
+          {/if}
+        </span>
       </button>
     {/each}
   </div>

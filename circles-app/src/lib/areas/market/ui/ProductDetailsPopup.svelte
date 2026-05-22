@@ -1,16 +1,20 @@
 <script lang="ts">
-  import {onMount} from 'svelte';
+  import { onMount } from 'svelte';
   import ProductViewer from '$lib/areas/market/ui/product/ProductViewer.svelte';
-  import type {AggregatedCatalogItem} from '$lib/areas/market/model';
-  import {getFirstOffer} from '$lib/areas/market/services';
-  import {avatarState} from '$lib/shared/state/avatar.svelte';
-  import {addToCart, cartState} from '$lib/areas/market/cart/store';
-  import {normalizeEvmAddress as normalizeAddress} from '@circles-market/sdk';
+  import type { AggregatedCatalogItem } from '$lib/areas/market/model';
+  import { getFirstOffer } from '$lib/areas/market/services';
+  import { avatarState } from '$lib/shared/state/avatar.svelte';
+  import { addToCart, cartState } from '$lib/areas/market/cart/store';
+  import { normalizeEvmAddress as normalizeAddress } from '@circles-market/sdk';
   import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
   import { getAddToCartState } from '$lib/areas/market/cart/addToCartUi';
-  import { fetchAvailabilityFeed, fetchInventoryFeed, type QuantitativeValue } from '$lib/areas/market/services';
+  import {
+    fetchAvailabilityFeed,
+    fetchInventoryFeed,
+    type QuantitativeValue,
+  } from '$lib/areas/market/services';
   import { createLoadable } from '$lib/areas/market/utils/loadable';
-  import {gnosisConfig} from "$lib/shared/config/circles";
+  import { gnosisConfig } from '$lib/shared/config/circles';
 
   interface Props {
     seller: string; // EVM address
@@ -28,7 +32,9 @@
   async function loadProduct(): Promise<void> {
     await loader.run(async () => {
       const s = normalizeAddress(seller);
-      const catalog = getMarketClient().catalog.forOperator(gnosisConfig.production.marketOperator);
+      const catalog = getMarketClient().catalog.forOperator(
+        gnosisConfig.production.marketOperator
+      );
       const p = await catalog.fetchProductForSellerAndSku(s, sku);
       if (!p) throw new Error('Product not found for this seller / sku.');
       return p;
@@ -37,7 +43,9 @@
 
   onMount(loadProduct);
 
-  const offer = $derived(product?.product ? getFirstOffer(product?.product) : null);
+  const offer = $derived(
+    product?.product ? getFirstOffer(product?.product) : null
+  );
   const currentAvatar = $derived(avatarState?.avatar?.address?.toLowerCase());
   const cartLoading = $derived($cartState.loading);
   let liveAvailability = $state<string | null>(null);
@@ -64,10 +72,16 @@
     }
   });
   const effectiveAvailabilityIri = $derived<string | null>(
-    liveAvailability ?? (product as any)?.availability ?? (product?.product as any)?.availability ?? null
+    liveAvailability ??
+      (product as any)?.availability ??
+      (product?.product as any)?.availability ??
+      null
   );
   const effectiveInventoryValue = $derived<number | null>(
-    (liveInventory?.value ?? (product as any)?.inventoryLevel?.value ?? (product?.product as any)?.inventoryLevel?.value ?? null) as number | null
+    (liveInventory?.value ??
+      (product as any)?.inventoryLevel?.value ??
+      (product?.product as any)?.inventoryLevel?.value ??
+      null) as number | null
   );
   const addState = $derived(
     getAddToCartState({
@@ -107,7 +121,10 @@
           <button
             type="button"
             class="btn btn-outline w-full"
-            onclick={(e) => { e.stopPropagation(); void handleAddToBasket(); }}
+            onclick={(e) => {
+              e.stopPropagation();
+              void handleAddToBasket();
+            }}
             disabled={!addState.canAdd}
             title={addState.reason}
           >
@@ -119,14 +136,18 @@
 
     <ProductViewer
       product={product.product}
-      offer={offer}
+      {offer}
       seller={product.seller}
       productCid={product.productCid}
       showSeller={true}
       showMeta={true}
-      meta={{ publishedAt: product.publishedAt, productCid: product.productCid, sku: product?.product?.sku }}
+      meta={{
+        publishedAt: product.publishedAt,
+        productCid: product.productCid,
+        sku: product?.product?.sku,
+      }}
       layout="detail"
-      actions={actions}
+      {actions}
     />
   {:else}
     <div class="text-sm opacity-70">Product data not available</div>

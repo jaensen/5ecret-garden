@@ -7,7 +7,10 @@
   import AvatarSkeletonHorizontal from './AvatarSkeletonHorizontal.svelte';
   import AvatarSkeletonSmall from './AvatarSkeletonSmall.svelte';
   import AvatarSkeletonVertical from './AvatarSkeletonVertical.svelte';
-  import { isVipProfileBookmark, profileBookmarksStore } from '$lib/areas/settings/state/profileBookmarks';
+  import {
+    isVipProfileBookmark,
+    profileBookmarksStore,
+  } from '$lib/areas/settings/state/profileBookmarks';
   import type { Address } from '@circles-sdk/utils';
   import type { AppProfileCore as Profile } from '$lib/shared/model/profile';
   import type { AvatarRow } from '@circles-sdk/data';
@@ -25,7 +28,13 @@
     profile?: Profile;
     avatarInfo?: AvatarRow;
     clickable?: boolean;
-    view: 'horizontal' | 'horizontal_reverse' | 'vertical' | 'small' | 'small_no_text' | 'small_reverse';
+    view:
+      | 'horizontal'
+      | 'horizontal_reverse'
+      | 'vertical'
+      | 'small'
+      | 'small_no_text'
+      | 'small_reverse';
     pictureOverlayUrl?: string | undefined;
     showBookmarkBadge?: boolean;
     topInfo?: string | undefined;
@@ -72,7 +81,7 @@
   let avatarInfo: AvatarRow | undefined = $state();
 
   const tooltipText = $derived(
-    (profile?.name && profile.name.length > 0)
+    profile?.name && profile.name.length > 0
       ? profile.name
       : (normalizedAddress ?? 'Profile')
   );
@@ -154,7 +163,8 @@
   );
 
   const computedBottomInfo = $derived.by(() => {
-    const normalizedType = typeLabel && typeLabel !== 'None' ? typeLabel : undefined;
+    const normalizedType =
+      typeLabel && typeLabel !== 'None' ? typeLabel : undefined;
     if (bottomInfo && normalizedType) {
       return `${normalizedType} • ${bottomInfo}`;
     }
@@ -165,11 +175,13 @@
     const addr = normalizedAddress?.toLowerCase();
     if (!addr) return false;
     return ($profileBookmarksStore ?? []).some(
-      (bookmark) => bookmark.address === addr && isVipProfileBookmark(bookmark),
+      (bookmark) => bookmark.address === addr && isVipProfileBookmark(bookmark)
     );
   });
 
-  const effectiveShowBookmarkBadge = $derived(showBookmarkBadge || isVipBookmarked);
+  const effectiveShowBookmarkBadge = $derived(
+    showBookmarkBadge || isVipBookmarked
+  );
 
   function openAvatar(e: MouseEvent) {
     if (!clickable) return;
@@ -186,110 +198,114 @@
 
 <!-- If no profile, show placeholders; otherwise fade in final layout. -->
 {#if !profile}
-    {#if view === 'horizontal' || view === 'horizontal_reverse'}
-        <AvatarSkeletonHorizontal
-            reverse={view === 'horizontal_reverse'}
-            showAvatar={placeholderAvatar}
-            showTop={placeholderHasTopInfo}
-            showBottom={placeholderHasBottomInfo}
-            showBookmarkBadge={effectiveShowBookmarkBadge}
-            showOverlay={!!pictureOverlayUrl}
-        />
-    {:else if view === 'small' || view === 'small_no_text'}
-        <AvatarSkeletonSmall
-            showAvatar={placeholderAvatar}
-            showText={view === 'small' && placeholderTop}
-        />
-    {:else if view === 'small_reverse'}
-        <AvatarSkeletonSmall
-            reverse={true}
-            showAvatar={placeholderAvatar}
-            showText={placeholderTop}
-        />
-    {:else}
-        <AvatarSkeletonVertical
-            showAvatar={placeholderAvatar}
-            showTop={placeholderTop}
-            showBottom={placeholderBottom}
-            showBookmarkBadge={effectiveShowBookmarkBadge}
-        />
-    {/if}
+  {#if view === 'horizontal' || view === 'horizontal_reverse'}
+    <AvatarSkeletonHorizontal
+      reverse={view === 'horizontal_reverse'}
+      showAvatar={placeholderAvatar}
+      showTop={placeholderHasTopInfo}
+      showBottom={placeholderHasBottomInfo}
+      showBookmarkBadge={effectiveShowBookmarkBadge}
+      showOverlay={!!pictureOverlayUrl}
+    />
+  {:else if view === 'small' || view === 'small_no_text'}
+    <AvatarSkeletonSmall
+      showAvatar={placeholderAvatar}
+      showText={view === 'small' && placeholderTop}
+    />
+  {:else if view === 'small_reverse'}
+    <AvatarSkeletonSmall
+      reverse={true}
+      showAvatar={placeholderAvatar}
+      showText={placeholderTop}
+    />
+  {:else}
+    <AvatarSkeletonVertical
+      showAvatar={placeholderAvatar}
+      showTop={placeholderTop}
+      showBottom={placeholderBottom}
+      showBookmarkBadge={effectiveShowBookmarkBadge}
+    />
+  {/if}
 {:else if view === 'horizontal' || view === 'horizontal_reverse'}
-    <!-- Fade in the final layout once profile is loaded -->
-    <div transition:fade title={tooltipText}>
-        <HorizontalAvatarLayout
-                {pictureOverlayUrl}
-                showBookmarkBadge={effectiveShowBookmarkBadge}
-                reverse={view === 'horizontal_reverse'}
-                onclick={openAvatar}
-                {profile}
-                {topInfo}
-                bottomInfo={computedBottomInfo}
-        />
-    </div>
+  <!-- Fade in the final layout once profile is loaded -->
+  <div transition:fade title={tooltipText}>
+    <HorizontalAvatarLayout
+      {pictureOverlayUrl}
+      showBookmarkBadge={effectiveShowBookmarkBadge}
+      reverse={view === 'horizontal_reverse'}
+      onclick={openAvatar}
+      {profile}
+      {topInfo}
+      bottomInfo={computedBottomInfo}
+    />
+  </div>
 {:else if view === 'small' || view === 'small_no_text'}
-    <div class="inline-flex items-center gap-2" transition:fade>
-        <button
-            class="cursor-pointer inline-flex items-center"
-            onclick={openAvatar}
-            aria-label={tooltipText}
-            title={tooltipText}
-        >
-            <span class="relative inline-flex">
-                <img
-                    src={profile?.previewImageUrl}
-                    alt="User Icon"
-                    class="w-6 h-6 object-cover rounded-full"
-                />
-                {#if effectiveShowBookmarkBadge}
-                    <span
-                        class="absolute -top-1 -right-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-warning text-warning-content text-[9px] leading-none font-bold border border-base-100"
-                        aria-label="Bookmarked"
-                        title="Bookmarked"
-                    >
-                        ★
-                    </span>
-                {/if}
-            </span>
-        </button>
-        {#if view === 'small'}
-            <span class="text-sm font-medium truncate max-w-[12rem] align-middle">{profile?.name}</span>
-        {/if}
-    </div>
-{:else if view === 'small_reverse'}
-    <div class="inline-flex items-center gap-2" transition:fade>
-        <span class="text-sm font-medium truncate max-w-[12rem] align-middle text-right">{profile?.name}</span>
-        <button
-            class="cursor-pointer inline-flex items-center"
-            onclick={openAvatar}
-            aria-label={tooltipText}
-            title={tooltipText}
-        >
-            <span class="relative inline-flex">
-                <img
-                    src={profile?.previewImageUrl}
-                    alt="User Icon"
-                    class="w-6 h-6 object-cover rounded-full"
-                />
-                {#if effectiveShowBookmarkBadge}
-                    <span
-                        class="absolute -top-1 -right-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-warning text-warning-content text-[9px] leading-none font-bold border border-base-100"
-                        aria-label="Bookmarked"
-                        title="Bookmarked"
-                    >
-                        ★
-                    </span>
-                {/if}
-            </span>
-        </button>
-    </div>
-{:else}
-    <div transition:fade title={tooltipText}>
-        <VerticalAvatarLayout
-                onclick={openAvatar}
-                {profile}
-                showBookmarkBadge={effectiveShowBookmarkBadge}
+  <div class="inline-flex items-center gap-2" transition:fade>
+    <button
+      class="cursor-pointer inline-flex items-center"
+      onclick={openAvatar}
+      aria-label={tooltipText}
+      title={tooltipText}
+    >
+      <span class="relative inline-flex">
+        <img
+          src={profile?.previewImageUrl}
+          alt="User Icon"
+          class="w-6 h-6 object-cover rounded-full"
         />
-    </div>
+        {#if effectiveShowBookmarkBadge}
+          <span
+            class="absolute -top-1 -right-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-warning text-warning-content text-[9px] leading-none font-bold border border-base-100"
+            aria-label="Bookmarked"
+            title="Bookmarked"
+          >
+            ★
+          </span>
+        {/if}
+      </span>
+    </button>
+    {#if view === 'small'}
+      <span class="text-sm font-medium truncate max-w-[12rem] align-middle"
+        >{profile?.name}</span
+      >
+    {/if}
+  </div>
+{:else if view === 'small_reverse'}
+  <div class="inline-flex items-center gap-2" transition:fade>
+    <span
+      class="text-sm font-medium truncate max-w-[12rem] align-middle text-right"
+      >{profile?.name}</span
+    >
+    <button
+      class="cursor-pointer inline-flex items-center"
+      onclick={openAvatar}
+      aria-label={tooltipText}
+      title={tooltipText}
+    >
+      <span class="relative inline-flex">
+        <img
+          src={profile?.previewImageUrl}
+          alt="User Icon"
+          class="w-6 h-6 object-cover rounded-full"
+        />
+        {#if effectiveShowBookmarkBadge}
+          <span
+            class="absolute -top-1 -right-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-warning text-warning-content text-[9px] leading-none font-bold border border-base-100"
+            aria-label="Bookmarked"
+            title="Bookmarked"
+          >
+            ★
+          </span>
+        {/if}
+      </span>
+    </button>
+  </div>
+{:else}
+  <div transition:fade title={tooltipText}>
+    <VerticalAvatarLayout
+      onclick={openAvatar}
+      {profile}
+      showBookmarkBadge={effectiveShowBookmarkBadge}
+    />
+  </div>
 {/if}
-

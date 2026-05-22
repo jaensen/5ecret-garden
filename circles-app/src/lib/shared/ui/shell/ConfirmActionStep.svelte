@@ -25,8 +25,12 @@
 
   <div class="mt-5 flex justify-end gap-2">
     {#if showCancel}
-      <button type="button" class="btn btn-ghost btn-sm" onclick={onCancel}> {cancelLabel} </button>
+      <button type="button" class="btn btn-ghost btn-sm" onclick={onCancel}>
+        {cancelLabel}
+      </button>
     {/if}
-    <button type="button" class={confirmClass} onclick={onConfirm}>{confirmLabel}</button>
+    <button type="button" class={confirmClass} onclick={onConfirm}
+      >{confirmLabel}</button
+    >
   </div>
 </div>

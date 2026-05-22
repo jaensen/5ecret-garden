@@ -9,7 +9,10 @@
 
   interface Props {
     lines: any[];
-    findCatalogItem: (seller: string | undefined, sku: string | undefined) => any | undefined;
+    findCatalogItem: (
+      seller: string | undefined,
+      sku: string | undefined
+    ) => any | undefined;
     imageUrlForLine: (line: any) => string | null;
     getLineQuantity: (line: any) => number;
     getLineUnitPrice: (line: any) => UnitPrice;
@@ -32,20 +35,22 @@
   }: Props = $props();
 
   type ReviewGroup = { seller: string | null; indices: number[] };
-  const reviewGroups: ReviewGroup[] = $derived((() => {
-    const map = new Map<string, number[]>();
-    (lines ?? []).forEach((_, idx) => {
-      const seller = (lines[idx]?.seller as string | undefined) ?? null;
-      const key = seller || '__unknown__';
-      const arr = map.get(key) ?? [];
-      arr.push(idx);
-      map.set(key, arr);
-    });
-    return Array.from(map.entries()).map(([key, idxs]) => ({
-      seller: key === '__unknown__' ? null : (key as string),
-      indices: idxs,
-    }));
-  })());
+  const reviewGroups: ReviewGroup[] = $derived(
+    (() => {
+      const map = new Map<string, number[]>();
+      (lines ?? []).forEach((_, idx) => {
+        const seller = (lines[idx]?.seller as string | undefined) ?? null;
+        const key = seller || '__unknown__';
+        const arr = map.get(key) ?? [];
+        arr.push(idx);
+        map.set(key, arr);
+      });
+      return Array.from(map.entries()).map(([key, idxs]) => ({
+        seller: key === '__unknown__' ? null : (key as string),
+        indices: idxs,
+      }));
+    })()
+  );
 
   function lineTitle(line: any): string {
     const name = line?.orderedItem?.name;
@@ -76,7 +81,9 @@
 <div class="flex flex-col gap-4">
   {#each reviewGroups as grp, gi (gi)}
     <div class="border border-base-300/60 rounded-lg">
-      <div class="px-3 py-2 bg-base-200/40 flex items-center justify-between text-xs text-base-content/60">
+      <div
+        class="px-3 py-2 bg-base-200/40 flex items-center justify-between text-xs text-base-content/60"
+      >
         <div class="flex items-center gap-2">
           <span class="uppercase tracking-wide">Seller</span>
           {#if grp.seller}
@@ -100,11 +107,16 @@
           >
             <!-- image (mobile + desktop) -->
             <div class="row-span-2 flex items-start">
-              <div class="w-8 h-8 md:w-10 md:h-10 rounded bg-base-200 overflow-hidden flex items-center justify-center text-[10px] text-base-content/50">
+              <div
+                class="w-8 h-8 md:w-10 md:h-10 rounded bg-base-200 overflow-hidden flex items-center justify-center text-[10px] text-base-content/50"
+              >
                 {#if imageUrlForLine(lines[i])}
                   <img
                     src={imageUrlForLine(lines[i]) || ''}
-                    alt={findCatalogItem(lines[i].seller, lines[i].orderedItem?.sku)?.product.name ?? lineTitle(lines[i])}
+                    alt={findCatalogItem(
+                      lines[i].seller,
+                      lines[i].orderedItem?.sku
+                    )?.product.name ?? lineTitle(lines[i])}
                     class="w-full h-full object-cover"
                   />
                 {:else}
@@ -115,11 +127,16 @@
 
             <!-- title + subtitle -->
             <div class="min-w-0">
-              <div class="text-sm md:text-base font-medium truncate md:whitespace-normal">
-                {findCatalogItem(lines[i].seller, lines[i].orderedItem?.sku)?.product.name ?? lineTitle(lines[i])}
+              <div
+                class="text-sm md:text-base font-medium truncate md:whitespace-normal"
+              >
+                {findCatalogItem(lines[i].seller, lines[i].orderedItem?.sku)
+                  ?.product.name ?? lineTitle(lines[i])}
               </div>
               {#if lineSubtitle(lines[i])}
-                <div class="text-xs opacity-60 truncate md:whitespace-normal">{lineSubtitle(lines[i])}</div>
+                <div class="text-xs opacity-60 truncate md:whitespace-normal">
+                  {lineSubtitle(lines[i])}
+                </div>
               {/if}
             </div>
 
@@ -133,10 +150,14 @@
                 {/if}
               </div>
               <div class="text-xs opacity-60 hidden md:block">
-                {unit.amount != null ? `à ${formatCurrency(unit.amount, unit.code)}` : ''}
+                {unit.amount != null
+                  ? `à ${formatCurrency(unit.amount, unit.code)}`
+                  : ''}
               </div>
               <div class="text-xs opacity-60 md:hidden">
-                {unit.amount != null ? `${qty} × ${formatCurrency(unit.amount, unit.code)}` : ''}
+                {unit.amount != null
+                  ? `${qty} × ${formatCurrency(unit.amount, unit.code)}`
+                  : ''}
               </div>
             </div>
 
@@ -152,7 +173,11 @@
                   >
                     -
                   </button>
-                  <div class="btn btn-xs md:btn-sm join-item pointer-events-none min-w-10">{qty}</div>
+                  <div
+                    class="btn btn-xs md:btn-sm join-item pointer-events-none min-w-10"
+                  >
+                    {qty}
+                  </div>
                   <button
                     type="button"
                     class="btn btn-xs md:btn-sm join-item"
@@ -173,7 +198,9 @@
                 <div class="text-sm md:text-right">
                   <span class="font-semibold">{qty}x</span>
                   <span class="text-xs opacity-60 ml-1">
-                    {unit.amount != null ? formatCurrency(unit.amount, unit.code) : '—'}
+                    {unit.amount != null
+                      ? formatCurrency(unit.amount, unit.code)
+                      : '—'}
                   </span>
                 </div>
               {/if}

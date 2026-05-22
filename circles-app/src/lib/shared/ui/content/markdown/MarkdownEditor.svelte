@@ -46,13 +46,20 @@
     url: string;
   };
 
-  function onToolbarPointerDown(e: PointerEvent, action: () => void | Promise<void>): void {
+  function onToolbarPointerDown(
+    e: PointerEvent,
+    action: () => void | Promise<void>
+  ): void {
     e.preventDefault();
     e.stopPropagation();
     void action();
   }
 
-  function readSelection(): { text: string; start: number; end: number } | null {
+  function readSelection(): {
+    text: string;
+    start: number;
+    end: number;
+  } | null {
     const hasTextarea = textarea !== null;
     if (!hasTextarea) {
       return null;
@@ -68,7 +75,11 @@
     return { text, start: clampedStart, end: clampedEnd };
   }
 
-  function writeTextAndSelection(nextText: string, nextStart: number, nextEnd: number): void {
+  function writeTextAndSelection(
+    nextText: string,
+    nextStart: number,
+    nextEnd: number
+  ): void {
     const hasTextarea = textarea !== null;
     if (!hasTextarea) {
       value = nextText;
@@ -118,14 +129,16 @@
       text.slice(end, afterEnd) === marker;
 
     if (canUnwrap) {
-      const nextText = text.slice(0, beforeStart) + selected + text.slice(afterEnd);
+      const nextText =
+        text.slice(0, beforeStart) + selected + text.slice(afterEnd);
       const nextStart = beforeStart;
       const nextEnd = beforeStart + selected.length;
       writeTextAndSelection(nextText, nextStart, nextEnd);
       return;
     }
 
-    const nextText = text.slice(0, start) + marker + selected + marker + text.slice(end);
+    const nextText =
+      text.slice(0, start) + marker + selected + marker + text.slice(end);
     const nextStart = start + marker.length;
     const nextEnd = end + marker.length;
     writeTextAndSelection(nextText, nextStart, nextEnd);
@@ -139,7 +152,11 @@
     toggleWrap('*');
   }
 
-  function findEnclosingLink(text: string, selStart: number, selEnd: number): LinkRange | null {
+  function findEnclosingLink(
+    text: string,
+    selStart: number,
+    selEnd: number
+  ): LinkRange | null {
     const re = /\[([^\]]*)\]\(([^)]+)\)/g;
 
     let m: RegExpExecArray | null;
@@ -183,19 +200,23 @@
     }
 
     const lower = trimmed.toLowerCase();
-    const isUnsafeScheme = lower.startsWith('javascript:') || lower.startsWith('data:');
+    const isUnsafeScheme =
+      lower.startsWith('javascript:') || lower.startsWith('data:');
 
     if (isUnsafeScheme) {
       return null;
     }
 
     const isAllowedAbsolute =
-      lower.startsWith('http://') || lower.startsWith('https://') || lower.startsWith('mailto:');
+      lower.startsWith('http://') ||
+      lower.startsWith('https://') ||
+      lower.startsWith('mailto:');
     if (isAllowedAbsolute) {
       return trimmed;
     }
 
-    const isAllowedRelative = trimmed.startsWith('/') || trimmed.startsWith('#');
+    const isAllowedRelative =
+      trimmed.startsWith('/') || trimmed.startsWith('#');
     if (isAllowedRelative) {
       return trimmed;
     }
@@ -233,7 +254,8 @@
       placeholder: 'https://example.org',
       confirmLabel: 'Apply',
       cancelLabel: 'Cancel',
-      validate: (value) => (normalizeHref(value) ? null : 'Invalid/unsafe URL.'),
+      validate: (value) =>
+        normalizeHref(value) ? null : 'Invalid/unsafe URL.',
     });
     const cancelled = input === null;
 
@@ -255,7 +277,11 @@
       return;
     }
 
-    const afterPromptSel = readSelection() ?? { text, start: savedStart, end: savedEnd };
+    const afterPromptSel = readSelection() ?? {
+      text,
+      start: savedStart,
+      end: savedEnd,
+    };
     const freshText = afterPromptSel.text;
 
     const linkNow = findEnclosingLink(freshText, savedStart, savedEnd);
@@ -264,7 +290,9 @@
     if (isUpdatingExisting) {
       const oldLen = linkNow!.urlEnd - linkNow!.urlStart;
       const nextText =
-        freshText.slice(0, linkNow!.urlStart) + normalized + freshText.slice(linkNow!.urlEnd);
+        freshText.slice(0, linkNow!.urlStart) +
+        normalized +
+        freshText.slice(linkNow!.urlEnd);
       const delta = normalized.length - oldLen;
       const caret = linkNow!.end + delta;
       writeTextAndSelection(nextText, caret, caret);
@@ -276,7 +304,8 @@
     if (hasSelection) {
       const label = freshText.slice(savedStart, savedEnd);
       const insert = `[${label}](${normalized})`;
-      const nextText = freshText.slice(0, savedStart) + insert + freshText.slice(savedEnd);
+      const nextText =
+        freshText.slice(0, savedStart) + insert + freshText.slice(savedEnd);
       const nextLabelStart = savedStart + 1;
       const nextLabelEnd = nextLabelStart + label.length;
       writeTextAndSelection(nextText, nextLabelStart, nextLabelEnd);
@@ -284,7 +313,8 @@
     }
 
     const insert = `[](${normalized})`;
-    const nextText = freshText.slice(0, savedStart) + insert + freshText.slice(savedEnd);
+    const nextText =
+      freshText.slice(0, savedStart) + insert + freshText.slice(savedEnd);
     const caret = savedStart + 1;
     writeTextAndSelection(nextText, caret, caret);
   }
@@ -336,11 +366,11 @@
       class={`editor ${editorClass}`.trim()}
       style={minHeightStyle}
       rows={normalizedRows}
-      placeholder={placeholder}
+      {placeholder}
       readonly={disabled}
       aria-disabled={disabled}
       spellcheck="false"
-      bind:value={value}
+      bind:value
       onkeydown={onEditorKeydown}
     ></textarea>
   {/if}
@@ -384,7 +414,8 @@
         class="tb tb-tab"
         tabindex="-1"
         aria-pressed={viewMode === 'editor'}
-        onpointerdown={(e) => onToolbarPointerDown(e, () => setViewMode('editor'))}
+        onpointerdown={(e) =>
+          onToolbarPointerDown(e, () => setViewMode('editor'))}
       >
         Editor
       </button>
@@ -393,7 +424,8 @@
         class="tb tb-tab"
         tabindex="-1"
         aria-pressed={viewMode === 'preview'}
-        onpointerdown={(e) => onToolbarPointerDown(e, () => setViewMode('preview'))}
+        onpointerdown={(e) =>
+          onToolbarPointerDown(e, () => setViewMode('preview'))}
       >
         Preview
       </button>
@@ -443,7 +475,10 @@
     border-radius: 8px;
     opacity: 0.92;
     cursor: pointer;
-    transition: opacity 120ms ease, transform 120ms ease, background 120ms ease;
+    transition:
+      opacity 120ms ease,
+      transform 120ms ease,
+      background 120ms ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;

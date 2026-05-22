@@ -4,6 +4,10 @@ module.exports = {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
+      borderRadius: {
+        // Tailwind default `rounded-3xl` is 1.5rem; Circles uses +0.35rem globally.
+        '3xl': '1.85rem',
+      },
       fontFamily: {
         dmSans: ['DM Sans', 'sans-serif'],
       },
@@ -32,8 +36,8 @@ module.exports = {
           success: '#16A34A',
           warning: '#F59E0B',
           error: '#EF4444',
-          '--rounded-box': '12px',
-          '--rounded-btn': '10px',
+          '--rounded-box': '44px',
+          '--rounded-btn': '44px',
           '--tab-border': '1px',
         },
       },

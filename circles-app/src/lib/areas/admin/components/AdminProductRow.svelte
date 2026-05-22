@@ -53,9 +53,15 @@
   const hasInactiveMapping = $derived(
     mappingEnabled === false || !!revokedAt || routeEnabled === false
   );
-  const needsAdapterLabel = $derived(productType === 'route' ? 'Needs adapter' : null);
+  const needsAdapterLabel = $derived(
+    productType === 'route' ? 'Needs adapter' : null
+  );
   const typeVariant = $derived(
-    hasInactiveMapping ? 'error' : productType === 'route' ? 'warning' : 'success'
+    hasInactiveMapping
+      ? 'error'
+      : productType === 'route'
+        ? 'warning'
+        : 'success'
   );
 
   let imageUrl = $state<string | null>(null);
@@ -69,8 +75,13 @@
         imageUrl = null;
         return;
       }
-      const catalog = getMarketClient().catalog.forOperator(String(gnosisConfig.production.marketOperator));
-      const item = await catalog.fetchProductForSellerAndSku(String(seller), sku);
+      const catalog = getMarketClient().catalog.forOperator(
+        String(gnosisConfig.production.marketOperator)
+      );
+      const item = await catalog.fetchProductForSellerAndSku(
+        String(seller),
+        sku
+      );
       if (!item) {
         imageUrl = null;
         return;
@@ -99,7 +110,9 @@
   onclick={() => onSelect?.(product)}
 >
   {#snippet leading()}
-    <div class="w-10 h-10 rounded-md bg-base-200 overflow-hidden shrink-0 flex items-center justify-center">
+    <div
+      class="w-10 h-10 rounded-md bg-base-200 overflow-hidden shrink-0 flex items-center justify-center"
+    >
       {#if imageUrl}
         <img src={imageUrl} alt="" class="w-10 h-10 object-cover" />
       {:else}
@@ -127,10 +140,7 @@
   {#snippet trailing()}
     <div class="flex items-center gap-2 flex-wrap justify-end">
       {#if needsAdapterLabel}
-        <AdminStatusBadge
-          label={needsAdapterLabel}
-          variant={typeVariant}
-        />
+        <AdminStatusBadge label={needsAdapterLabel} variant={typeVariant} />
       {/if}
       {#if poolRemaining !== null && poolRemaining !== undefined}
         <AdminStatusBadge
@@ -140,12 +150,14 @@
       {/if}
       {#if productType === 'odoo'}
         <AdminStatusBadge
-          label={
-            odooLocalAvailableQty == null
-              ? 'Local stock: fallback'
-              : `Local stock: ${odooLocalAvailableQty}`
-          }
-          variant={odooLocalAvailableQty == null ? 'neutral' : odooLocalAvailableQty > 0 ? 'success' : 'warning'}
+          label={odooLocalAvailableQty == null
+            ? 'Local stock: fallback'
+            : `Local stock: ${odooLocalAvailableQty}`}
+          variant={odooLocalAvailableQty == null
+            ? 'neutral'
+            : odooLocalAvailableQty > 0
+              ? 'success'
+              : 'warning'}
         />
         {#if odooTotalInventory != null}
           <AdminStatusBadge
@@ -163,7 +175,10 @@
       {#if !hasMapping}
         <AdminStatusBadge label="No mapping" variant="neutral" />
       {:else if hasInactiveMapping}
-        <AdminStatusBadge label={revokedAt ? 'Revoked' : 'Disabled'} variant="warning" />
+        <AdminStatusBadge
+          label={revokedAt ? 'Revoked' : 'Disabled'}
+          variant="warning"
+        />
       {/if}
     </div>
   {/snippet}

@@ -20,9 +20,11 @@
   import { avatarState } from '$lib/shared/state/avatar.svelte';
   import { ethers } from 'ethers';
   import { CirclesConverter } from '@circles-sdk/utils';
-  import {gnosisConfig} from "$lib/shared/config/circles";
+  import { gnosisConfig } from '$lib/shared/config/circles';
 
-  const paymentReference = $derived($cartState.lastCheckout?.paymentReference ?? null);
+  const paymentReference = $derived(
+    $cartState.lastCheckout?.paymentReference ?? null
+  );
   const basketId = $derived($cartState.basket?.basketId ?? null);
 
   // Do NOT include orderKey in any QR codes or UI. Prefer non-secret paymentReference.
@@ -30,8 +32,8 @@
     paymentReference
       ? `circles:payment:${paymentReference}`
       : basketId
-      ? `circles:basket:${basketId}`
-      : 'circles:payment'
+        ? `circles:basket:${basketId}`
+        : 'circles:payment'
   );
 
   // --- Derive transfer context ---
@@ -69,7 +71,9 @@
     }
 
     if (!paymentReference) {
-      throw new Error('Payment reference not available yet. Please wait a moment and try again.');
+      throw new Error(
+        'Payment reference not available yet. Please wait a moment and try again.'
+      );
     }
 
     const recipients = new Set<string>();
@@ -79,7 +83,10 @@
     const catalog = getMarketClient().catalog.forOperator(operator);
     const productCache = new Map<string, any>();
 
-    async function fetchOfferFallback(seller: string, sku: string): Promise<any | null> {
+    async function fetchOfferFallback(
+      seller: string,
+      sku: string
+    ): Promise<any | null> {
       const key = `${seller.toLowerCase()}::${sku.toLowerCase()}`;
       const cached = productCache.get(key);
       if (cached !== undefined) return cached;
@@ -87,15 +94,19 @@
       try {
         const item = await catalog.fetchProductForSellerAndSku(seller, sku);
         const prod = (item as any)?.product;
-        const offer =
-          Array.isArray(prod?.offers) ? prod.offers[0] :
-          prod?.offer ??
-          (Array.isArray(prod?.Offers) ? prod.Offers[0] : prod?.Offer);
+        const offer = Array.isArray(prod?.offers)
+          ? prod.offers[0]
+          : (prod?.offer ??
+            (Array.isArray(prod?.Offers) ? prod.Offers[0] : prod?.Offer));
 
         productCache.set(key, offer ?? null);
         return offer ?? null;
       } catch (e) {
-        console.debug('[checkout] failed to resolve offer from catalog', { seller, sku }, e);
+        console.debug(
+          '[checkout] failed to resolve offer from catalog',
+          { seller, sku },
+          e
+        );
         productCache.set(key, null);
         return null;
       }
@@ -114,7 +125,8 @@
 
       const snap = line?.offerSnapshot;
       const snapPrice = typeof snap?.price === 'number' ? snap.price : null;
-      const snapCurrency = typeof snap?.priceCurrency === 'string' ? snap.priceCurrency : null;
+      const snapCurrency =
+        typeof snap?.priceCurrency === 'string' ? snap.priceCurrency : null;
 
       let payTo = resolvePayTo(snap);
 
@@ -129,7 +141,9 @@
       }
 
       const unitPrice = snapPrice ?? payTo.price ?? null;
-      const code = (snapCurrency ?? payTo.priceCurrency ?? null) as string | null;
+      const code = (snapCurrency ?? payTo.priceCurrency ?? null) as
+        | string
+        | null;
 
       if (!payTo?.address) {
         throw new Error('Missing pay-to address on offer.');
@@ -138,7 +152,9 @@
         throw new Error('Missing or invalid price for an item.');
       }
       if (!code || code.toUpperCase() !== 'CRC') {
-        throw new Error(`Unsupported currency ${code || '(none)'} – only CRC supported for in-app transfer.`);
+        throw new Error(
+          `Unsupported currency ${code || '(none)'} – only CRC supported for in-app transfer.`
+        );
       }
 
       recipients.add((payTo.address as string).toLowerCase());
@@ -146,10 +162,16 @@
     }
 
     if (recipients.size !== 1) {
-      throw new Error('Items have different payment recipients; please pay them separately.');
+      throw new Error(
+        'Items have different payment recipients; please pay them separately.'
+      );
     }
 
-    if (payActionChainId && currentChainId && payActionChainId !== currentChainId) {
+    if (
+      payActionChainId &&
+      currentChainId &&
+      payActionChainId !== currentChainId
+    ) {
       chainWarning = `Network mismatch: Offer requests chain ${payActionChainId}, but wallet is on ${currentChainId}.`;
     }
 
@@ -164,7 +186,11 @@
     const bigNumber = '99999999999999999999999999999999999';
     const p =
       avatarState.avatar?.avatarInfo?.version === 1
-        ? await $circles.v1Pathfinder?.getPath(avatarState.avatar.address, to, bigNumber)
+        ? await $circles.v1Pathfinder?.getPath(
+            avatarState.avatar.address,
+            to,
+            bigNumber
+          )
         : await $circles.v2Pathfinder?.getPath(
             avatarState.avatar.address,
             to,
@@ -181,12 +207,17 @@
 
     let maxAmountCircles = parseFloat(ethers.formatEther(p.maxFlow.toString()));
     if (avatarState.avatar?.avatarInfo?.version === 1) {
-      const attoCircles = CirclesConverter.attoCrcToAttoCircles(BigInt(p.maxFlow), BigInt(Date.now() / 1000));
+      const attoCircles = CirclesConverter.attoCrcToAttoCircles(
+        BigInt(p.maxFlow),
+        BigInt(Date.now() / 1000)
+      );
       maxAmountCircles = CirclesConverter.attoCirclesToCircles(attoCircles);
     }
 
     if (maxAmountCircles <= 0 || total > maxAmountCircles) {
-      throw new Error(`Insufficient path capacity. Max transferable is ${maxAmountCircles}, but required is ${total}.`);
+      throw new Error(
+        `Insufficient path capacity. Max transferable is ${maxAmountCircles}, but required is ${total}.`
+      );
     }
 
     transferContext = {
@@ -215,7 +246,12 @@
     const b = $cartState.basket as any;
     const basketId = b?.['@id'];
     const currentKey = `${basketId}:${paymentReference}`;
-    if (!paymentReference || preparePaymentAction.loading || lastPreparedFor === currentKey) return;
+    if (
+      !paymentReference ||
+      preparePaymentAction.loading ||
+      lastPreparedFor === currentKey
+    )
+      return;
 
     lastPreparedFor = currentKey;
     chainWarning = null;
@@ -231,12 +267,11 @@
   title="Payment"
   subtitle="Complete payment by QR or in-app transfer."
 >
-
   <div class="space-y-3 text-xs">
     <StepAlert variant="info">
       <span>
-        Scan this QR code with the Circles app to execute the payment.
-        (Mock only – payload: <code>{paymentQrValue}</code>).
+        Scan this QR code with the Circles app to execute the payment. (Mock
+        only – payload: <code>{paymentQrValue}</code>).
       </span>
     </StepAlert>
 
@@ -256,11 +291,19 @@
     <!-- In-app transfer option -->
     <div class="flex flex-col items-end gap-2">
       {#if preparePaymentAction.error}
-        <StepAlert variant="warning" className="text-xs w-full" message={preparePaymentAction.error} />
+        <StepAlert
+          variant="warning"
+          className="text-xs w-full"
+          message={preparePaymentAction.error}
+        />
       {/if}
 
       {#if chainWarning}
-        <StepAlert variant="info" className="text-xs w-full" message={chainWarning} />
+        <StepAlert
+          variant="info"
+          className="text-xs w-full"
+          message={chainWarning}
+        />
       {/if}
 
       <StepActionBar>
@@ -270,7 +313,9 @@
             disabled={!transferContext || preparePaymentAction.loading}
             onclick={openTransferFlow}
           >
-            {preparePaymentAction.loading ? 'Preparing…' : 'Pay with Circles (in-app transfer)'}
+            {preparePaymentAction.loading
+              ? 'Preparing…'
+              : 'Pay with Circles (in-app transfer)'}
           </button>
         {/snippet}
       </StepActionBar>
@@ -286,4 +331,4 @@
       {/if}
     </div>
   </div>
-  </FlowStepScaffold>
+</FlowStepScaffold>

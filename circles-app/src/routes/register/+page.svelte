@@ -11,8 +11,13 @@
   import Disclaimer from '$lib/areas/register/ui/components/RegistrationDisclaimer.svelte';
   import PageScaffold from '$lib/shared/ui/shell/PageScaffold.svelte';
 
-  const ownerAddress = $derived(($page.url.searchParams.get('owner') ?? '').trim().toLowerCase() as EvmAddress | '');
-  const shortAddr = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '');
+  const ownerAddress = $derived(
+    ($page.url.searchParams.get('owner') ?? '').trim().toLowerCase() as
+      | EvmAddress
+      | ''
+  );
+  const shortAddr = (a?: string) =>
+    a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '';
 
   let ownerHasGroups: boolean = $state(false);
   let ownerGroupsLoading: boolean = $state(false);
@@ -24,8 +29,13 @@
     }
     try {
       ownerGroupsLoading = true;
-      const byOwner = await getBaseAndCmgGroupsByOwnerBatch($circles, [ownerAddress]);
-      const rows = byOwner[ownerAddress] ?? byOwner[ownerAddress.toLowerCase() as EvmAddress] ?? [];
+      const byOwner = await getBaseAndCmgGroupsByOwnerBatch($circles, [
+        ownerAddress,
+      ]);
+      const rows =
+        byOwner[ownerAddress] ??
+        byOwner[ownerAddress.toLowerCase() as EvmAddress] ??
+        [];
       ownerHasGroups = rows.length > 0;
     } catch {
       ownerHasGroups = false;
@@ -44,10 +54,20 @@
   }
 </script>
 
-
-<PageScaffold highlight="soft" collapsedMode="bar" collapsedHeightClass="h-12" maxWidthClass="page page--lg" contentWidthClass="page page--lg" usePagePadding={true} headerTopGapClass="mt-4 md:mt-6" collapsedTopGapClass="mt-3 md:mt-4">
+<PageScaffold
+  highlight="soft"
+  collapsedMode="bar"
+  collapsedHeightClass="h-12"
+  maxWidthClass="page page--lg"
+  contentWidthClass="page page--lg"
+  usePagePadding={true}
+  headerTopGapClass="mt-4 md:mt-6"
+  collapsedTopGapClass="mt-3 md:mt-4"
+>
   {#snippet title()}
-    <h1 class="h2 m-0">{ownerAddress ? shortAddr(ownerAddress) : 'Create Account'}</h1>
+    <h1 class="h2 m-0">
+      {ownerAddress ? shortAddr(ownerAddress) : 'Create Account'}
+    </h1>
   {/snippet}
   {#snippet meta()}
     {#if ownerAddress}
@@ -58,17 +78,23 @@
   {/snippet}
   {#snippet headerActions()}
     {#if ownerAddress}
-      <button class="btn btn-sm btn-primary" onclick={() => goto('/register')}>Create account</button>
+      <button class="btn btn-sm btn-primary" onclick={() => goto('/register')}
+        >Create account</button
+      >
       {#if ownerGroupsLoading}
         <button class="btn btn-sm btn-ghost" disabled>Checking groups…</button>
       {:else if ownerHasGroups}
-        <button class="btn btn-sm btn-ghost" onclick={openManageGroups}>My groups</button>
+        <button class="btn btn-sm btn-ghost" onclick={openManageGroups}
+          >My groups</button
+        >
       {/if}
     {/if}
   {/snippet}
   {#snippet collapsedLeft()}
     <div class="truncate flex items-center gap-2">
-      <span class="font-medium">{ownerAddress ? shortAddr(ownerAddress) : 'Create Account'}</span>
+      <span class="font-medium"
+        >{ownerAddress ? shortAddr(ownerAddress) : 'Create Account'}</span
+      >
     </div>
   {/snippet}
 
@@ -79,10 +105,15 @@
 
   <!-- Register section -->
   <section class="mt-4">
-    <h2 class="text-sm font-semibold text-base-content/70 tracking-wide uppercase">Register</h2>
+    <h2
+      class="text-sm font-semibold text-base-content/70 tracking-wide uppercase"
+    >
+      Register
+    </h2>
     <div class="mt-2 space-y-2">
       <div class="text-md text-base-content/70">
-        You're not yet signed up to Circles. Choose an account type that matches your needs.
+        You're not yet signed up to Circles. Choose an account type that matches
+        your needs.
       </div>
       <ConnectWallet
         imgUrl="/person.svg"
@@ -102,7 +133,11 @@
 
   <!-- Advanced section -->
   <section class="mt-4">
-    <h2 class="text-sm font-semibold text-base-content/70 tracking-wide uppercase">Advanced</h2>
+    <h2
+      class="text-sm font-semibold text-base-content/70 tracking-wide uppercase"
+    >
+      Advanced
+    </h2>
     <div class="mt-2 space-y-2">
       <ConnectWallet
         imgUrl="/person.svg"
@@ -125,7 +160,7 @@
       <div class="text-xs text-base-content/70 mb-2">
         <Address address={$wallet?.address ?? '0x0'} />
       </div>
-      <div class="inline-block bg-base-100 border rounded-xl p-3">
+      <div class="inline-block bg-base-100 border rounded-3xl p-3">
         <QrCode value={$wallet?.address} />
       </div>
     </div>

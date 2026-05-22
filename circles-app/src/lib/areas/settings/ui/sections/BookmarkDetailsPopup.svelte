@@ -42,7 +42,9 @@
       message: 'Clear the saved note for this bookmark?',
     });
     if (!ok) return;
-    profileBookmarksService.upsertProfile(bookmark.address, { note: undefined });
+    profileBookmarksService.upsertProfile(bookmark.address, {
+      note: undefined,
+    });
   }
 
   async function removeBookmark(): Promise<void> {
@@ -58,7 +60,12 @@
 
 <div class="space-y-3">
   <div class="rounded-lg border border-base-200 p-2">
-    <Avatar address={bookmark.address} view="horizontal" clickable={true} showTypeInfo={true} />
+    <Avatar
+      address={bookmark.address}
+      view="horizontal"
+      clickable={true}
+      showTypeInfo={true}
+    />
   </div>
 
   <div class="rounded-lg border border-base-200 p-3 space-y-2 text-sm">
@@ -73,13 +80,18 @@
     <div>
       <div class="text-xs opacity-60">Folder</div>
       <div class="flex items-center gap-2 mt-1">
-        <select class="select select-bordered select-sm" bind:value={selectedFolder}>
+        <select
+          class="select select-bordered select-sm"
+          bind:value={selectedFolder}
+        >
           <option value="__none__">No folder</option>
           {#each folders as folder (folder)}
             <option value={folder}>{folder}</option>
           {/each}
         </select>
-        <button class="btn btn-sm" type="button" onclick={moveToSelectedFolder}>Apply</button>
+        <button class="btn btn-sm" type="button" onclick={moveToSelectedFolder}
+          >Apply</button
+        >
       </div>
     </div>
   </div>
@@ -95,8 +107,12 @@
 
   <div class="flex justify-end gap-2">
     {#if bookmark.note}
-      <button class="btn btn-ghost btn-sm" type="button" onclick={clearNote}>Clear note</button>
+      <button class="btn btn-ghost btn-sm" type="button" onclick={clearNote}
+        >Clear note</button
+      >
     {/if}
-    <button class="btn btn-ghost btn-sm" type="button" onclick={removeBookmark}>Remove bookmark</button>
+    <button class="btn btn-ghost btn-sm" type="button" onclick={removeBookmark}
+      >Remove bookmark</button
+    >
   </div>
 </div>

@@ -1,6 +1,6 @@
 <div
   aria-hidden="true"
-  class="bg-base-100 border border-base-300 rounded-xl overflow-hidden flex flex-col"
+  class="bg-base-100 border border-base-300 rounded-3xl overflow-hidden flex flex-col"
 >
   <div class="w-full h-44 bg-base-200"></div>
 

@@ -11,14 +11,25 @@
   const demoAddressB = '0x2222222222222222222222222222222222222222' as Address;
 </script>
 
-<section class="rounded-xl border border-base-300 bg-base-100 p-4 space-y-4">
+<section class="rounded-3xl border border-base-300 bg-base-100 p-4 space-y-4">
   <h2 class="text-lg font-semibold">Identity & Utility</h2>
 
   <div class="space-y-2">
     <h3 class="font-medium">Avatar variants</h3>
     <div class="flex flex-wrap items-center gap-4">
-      <Avatar address={demoAddressA} view="small" clickable={false} placeholderAvatar={true} placeholderTop={true} />
-      <Avatar address={demoAddressA} view="horizontal" clickable={false} bottomInfo="Horizontal variant" />
+      <Avatar
+        address={demoAddressA}
+        view="small"
+        clickable={false}
+        placeholderAvatar={true}
+        placeholderTop={true}
+      />
+      <Avatar
+        address={demoAddressA}
+        view="horizontal"
+        clickable={false}
+        bottomInfo="Horizontal variant"
+      />
       <Avatar address={demoAddressB} view="small_reverse" clickable={false} />
     </div>
   </div>
@@ -32,7 +43,9 @@
           <button class="btn btn-sm btn-outline">Hover me</button>
         {/snippet}
       </Tooltip>
-      <JumpLink url="https://aboutcircles.com" className="link link-primary">External jump link</JumpLink>
+      <JumpLink url="https://aboutcircles.com" className="link link-primary"
+        >External jump link</JumpLink
+      >
     </div>
   </div>
 

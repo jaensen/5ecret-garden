@@ -21,17 +21,17 @@
   let runner: SdkContractRunner | undefined = $state();
 
   onMount(async () => {
-      try {
-          // Try to recover an EOA if wagmi already has one
-          signer.address = await getSigner();
+    try {
+      // Try to recover an EOA if wagmi already has one
+      signer.address = await getSigner();
 
-          // Always prepare a browser runner; it will trigger the wallet when needed
-          runner = await initBrowserProviderContractRunner();
-      } catch (err) {
-          // Do not clear/redirect here; let the user continue to the connect UI
-          console.error('connect-safe onMount init failed:', err);
-          runner = undefined;
-      }
+      // Always prepare a browser runner; it will trigger the wallet when needed
+      runner = await initBrowserProviderContractRunner();
+    } catch (err) {
+      // Do not clear/redirect here; let the user continue to the connect UI
+      console.error('connect-safe onMount init failed:', err);
+      runner = undefined;
+    }
   });
 
   async function connectLegacy(address: Address) {
@@ -78,10 +78,10 @@
   }
 
   async function refreshGroups() {
-      if (!signer.address || !$circles) return;
-      groupsByOwner = await getBaseAndCmgGroupsByOwnerBatch($circles, [
-          signer.address,
-      ]);
+    if (!signer.address || !$circles) return;
+    groupsByOwner = await getBaseAndCmgGroupsByOwnerBatch($circles, [
+      signer.address,
+    ]);
   }
 </script>
 

@@ -7,4 +7,9 @@
   let { orderId }: Props = $props();
 </script>
 
-<OrderDetailsPopup mode="seller" {orderId} showHistory={false} showAdvanced={false} />
+<OrderDetailsPopup
+  mode="seller"
+  {orderId}
+  showHistory={false}
+  showAdvanced={false}
+/>

@@ -3,17 +3,20 @@
   import ToStep from './1_To.svelte';
   import TokenFiltersStep from './2_TokenFilters.svelte';
   import AmountStep from './3_Amount.svelte';
-  import type {SendFlowContext} from '$lib/areas/wallet/flows/send/context';
+  import type { SendFlowContext } from '$lib/areas/wallet/flows/send/context';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import { SEND_FLOW_SCAFFOLD_BASE } from './constants';
   import { openStep, popToOrOpen, useAsyncAction } from '$lib/shared/flow';
   import { executeTxConfirmFirst } from '$lib/shared/utils/txExecution';
-  import {roundToDecimals, shortenAddress} from '$lib/shared/utils/shared';
-  import {avatarState} from '$lib/shared/state/avatar.svelte';
-  import {tokenTypeToString, TransitiveTransferTokenAddress} from '$lib/areas/wallet/ui/pages/SelectAsset.svelte';
-  import {popupControls} from '$lib/shared/state/popup';
-  import {MAX_PATH_STEPS} from "$lib/shared/config/circles";
+  import { roundToDecimals, shortenAddress } from '$lib/shared/utils/shared';
+  import { avatarState } from '$lib/shared/state/avatar.svelte';
+  import {
+    tokenTypeToString,
+    TransitiveTransferTokenAddress,
+  } from '$lib/areas/wallet/ui/pages/SelectAsset.svelte';
+  import { popupControls } from '$lib/shared/state/popup';
+  import { MAX_PATH_STEPS } from '$lib/shared/config/circles';
   import {
     requireAmount,
     requireAvatar,
@@ -21,11 +24,11 @@
     requireWalletAddress,
   } from '$lib/shared/flow';
   import type { ReviewStepProps } from '$lib/shared/flow';
-    import { SEND_POPUP_TITLE } from './constants';
+  import { SEND_POPUP_TITLE } from './constants';
 
   type Props = ReviewStepProps<SendFlowContext>;
 
-  let {context}: Props = $props();
+  let { context }: Props = $props();
 
   const hasRecipient = $derived(Boolean(context.selectedAddress));
   const hasAsset = $derived(Boolean(context.selectedAsset));
@@ -47,7 +50,10 @@
     if (!canContinue) return;
 
     const avatar = requireAvatar(avatarState.avatar);
-    const selectedAddress = requireWalletAddress(context.selectedAddress, 'No address selected');
+    const selectedAddress = requireWalletAddress(
+      context.selectedAddress,
+      'No address selected'
+    );
     const selectedAsset = requireSelectedAsset(context, 'No asset selected');
     const amount = requireAmount(context.amount, 'No amount specified');
 
@@ -70,9 +76,7 @@
         }
         // Convert to Uint8Array
         const pairs = hexString.match(/.{2}/g) ?? [];
-        dataUInt8Arr = new Uint8Array(
-          pairs.map((byte) => parseInt(byte, 16)),
-        );
+        dataUInt8Arr = new Uint8Array(pairs.map((byte) => parseInt(byte, 16)));
       } else {
         // Default to UTF-8
         dataUInt8Arr = new TextEncoder().encode(context.data);
@@ -93,7 +97,7 @@
               context.toTokens,
               context.excludeFromTokens,
               context.excludeToTokens,
-              context.maxTransfers ?? MAX_PATH_STEPS,
+              context.maxTransfers ?? MAX_PATH_STEPS
             )
           : avatar.transfer(
               selectedAddress,
@@ -105,7 +109,7 @@
               context.toTokens,
               context.excludeFromTokens,
               context.excludeToTokens,
-              context.maxTransfers ?? MAX_PATH_STEPS,
+              context.maxTransfers ?? MAX_PATH_STEPS
             ),
       onSuccess: () => {
         popupControls.close();
@@ -161,21 +165,21 @@
   tabindex="-1"
   data-send-step-initial-focus
 >
-    <Send
-        asset={context.selectedAsset}
-        amount={context.amount}
-        receiverAddress={context.selectedAddress}
-        textButton="Send Circles"
-        data={context.data}
-        dataType={context.dataType}
-        onEditTo={editTo}
-        onEditRoute={editRoute}
-        onEditAmount={editAmount}
-        submitDisabled={!canContinue || sendAction.loading}
-        {validationMessage}
-        {onselect}
-    />
-    {#if sendAction.error}
-        <StepAlert variant="error" className="mt-2" message={sendAction.error} />
-    {/if}
-  </FlowStepScaffold>
+  <Send
+    asset={context.selectedAsset}
+    amount={context.amount}
+    receiverAddress={context.selectedAddress}
+    textButton="Send Circles"
+    data={context.data}
+    dataType={context.dataType}
+    onEditTo={editTo}
+    onEditRoute={editRoute}
+    onEditAmount={editAmount}
+    submitDisabled={!canContinue || sendAction.loading}
+    {validationMessage}
+    {onselect}
+  />
+  {#if sendAction.error}
+    <StepAlert variant="error" className="mt-2" message={sendAction.error} />
+  {/if}
+</FlowStepScaffold>

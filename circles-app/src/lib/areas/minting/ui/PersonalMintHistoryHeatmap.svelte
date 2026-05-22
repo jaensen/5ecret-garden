@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { Address } from '@circles-sdk/utils';
-  import { EventHistoryHeatmap, type EventHistoryDataSource } from '$lib/shared/ui/event-history';
+  import {
+    EventHistoryHeatmap,
+    type EventHistoryDataSource,
+  } from '$lib/shared/ui/event-history';
   import PersonalMintDayEventRow from '$lib/areas/minting/ui/history/PersonalMintDayEventRow.svelte';
 
   type PersonalMintEventRow = {
@@ -24,7 +27,9 @@
 
   const dataSource = $derived(buildDataSource(address));
 
-  function buildDataSource(addr?: Address): EventHistoryDataSource<PersonalMintEventRow> {
+  function buildDataSource(
+    addr?: Address
+  ): EventHistoryDataSource<PersonalMintEventRow> {
     return {
       namespace: 'CrcV2',
       table: 'PersonalMint',
@@ -79,7 +84,7 @@
     const abs = value < 0n ? -value : value;
     const base = 1_000_000_000_000_000_000n; // 1e18
     const whole = abs / base;
-    const frac2 = (abs % base) * 100n / base;
+    const frac2 = ((abs % base) * 100n) / base;
     return `${sign}${whole.toLocaleString()}.${frac2.toString().padStart(2, '0')}`;
   }
 
@@ -107,7 +112,10 @@
     dayEmpty: 'No mint events in this day.',
     summary: (rows) => {
       const mintRows = rows as PersonalMintEventRow[];
-      const totalMintedWei = mintRows.reduce((sum, row) => sum + toBigIntAmount(row.amount), 0n);
+      const totalMintedWei = mintRows.reduce(
+        (sum, row) => sum + toBigIntAmount(row.amount),
+        0n
+      );
       return `${mintRows.length} mint event${mintRows.length === 1 ? '' : 's'} · ${formatWeiAsCircles(totalMintedWei)} total minted`;
     },
   }}

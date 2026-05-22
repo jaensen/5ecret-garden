@@ -58,7 +58,9 @@
   let overlayQuery = $state('');
 
   const overlayLabel = $derived(overlays?.overlayLabel ?? 'Known events');
-  const overlaySearchPlaceholder = $derived(overlays?.overlaySearchPlaceholder ?? 'Filter overlay events');
+  const overlaySearchPlaceholder = $derived(
+    overlays?.overlaySearchPlaceholder ?? 'Filter overlay events'
+  );
 
   const dayCounts = $derived(buildCountMap(rows, 'day'));
   const weekCounts = $derived(buildCountMap(rows, 'week'));
@@ -73,16 +75,22 @@
   const monthCalendars = $derived(buildMonthCalendars(rows, dayCounts));
   const weeklySections = $derived(buildWeeklySections(rows, weekCounts));
   const monthlyItems = $derived(buildMonthlyItems(rows, monthCounts));
-  const knownRangeEvents = $derived((overlays?.rangeEvents ?? []).slice().sort(sortRangeEvents));
+  const knownRangeEvents = $derived(
+    (overlays?.rangeEvents ?? []).slice().sort(sortRangeEvents)
+  );
   const filteredKnownRangeEvents = $derived.by(() => {
     const needle = overlayQuery.trim().toLowerCase();
     if (!needle) return knownRangeEvents;
     return knownRangeEvents.filter((event) => {
-      const haystack = [event.title, event.description ?? ''].join(' ').toLowerCase();
+      const haystack = [event.title, event.description ?? '']
+        .join(' ')
+        .toLowerCase();
       return haystack.includes(needle);
     });
   });
-  const selectedKnownRangeEvents = $derived(knownRangeEvents.filter((event) => selectedOverlayIds.includes(event.id)));
+  const selectedKnownRangeEvents = $derived(
+    knownRangeEvents.filter((event) => selectedOverlayIds.includes(event.id))
+  );
 
   $effect(() => {
     eventCount = rows.length;
@@ -129,7 +137,10 @@
         limit: source.pageSize ?? 1000,
       };
 
-      const query = new CirclesQuery<CirclesBaseEventRow>(sdk.circlesRpc, queryDefinition);
+      const query = new CirclesQuery<CirclesBaseEventRow>(
+        sdk.circlesRpc,
+        queryDefinition
+      );
       const allRows: CirclesBaseEventRow[] = [];
 
       while (await query.queryNextPage()) {
@@ -155,10 +166,17 @@
   }
 
   function sortRangeEvents(a: RangeOverlayEvent, b: RangeOverlayEvent): number {
-    return a.startDaySec - b.startDaySec || a.endDaySec - b.endDaySec || a.title.localeCompare(b.title);
+    return (
+      a.startDaySec - b.startDaySec ||
+      a.endDaySec - b.endDaySec ||
+      a.title.localeCompare(b.title)
+    );
   }
 
-  function timestampFor(row: CirclesBaseEventRow, source: EventHistoryDataSource): number {
+  function timestampFor(
+    row: CirclesBaseEventRow,
+    source: EventHistoryDataSource
+  ): number {
     if (source.getTimestampSec) {
       return toNumber(source.getTimestampSec(row));
     }
@@ -191,7 +209,10 @@
     return Math.floor(d.getTime() / 1000);
   }
 
-  function buildCountMap(input: CirclesBaseEventRow[], g: Granularity): Map<number, number> {
+  function buildCountMap(
+    input: CirclesBaseEventRow[],
+    g: Granularity
+  ): Map<number, number> {
     const counts = new Map<number, number>();
     for (const row of input) {
       const start = startOfBucketSec(timestampFor(row, dataSource), g);
@@ -228,7 +249,10 @@
     return counts.get(bucketStart) ?? 0;
   }
 
-  function buildMonthCalendars(input: CirclesBaseEventRow[], counts: Map<number, number>): MonthCalendar[] {
+  function buildMonthCalendars(
+    input: CirclesBaseEventRow[],
+    counts: Map<number, number>
+  ): MonthCalendar[] {
     if (input.length === 0) return [];
 
     const firstTs = timestampFor(input[0], dataSource);
@@ -237,9 +261,16 @@
     const lastMonth = startOfMonthSec(lastTs);
     const out: MonthCalendar[] = [];
 
-    for (let month = firstMonth; month <= lastMonth; month = nextMonthStartSec(month)) {
+    for (
+      let month = firstMonth;
+      month <= lastMonth;
+      month = nextMonthStartSec(month)
+    ) {
       const monthDate = new Date(month * 1000);
-      const monthLabel = monthDate.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+      const monthLabel = monthDate.toLocaleString(undefined, {
+        month: 'long',
+        year: 'numeric',
+      });
       const monthEnd = nextMonthStartSec(month) - 1;
       const gridStart = startOfWeekSec(month);
       const gridEnd = startOfWeekSec(monthEnd) + 6 * 24 * 60 * 60;
@@ -252,7 +283,8 @@
         for (let i = 0; i < 7; i += 1) {
           const current = cursor + i * 24 * 60 * 60;
           const currentDate = new Date(current * 1000);
-          const inCurrentMonth = currentDate.getUTCMonth() === monthDate.getUTCMonth();
+          const inCurrentMonth =
+            currentDate.getUTCMonth() === monthDate.getUTCMonth();
           week.push({
             tsSec: current,
             dayOfMonth: currentDate.getUTCDate(),
@@ -270,7 +302,10 @@
     return out;
   }
 
-  function buildWeeklySections(input: CirclesBaseEventRow[], counts: Map<number, number>): MonthWeeklySection[] {
+  function buildWeeklySections(
+    input: CirclesBaseEventRow[],
+    counts: Map<number, number>
+  ): MonthWeeklySection[] {
     if (input.length === 0) return [];
 
     const firstTs = timestampFor(input[0], dataSource);
@@ -279,9 +314,16 @@
     const lastMonth = startOfMonthSec(lastTs);
     const out: MonthWeeklySection[] = [];
 
-    for (let month = firstMonth; month <= lastMonth; month = nextMonthStartSec(month)) {
+    for (
+      let month = firstMonth;
+      month <= lastMonth;
+      month = nextMonthStartSec(month)
+    ) {
       const monthDate = new Date(month * 1000);
-      const monthLabel = monthDate.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+      const monthLabel = monthDate.toLocaleString(undefined, {
+        month: 'long',
+        year: 'numeric',
+      });
       const monthEnd = nextMonthStartSec(month) - 1;
       const firstWeek = startOfWeekSec(month);
       const lastWeek = startOfWeekSec(monthEnd);
@@ -297,7 +339,10 @@
     return out;
   }
 
-  function buildMonthlyItems(input: CirclesBaseEventRow[], counts: Map<number, number>): MonthlyItem[] {
+  function buildMonthlyItems(
+    input: CirclesBaseEventRow[],
+    counts: Map<number, number>
+  ): MonthlyItem[] {
     if (input.length === 0) return [];
 
     const firstTs = timestampFor(input[0], dataSource);
@@ -306,7 +351,11 @@
     const lastMonth = startOfMonthSec(lastTs);
     const out: MonthlyItem[] = [];
 
-    for (let month = firstMonth; month <= lastMonth; month = nextMonthStartSec(month)) {
+    for (
+      let month = firstMonth;
+      month <= lastMonth;
+      month = nextMonthStartSec(month)
+    ) {
       const d = new Date(month * 1000);
       out.push({
         startSec: month,
@@ -342,10 +391,14 @@
   function setKnownEventsSelectionFiltered(enabled: boolean): void {
     const filteredIds = filteredKnownRangeEvents.map((event) => event.id);
     if (enabled) {
-      selectedOverlayIds = Array.from(new Set([...selectedOverlayIds, ...filteredIds]));
+      selectedOverlayIds = Array.from(
+        new Set([...selectedOverlayIds, ...filteredIds])
+      );
       return;
     }
-    selectedOverlayIds = selectedOverlayIds.filter((id) => !filteredIds.includes(id));
+    selectedOverlayIds = selectedOverlayIds.filter(
+      (id) => !filteredIds.includes(id)
+    );
   }
 
   function onSelectMonth(monthStartSec: number): void {
@@ -366,7 +419,10 @@
     });
 
     popupControls.open({
-      title: labels.dayPopupTitle?.(dayStartSec, events as any) ?? labels.title ?? 'Events',
+      title:
+        labels.dayPopupTitle?.(dayStartSec, events as any) ??
+        labels.title ??
+        'Events',
       component: EventHistoryDayEventsPopup,
       props: {
         dayStartSec,
@@ -381,7 +437,10 @@
     });
   }
 
-  const summaryText = $derived(labels.summary?.(rows as any) ?? `${rows.length} event${rows.length === 1 ? '' : 's'}`);
+  const summaryText = $derived(
+    labels.summary?.(rows as any) ??
+      `${rows.length} event${rows.length === 1 ? '' : 's'}`
+  );
 </script>
 
 <div class="space-y-3">
@@ -420,7 +479,9 @@
         <summary class="btn btn-xs">
           {overlayLabel} ({selectedKnownRangeEvents.length}/{knownRangeEvents.length})
         </summary>
-        <div class="dropdown-content z-[20] mt-2 w-80 rounded-box border border-base-300 bg-base-100 p-2 shadow-lg">
+        <div
+          class="dropdown-content z-[20] mt-2 w-80 rounded-box border border-base-300 bg-base-100 p-2 shadow-lg"
+        >
           <div class="space-y-2">
             <input
               type="text"
@@ -430,10 +491,18 @@
             />
 
             <div class="flex flex-wrap items-center gap-1">
-              <button type="button" class="btn btn-xs btn-ghost" onclick={() => setKnownEventsSelectionAll(true)}>
+              <button
+                type="button"
+                class="btn btn-xs btn-ghost"
+                onclick={() => setKnownEventsSelectionAll(true)}
+              >
                 All
               </button>
-              <button type="button" class="btn btn-xs btn-ghost" onclick={() => setKnownEventsSelectionAll(false)}>
+              <button
+                type="button"
+                class="btn btn-xs btn-ghost"
+                onclick={() => setKnownEventsSelectionAll(false)}
+              >
                 None
               </button>
               <button
@@ -459,7 +528,9 @@
             {/if}
 
             {#each filteredKnownRangeEvents as event (event.id)}
-              <label class="flex items-start gap-2 rounded-md p-2 hover:bg-base-200/40 cursor-pointer">
+              <label
+                class="flex items-start gap-2 rounded-md p-2 hover:bg-base-200/40 cursor-pointer"
+              >
                 <input
                   type="checkbox"
                   class="checkbox checkbox-xs mt-0.5"
@@ -467,12 +538,16 @@
                   onchange={(e) =>
                     toggleKnownEventSelection(
                       event.id,
-                      e.currentTarget instanceof HTMLInputElement ? e.currentTarget.checked : false
+                      e.currentTarget instanceof HTMLInputElement
+                        ? e.currentTarget.checked
+                        : false
                     )}
                 />
                 <span class="min-w-0 text-xs">
                   <span class="font-medium block">{event.title}</span>
-                  <span class="opacity-70 block">{formatKnownEventRange(event)}</span>
+                  <span class="opacity-70 block"
+                    >{formatKnownEventRange(event)}</span
+                  >
                   {#if event.description}
                     <span class="opacity-60 block">{event.description}</span>
                   {/if}
@@ -505,7 +580,7 @@
         {maxBucketCount}
         rangeEvents={selectedKnownRangeEvents}
         {selectedDayTsSec}
-        onSelectDay={onSelectDay}
+        {onSelectDay}
       />
     {:else if granularity === 'week'}
       <EventHistoryWeeklySections
@@ -513,14 +588,14 @@
         {maxBucketCount}
         rangeEvents={selectedKnownRangeEvents}
         {selectedWeekStartSec}
-        onSelectWeek={onSelectWeek}
+        {onSelectWeek}
       />
     {:else}
       <EventHistoryMonthlyList
         {monthlyItems}
         {maxBucketCount}
         rangeEvents={selectedKnownRangeEvents}
-        onSelectMonth={onSelectMonth}
+        {onSelectMonth}
       />
     {/if}
 

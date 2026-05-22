@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Address } from '@circles-sdk/utils';
-import { ProfileSigningKeys } from '$lib/shared/ui/profile';
-import { AddSigningKey } from '$lib/shared/ui/profile';
+  import { ProfileSigningKeys } from '$lib/shared/ui/profile';
+  import { AddSigningKey } from '$lib/shared/ui/profile';
   import { openStep } from '$lib/shared/flow';
   import { browser } from '$app/environment';
   import { CirclesStorage } from '$lib/shared/utils/storage';
@@ -36,24 +36,30 @@ import { AddSigningKey } from '$lib/shared/ui/profile';
   }
 </script>
 
-<section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+<section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
   <div class="flex items-center justify-between">
     <div>
       <h3 class="text-sm font-semibold m-0">Signing keys</h3>
-      <p class="text-xs text-base-content/70 mt-0.5">Manage keys stored for this avatar.</p>
+      <p class="text-xs text-base-content/70 mt-0.5">
+        Manage keys stored for this avatar.
+      </p>
     </div>
     {#if avatarAddress}
-      <button class="btn btn-primary btn-sm" onclick={openAddSigningKey}>Add signing key</button>
+      <button class="btn btn-primary btn-sm" onclick={openAddSigningKey}
+        >Add signing key</button
+      >
     {/if}
   </div>
 </section>
 
 {#if !avatarAddress}
-  <section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
-    <div class="text-sm opacity-70">Connect a Circles avatar first to manage keys.</div>
+  <section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
+    <div class="text-sm opacity-70">
+      Connect a Circles avatar first to manage keys.
+    </div>
   </section>
 {:else}
-  <section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+  <section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
     <ProfileSigningKeys
       avatar={avatarAddress}
       {pinApiBase}
@@ -64,7 +70,7 @@ import { AddSigningKey } from '$lib/shared/ui/profile';
   </section>
 
   {#if hasLocalPrivateKey}
-    <section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+    <section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
       <div>
         <h3 class="text-sm font-semibold m-0">Security</h3>
         <p class="text-xs text-base-content/70 mt-0.5">

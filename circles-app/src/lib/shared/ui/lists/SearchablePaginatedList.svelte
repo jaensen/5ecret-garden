@@ -1,6 +1,11 @@
 <script lang="ts">
   import type { Component } from 'svelte';
-  import { readable, writable, type Readable, type Writable } from 'svelte/store';
+  import {
+    readable,
+    writable,
+    type Readable,
+    type Writable,
+  } from 'svelte/store';
   import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
   import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
   import { createPaginatedList } from '$lib/shared/state/paginatedList';
@@ -44,7 +49,7 @@
     emptyLabel = 'No entries',
     noMatchesLabel = 'No matches',
     searchPlaceholder = 'Search by address or name',
-    placeholderRow
+    placeholderRow,
   }: Props<any> = $props();
 
   const emptyItems = readable<any[]>([]);
@@ -56,7 +61,7 @@
   $effect(() => {
     const next = createSearchablePaginatedList(items, {
       pageSize,
-      addressOf: (item) => addressOf(item) as any
+      addressOf: (item) => addressOf(item) as any,
     });
 
     searchQuery = next.searchQuery;
@@ -67,7 +72,7 @@
 
 <ListShell
   query={searchQuery}
-  searchPlaceholder={searchPlaceholder}
+  {searchPlaceholder}
   {inputDataAttribute}
   {onInputKeydown}
   {loading}
@@ -76,14 +81,14 @@
   {emptyRequiresEnd}
   isEmpty={($items ?? []).length === 0}
   isNoMatches={($items ?? []).length > 0 && ($filteredItems ?? []).length === 0}
-  emptyLabel={emptyLabel}
-  noMatchesLabel={noMatchesLabel}
+  {emptyLabel}
+  {noMatchesLabel}
 >
   <GenericList
     store={paginatedItems}
     {row}
-    getKey={getKey}
-    rowHeight={rowHeight}
+    {getKey}
+    {rowHeight}
     maxPlaceholderPages={2}
     expectedPageSize={pageSize}
     {placeholderRow}

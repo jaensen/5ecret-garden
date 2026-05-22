@@ -10,7 +10,7 @@
 
 <div
   aria-hidden="true"
-  class="w-full bg-base-100 border shadow-sm rounded-xl px-3 md:px-4 py-2 md:py-2.5 flex items-center justify-between text-left"
+  class="w-full bg-base-100 border shadow-sm rounded-3xl px-3 md:px-4 py-2 md:py-2.5 flex items-center justify-between text-left"
   style={rowStyle}
 >
   <div class="flex flex-col min-w-0 mr-3 w-full">

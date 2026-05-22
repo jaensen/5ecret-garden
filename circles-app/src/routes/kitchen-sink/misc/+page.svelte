@@ -2,7 +2,7 @@
   import Disclaimer from '$lib/areas/register/ui/components/RegistrationDisclaimer.svelte';
 </script>
 
-<section class="rounded-xl border border-base-300 bg-base-100 p-4 space-y-4">
+<section class="rounded-3xl border border-base-300 bg-base-100 p-4 space-y-4">
   <h2 class="text-lg font-semibold">Misc</h2>
 
   <div class="space-y-2">

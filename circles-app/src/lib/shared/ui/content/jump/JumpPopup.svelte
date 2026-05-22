@@ -34,9 +34,15 @@
 
 <div class="w-full">
   {#if destination}
-    <div class="bg-base-100 border border-base-content/10 rounded-lg p-4 space-y-3">
-      <div class="text-sm opacity-70">You are about to open this link in a new tab:</div>
-      <div class="relative font-mono text-sm bg-base-200/50 border border-base-content/10 rounded-md p-3 pr-10">
+    <div
+      class="bg-base-100 border border-base-content/10 rounded-lg p-4 space-y-3"
+    >
+      <div class="text-sm opacity-70">
+        You are about to open this link in a new tab:
+      </div>
+      <div
+        class="relative font-mono text-sm bg-base-200/50 border border-base-content/10 rounded-md p-3 pr-10"
+      >
         <div class="whitespace-nowrap overflow-x-auto">
           {destination}
         </div>
@@ -53,17 +59,23 @@
       </div>
 
       <div class="flex flex-wrap justify-end gap-2">
-        <button type="button" class="btn btn-primary btn-sm" onclick={onContinue}>Continue</button>
-        <button type="button" class="btn btn-ghost btn-sm" onclick={onBack}>Cancel</button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          onclick={onContinue}>Continue</button
+        >
+        <button type="button" class="btn btn-ghost btn-sm" onclick={onBack}
+          >Cancel</button
+        >
       </div>
     </div>
   {:else}
     <div class="space-y-3">
-      <div class="alert alert-error">
-        Invalid or unsupported link.
-      </div>
+      <div class="alert alert-error">Invalid or unsupported link.</div>
       <div class="flex justify-end">
-        <button type="button" class="btn btn-ghost btn-sm" onclick={onBack}>Back</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick={onBack}
+          >Back</button
+        >
       </div>
     </div>
   {/if}

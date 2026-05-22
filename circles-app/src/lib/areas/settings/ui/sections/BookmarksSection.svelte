@@ -53,10 +53,16 @@
   let publishSuccessAt: number | null = $state(null);
 
   const connectedAvatar = $derived(
-    (avatarState.avatar?.address ?? avatarState.avatar?.avatarInfo?.avatar ?? '').toLowerCase(),
+    (
+      avatarState.avatar?.address ??
+      avatarState.avatar?.avatarInfo?.avatar ??
+      ''
+    ).toLowerCase()
   );
 
-  const sortedBookmarks = $derived.by(() => [...bookmarkedProfiles].sort((a, b) => b.createdAt - a.createdAt));
+  const sortedBookmarks = $derived.by(() =>
+    [...bookmarkedProfiles].sort((a, b) => b.createdAt - a.createdAt)
+  );
 
   function splitFolderPath(path: string): string[] {
     return path
@@ -80,10 +86,18 @@
     return parts[parts.length - 1] ?? path;
   }
 
-  function ensureFolderNode(nodes: Map<string, FolderNode>, path: string): FolderNode {
+  function ensureFolderNode(
+    nodes: Map<string, FolderNode>,
+    path: string
+  ): FolderNode {
     const existing = nodes.get(path);
     if (existing) return existing;
-    const node: FolderNode = { path, name: folderName(path), children: [], bookmarks: [] };
+    const node: FolderNode = {
+      path,
+      name: folderName(path),
+      children: [],
+      bookmarks: [],
+    };
     nodes.set(path, node);
     return node;
   }
@@ -102,7 +116,8 @@
         const parent = parentPath(acc);
         if (parent) {
           const parentNode = ensureFolderNode(nodeMap, parent);
-          if (!parentNode.children.some((v) => v.path === node.path)) parentNode.children.push(node);
+          if (!parentNode.children.some((v) => v.path === node.path))
+            parentNode.children.push(node);
         }
       }
     }
@@ -119,7 +134,9 @@
       node.bookmarks.sort((a, b) => b.createdAt - a.createdAt);
     }
 
-    const roots = Array.from(nodeMap.values()).filter((v) => parentPath(v.path) === '');
+    const roots = Array.from(nodeMap.values()).filter(
+      (v) => parentPath(v.path) === ''
+    );
     roots.sort((a, b) => a.name.localeCompare(b.name));
 
     const rows: VisibleFolderRow[] = [];
@@ -149,14 +166,17 @@
     return map;
   });
 
-  const uncategorizedBookmarks = $derived.by(() => bookmarksByFolder.get('') ?? []);
+  const uncategorizedBookmarks = $derived.by(
+    () => bookmarksByFolder.get('') ?? []
+  );
 
   function bookmarksForFolder(path: string): ProfileBookmark[] {
     return bookmarksByFolder.get(path) ?? [];
   }
 
   function isFolderExpanded(path: string): boolean {
-    if (Object.prototype.hasOwnProperty.call(expandedFolders, path)) return !!expandedFolders[path];
+    if (Object.prototype.hasOwnProperty.call(expandedFolders, path))
+      return !!expandedFolders[path];
     return folderDepth(path) < 1;
   }
 
@@ -198,9 +218,11 @@
   });
 
   $effect(() => {
-    const unsubscribe = profileBookmarksUnpublishedChangesStore.subscribe((value) => {
-      hasUnpublishedProfileChanges = value;
-    });
+    const unsubscribe = profileBookmarksUnpublishedChangesStore.subscribe(
+      (value) => {
+        hasUnpublishedProfileChanges = value;
+      }
+    );
     return () => unsubscribe();
   });
 
@@ -234,7 +256,10 @@
     });
   }
 
-  function setBookmarkFolderByAddress(address: string, folder: string | undefined): void {
+  function setBookmarkFolderByAddress(
+    address: string,
+    folder: string | undefined
+  ): void {
     profileBookmarksService.upsertProfile(address, { folder: folder ?? null });
     if (folder) expandFolderPath(folder);
   }
@@ -265,7 +290,8 @@
 
   function onFolderDrop(event: DragEvent, folder: string | undefined): void {
     event.preventDefault();
-    const fromTransfer = event.dataTransfer?.getData('text/plain')?.trim() || '';
+    const fromTransfer =
+      event.dataTransfer?.getData('text/plain')?.trim() || '';
     const address = fromTransfer || draggingAddress || '';
     if (!address) {
       dragOverFolder = null;
@@ -325,18 +351,27 @@
   }
 </script>
 
-<section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
+<section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
   <div class="flex items-start justify-between gap-3">
     <div>
       <h3 class="text-sm font-semibold m-0">Bookmarks</h3>
-      <p class="text-xs text-base-content/70 mt-0.5">Local bookmarks are authoritative. Load/save profile data manually.</p>
+      <p class="text-xs text-base-content/70 mt-0.5">
+        Local bookmarks are authoritative. Load/save profile data manually.
+      </p>
       {#if connectedAvatar}
-        <p class="text-[11px] text-base-content/60 mt-1 font-mono break-all">{connectedAvatar}</p>
+        <p class="text-[11px] text-base-content/60 mt-1 font-mono break-all">
+          {connectedAvatar}
+        </p>
       {/if}
     </div>
 
     <div class="flex items-center gap-2">
-      <button class="btn btn-sm btn-ghost" type="button" onclick={loadFromProfile} disabled={!connectedAvatar || loadingFromProfile}>
+      <button
+        class="btn btn-sm btn-ghost"
+        type="button"
+        onclick={loadFromProfile}
+        disabled={!connectedAvatar || loadingFromProfile}
+      >
         {#if loadingFromProfile}
           <span class="loading loading-spinner loading-xs"></span>
         {/if}
@@ -347,7 +382,9 @@
         class={`btn btn-sm ${hasUnpublishedProfileChanges ? 'btn-primary' : 'btn-ghost'}`}
         type="button"
         onclick={publishInProfile}
-        disabled={!connectedAvatar || publishing || !hasUnpublishedProfileChanges}
+        disabled={!connectedAvatar ||
+          publishing ||
+          !hasUnpublishedProfileChanges}
       >
         {#if publishing}
           <span class="loading loading-spinner loading-xs"></span>
@@ -358,9 +395,13 @@
   </div>
 </section>
 
-<section class="bg-base-100 border border-base-300 rounded-xl p-4 w-full">
-  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3">
-    <div class="text-xs text-base-content/70">Drag bookmark items via the grip into folders</div>
+<section class="bg-base-100 border border-base-300 rounded-3xl p-4 w-full">
+  <div
+    class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3"
+  >
+    <div class="text-xs text-base-content/70">
+      Drag bookmark items via the grip into folders
+    </div>
     <div class="flex items-center gap-2 flex-wrap justify-end">
       <input
         class="input input-bordered input-xs w-40"
@@ -369,7 +410,9 @@
         placeholder="New folder (e.g. Work/DAO)"
         bind:value={newFolderName}
       />
-      <button class="btn btn-xs" type="button" onclick={createFolder}>Add</button>
+      <button class="btn btn-xs" type="button" onclick={createFolder}
+        >Add</button
+      >
     </div>
   </div>
 
@@ -378,34 +421,136 @@
   {:else if publishError}
     <div class="alert alert-error py-2 text-xs mb-2">{publishError}</div>
   {:else if loadSuccessAt}
-    <div class="alert alert-success py-2 text-xs mb-2">Bookmarks loaded from profile (new entries only).</div>
+    <div class="alert alert-success py-2 text-xs mb-2">
+      Bookmarks loaded from profile (new entries only).
+    </div>
   {:else if publishSuccessAt}
-    <div class="alert alert-success py-2 text-xs mb-2">Bookmarks saved to profile.</div>
+    <div class="alert alert-success py-2 text-xs mb-2">
+      Bookmarks saved to profile.
+    </div>
   {/if}
 
   <div class="space-y-2">
     {#if sortedBookmarks.length === 0 && folders.length === 0}
       <div class="text-sm opacity-70 mb-2">
-        No profile bookmarks yet. Open a profile popup and tap the star to save it.
+        No profile bookmarks yet. Open a profile popup and tap the star to save
+        it.
       </div>
     {/if}
 
+    <div
+      class={`rounded-lg border border-base-200 ${dragOverFolder === '__none__' ? 'bg-base-200/30' : ''}`}
+      role="region"
+      aria-label="Unsorted bookmarks drop zone"
+      ondragover={(event) => onFolderDragOver(event, '__none__')}
+      ondragleave={() => onFolderDragLeave('__none__')}
+      ondrop={(event) => onFolderDrop(event, undefined)}
+    >
       <div
-        class={`rounded-lg border border-base-200 ${dragOverFolder === '__none__' ? 'bg-base-200/30' : ''}`}
-        role="region"
-        aria-label="Unsorted bookmarks drop zone"
-        ondragover={(event) => onFolderDragOver(event, '__none__')}
-        ondragleave={() => onFolderDragLeave('__none__')}
-        ondrop={(event) => onFolderDrop(event, undefined)}
+        class="px-2 py-2 flex items-center justify-between text-xs font-semibold"
       >
-        <div class="px-2 py-2 flex items-center justify-between text-xs font-semibold">
-          <span class="inline-flex items-center gap-1.5"><Lucide icon={LFolder} size={14} />Unsorted</span>
-          <span class="opacity-60">{uncategorizedBookmarks.length}</span>
+        <span class="inline-flex items-center gap-1.5"
+          ><Lucide icon={LFolder} size={14} />Unsorted</span
+        >
+        <span class="opacity-60">{uncategorizedBookmarks.length}</span>
+      </div>
+
+      {#if uncategorizedBookmarks.length > 0}
+        <div class="divide-y divide-base-200">
+          {#each uncategorizedBookmarks as bookmark (bookmark.address)}
+            <div class="py-1.5 px-2 flex items-center gap-2">
+              <button
+                class="btn btn-ghost btn-xs btn-square shrink-0 self-center cursor-grab active:cursor-grabbing"
+                type="button"
+                title="Drag bookmark"
+                draggable="true"
+                ondragstart={(event) => onDragStart(event, bookmark)}
+                ondragend={onDragEnd}
+              >
+                <Lucide icon={LGripVertical} size={14} />
+              </button>
+
+              <div class="flex-1 min-w-0">
+                <RowFrame
+                  clickable={true}
+                  dense={true}
+                  noLeading={true}
+                  onclick={() => openBookmarkDetails(bookmark)}
+                >
+                  <div class="min-w-0">
+                    <Avatar
+                      address={bookmark.address}
+                      view="horizontal"
+                      bottomInfo={`Bookmarked ${formatCreatedAt(bookmark.createdAt)}`}
+                      showTypeInfo={true}
+                      clickable={true}
+                    />
+                  </div>
+                  {#snippet trailing()}
+                    <img
+                      src="/chevron-right.svg"
+                      alt=""
+                      class="h-4 w-4 opacity-70"
+                      aria-hidden="true"
+                    />
+                  {/snippet}
+                </RowFrame>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </div>
+
+    {#each folderRows as folderRow (folderRow.path)}
+      <div
+        class={`rounded-lg border border-base-200 ${dragOverFolder === folderRow.path ? 'bg-base-200/30' : ''}`}
+        role="region"
+        aria-label={`Folder ${folderRow.name} drop zone`}
+        ondragover={(event) => onFolderDragOver(event, folderRow.path)}
+        ondragleave={() => onFolderDragLeave(folderRow.path)}
+        ondrop={(event) => onFolderDrop(event, folderRow.path)}
+      >
+        <div class="w-full px-2 py-2 flex items-center gap-1">
+          <button
+            class="flex-1 min-w-0 text-left flex items-center justify-between gap-2 hover:bg-base-200/30 rounded"
+            type="button"
+            onclick={() => toggleFolder(folderRow.path)}
+          >
+            <span
+              class="inline-flex items-center gap-1.5 min-w-0"
+              style={`padding-left: ${folderRow.depth * 0.9}rem`}
+            >
+              <Lucide
+                icon={isFolderExpanded(folderRow.path)
+                  ? LChevronDown
+                  : LChevronRight}
+                size={14}
+              />
+              <Lucide icon={LFolder} size={14} />
+              <span class="text-sm truncate">{folderRow.name}</span>
+            </span>
+            <span class="text-xs text-base-content/60">
+              {folderRow.bookmarkCount}{#if folderRow.childCount > 0}
+                • {folderRow.childCount} subfolders{/if}
+            </span>
+          </button>
+
+          <button
+            class="btn btn-ghost btn-xs btn-square"
+            type="button"
+            disabled={folderRow.path.toLowerCase() ===
+              VIP_BOOKMARK_FOLDER.toLowerCase()}
+            title="Delete folder"
+            onclick={() => askRemoveFolder(folderRow.path)}
+          >
+            <Lucide icon={LTrash2} size={13} />
+          </button>
         </div>
 
-        {#if uncategorizedBookmarks.length > 0}
+        {#if isFolderExpanded(folderRow.path) && bookmarksForFolder(folderRow.path).length > 0}
           <div class="divide-y divide-base-200">
-            {#each uncategorizedBookmarks as bookmark (bookmark.address)}
+            {#each bookmarksForFolder(folderRow.path) as bookmark (bookmark.address)}
               <div class="py-1.5 px-2 flex items-center gap-2">
                 <button
                   class="btn btn-ghost btn-xs btn-square shrink-0 self-center cursor-grab active:cursor-grabbing"
@@ -419,7 +564,12 @@
                 </button>
 
                 <div class="flex-1 min-w-0">
-                  <RowFrame clickable={true} dense={true} noLeading={true} onclick={() => openBookmarkDetails(bookmark)}>
+                  <RowFrame
+                    clickable={true}
+                    dense={true}
+                    noLeading={true}
+                    onclick={() => openBookmarkDetails(bookmark)}
+                  >
                     <div class="min-w-0">
                       <Avatar
                         address={bookmark.address}
@@ -430,7 +580,12 @@
                       />
                     </div>
                     {#snippet trailing()}
-                      <img src="/chevron-right.svg" alt="" class="h-4 w-4 opacity-70" aria-hidden="true" />
+                      <img
+                        src="/chevron-right.svg"
+                        alt=""
+                        class="h-4 w-4 opacity-70"
+                        aria-hidden="true"
+                      />
                     {/snippet}
                   </RowFrame>
                 </div>
@@ -439,80 +594,6 @@
           </div>
         {/if}
       </div>
-
-      {#each folderRows as folderRow (folderRow.path)}
-        <div
-          class={`rounded-lg border border-base-200 ${dragOverFolder === folderRow.path ? 'bg-base-200/30' : ''}`}
-          role="region"
-          aria-label={`Folder ${folderRow.name} drop zone`}
-          ondragover={(event) => onFolderDragOver(event, folderRow.path)}
-          ondragleave={() => onFolderDragLeave(folderRow.path)}
-          ondrop={(event) => onFolderDrop(event, folderRow.path)}
-        >
-          <div class="w-full px-2 py-2 flex items-center gap-1">
-            <button
-              class="flex-1 min-w-0 text-left flex items-center justify-between gap-2 hover:bg-base-200/30 rounded"
-              type="button"
-              onclick={() => toggleFolder(folderRow.path)}
-            >
-              <span class="inline-flex items-center gap-1.5 min-w-0" style={`padding-left: ${folderRow.depth * 0.9}rem`}>
-                <Lucide icon={isFolderExpanded(folderRow.path) ? LChevronDown : LChevronRight} size={14} />
-                <Lucide icon={LFolder} size={14} />
-                <span class="text-sm truncate">{folderRow.name}</span>
-              </span>
-              <span class="text-xs text-base-content/60">
-                {folderRow.bookmarkCount}{#if folderRow.childCount > 0} • {folderRow.childCount} subfolders{/if}
-              </span>
-            </button>
-
-            <button
-              class="btn btn-ghost btn-xs btn-square"
-              type="button"
-              disabled={folderRow.path.toLowerCase() === VIP_BOOKMARK_FOLDER.toLowerCase()}
-              title="Delete folder"
-              onclick={() => askRemoveFolder(folderRow.path)}
-            >
-              <Lucide icon={LTrash2} size={13} />
-            </button>
-          </div>
-
-          {#if isFolderExpanded(folderRow.path) && bookmarksForFolder(folderRow.path).length > 0}
-            <div class="divide-y divide-base-200">
-              {#each bookmarksForFolder(folderRow.path) as bookmark (bookmark.address)}
-                <div class="py-1.5 px-2 flex items-center gap-2">
-                  <button
-                    class="btn btn-ghost btn-xs btn-square shrink-0 self-center cursor-grab active:cursor-grabbing"
-                    type="button"
-                    title="Drag bookmark"
-                    draggable="true"
-                    ondragstart={(event) => onDragStart(event, bookmark)}
-                    ondragend={onDragEnd}
-                  >
-                    <Lucide icon={LGripVertical} size={14} />
-                  </button>
-
-                  <div class="flex-1 min-w-0">
-                    <RowFrame clickable={true} dense={true} noLeading={true} onclick={() => openBookmarkDetails(bookmark)}>
-                      <div class="min-w-0">
-                        <Avatar
-                          address={bookmark.address}
-                          view="horizontal"
-                          bottomInfo={`Bookmarked ${formatCreatedAt(bookmark.createdAt)}`}
-                          showTypeInfo={true}
-                          clickable={true}
-                        />
-                      </div>
-                      {#snippet trailing()}
-                        <img src="/chevron-right.svg" alt="" class="h-4 w-4 opacity-70" aria-hidden="true" />
-                      {/snippet}
-                    </RowFrame>
-                  </div>
-                </div>
-              {/each}
-            </div>
-          {/if}
-        </div>
-      {/each}
+    {/each}
   </div>
 </section>
-

@@ -11,20 +11,16 @@
     size?: SizeVariant;
   }
 
-  let {
-    title,
-    subtitle,
-    description,
-    imageUrl,
-    size = 'md',
-  }: Props = $props();
+  let { title, subtitle, description, imageUrl, size = 'md' }: Props = $props();
 
   const imageSizeClass = $derived(size === 'sm' ? 'w-16 h-16' : 'w-20 h-20');
   const gapClass = $derived(size === 'sm' ? 'gap-3' : 'gap-4');
 </script>
 
 <div class={`flex items-start ${gapClass} min-w-0`}>
-  <div class={`${imageSizeClass} rounded-lg bg-base-200 overflow-hidden flex items-center justify-center text-base-content/50 shrink-0`}>
+  <div
+    class={`${imageSizeClass} rounded-lg bg-base-200 overflow-hidden flex items-center justify-center text-base-content/50 shrink-0`}
+  >
     {#if imageUrl}
       <img src={imageUrl} alt={title} class="w-full h-full object-cover" />
     {:else}
@@ -41,7 +37,10 @@
     </div>
 
     {#if description}
-      <Markdown content={description} class="prose prose-sm max-w-none text-base-content/70" />
+      <Markdown
+        content={description}
+        class="prose prose-sm max-w-none text-base-content/70"
+      />
     {/if}
 
     <slot name="meta" />

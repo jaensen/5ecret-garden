@@ -58,7 +58,7 @@
 >
   <div class="w-full">
     <SearchAvatar
-      avatarTypes={["CrcV2_RegisterHuman","CrcV2_RegisterOrganization"]}
+      avatarTypes={['CrcV2_RegisterHuman', 'CrcV2_RegisterOrganization']}
       selectedAddress={context.selectedAddress}
       inputDataAttribute="data-send-step-initial-input data-send-recipient-search-input"
       {onselect}

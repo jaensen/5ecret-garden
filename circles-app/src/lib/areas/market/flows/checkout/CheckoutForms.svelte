@@ -8,7 +8,7 @@
     cartState,
     updateBasketDetails,
     validateCart,
-    previewCartOrder
+    previewCartOrder,
   } from '$lib/areas/market/cart/store';
   import { deriveFormRequirements } from '$lib/areas/market/flows/checkout/requiredSlots';
   import CheckoutReview from './CheckoutReview.svelte';
@@ -31,7 +31,7 @@
     openStep({
       title: 'Review',
       component: CheckoutReview,
-      props: {}
+      props: {},
     });
   });
 
@@ -107,7 +107,7 @@
         streetAddress: shippingStreet || null,
         addressLocality: shippingLocality || null,
         postalCode: shippingPostal || null,
-        addressCountry: shippingCountry || null
+        addressCountry: shippingCountry || null,
       };
     }
 
@@ -115,14 +115,14 @@
       patch.contactPoint = {
         '@type': 'ContactPoint',
         email: contactEmail || null,
-        telephone: contactPhone || null
+        telephone: contactPhone || null,
       };
     }
 
     if (birthDate) {
       patch.ageProof = {
         '@type': 'Person',
-        birthDate
+        birthDate,
       };
     }
 
@@ -130,7 +130,7 @@
       patch.customer = {
         '@type': 'Person',
         givenName: givenName || null,
-        familyName: familyName || null
+        familyName: familyName || null,
       };
     }
 
@@ -147,7 +147,7 @@
         streetAddress: billingStreet || null,
         addressLocality: billingLocality || null,
         postalCode: billingPostal || null,
-        addressCountry: billingCountry || null
+        addressCountry: billingCountry || null,
       };
     }
 
@@ -156,7 +156,10 @@
 
   async function validateOnBlur(event?: FocusEvent): Promise<void> {
     const next = event?.relatedTarget as HTMLElement | null;
-    if (next?.dataset?.skipBlurValidation === 'true' && skipNextBlurValidation) {
+    if (
+      next?.dataset?.skipBlurValidation === 'true' &&
+      skipNextBlurValidation
+    ) {
       skipNextBlurValidation = false;
       return;
     }
@@ -213,8 +216,12 @@
   }
 
   const offerDrivenRequired = $derived(basketRequiredSlotsFromOffers());
-  const validationRequired = $derived(requiredSlotsFromValidation($cartState.validation));
-  const allRequiredSlots = $derived(new Set<string>([...offerDrivenRequired, ...validationRequired]));
+  const validationRequired = $derived(
+    requiredSlotsFromValidation($cartState.validation)
+  );
+  const allRequiredSlots = $derived(
+    new Set<string>([...offerDrivenRequired, ...validationRequired])
+  );
 
   const {
     customerRequired,
@@ -230,7 +237,7 @@
     billStreetRequired,
     billLocalityRequired,
     billPostalRequired,
-    billCountryRequired
+    billCountryRequired,
   } = $derived(deriveFormRequirements(allRequiredSlots));
 
   // Field-level error based purely on server ValidationRequirement.path
@@ -248,7 +255,9 @@
 
   function hasBlockingUnmet(v: any): boolean {
     if (!v || !Array.isArray(v.requirements)) return false;
-    return v.requirements.some((r: any) => !!r?.blocking && (r?.status ?? '') !== 'ok');
+    return v.requirements.some(
+      (r: any) => !!r?.blocking && (r?.status ?? '') !== 'ok'
+    );
   }
 
   async function goToReview(): Promise<void> {
@@ -260,238 +269,259 @@
   // Continue is enabled only when the last server validation has no unmet blocking requirements
   // NOTE: Derived canContinue was unused; button disabling is handled inline.
 </script>
+
 <FlowStepScaffold
   {...CHECKOUT_FLOW_SCAFFOLD_BASE}
   step={2}
   title="Checkout"
   subtitle="Provide required checkout information."
 >
+  <p>
+    The seller needs some additional information from you. Please fill in the
+    forms below:
+  </p>
+  <div class="space-y-4 text-xs">
+    {#if customerRequired}
+      <div class="space-y-2">
+        <div class="font-semibold opacity-80">Customer identification</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <label class="form-control">
+            <span class="label-text text-xs">First name</span>
+            <input
+              class="input input-xs input-bordered"
+              bind:value={givenName}
+              data-popup-initial-input
+              onblur={validateOnBlur}
+              class:border-error={fieldHasError('/customer/givenName')}
+              required
+            />
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs">Last name</span>
+            <input
+              class="input input-xs input-bordered"
+              bind:value={familyName}
+              onblur={validateOnBlur}
+              class:border-error={fieldHasError('/customer/familyName')}
+              required
+            />
+          </label>
+        </div>
+      </div>
+    {/if}
 
-    <p>
-        The seller needs some additional information from you. Please fill in the forms below:
-    </p>
-    <div class="space-y-4 text-xs">
-      {#if customerRequired}
-        <div class="space-y-2">
-          <div class="font-semibold opacity-80">Customer identification</div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    {#if shippingRequired}
+      <div class="space-y-2">
+        <div class="font-semibold opacity-80">Shipping address</div>
+        <div class="grid grid-cols-1 gap-2">
+          {#if shipStreetRequired}
             <label class="form-control">
-              <span class="label-text text-xs">First name</span>
+              <span class="label-text text-xs">Street address</span>
               <input
                 class="input input-xs input-bordered"
-                bind:value={givenName}
-                  data-popup-initial-input
-                onblur={validateOnBlur}
-                class:border-error={fieldHasError('/customer/givenName')}
-                required
-              />
-            </label>
-            <label class="form-control">
-              <span class="label-text text-xs">Last name</span>
-              <input
-                class="input input-xs input-bordered"
-                bind:value={familyName}
-                onblur={validateOnBlur}
-                class:border-error={fieldHasError('/customer/familyName')}
-                required
-              />
-            </label>
-          </div>
-        </div>
-      {/if}
-
-      {#if shippingRequired}
-        <div class="space-y-2">
-          <div class="font-semibold opacity-80">Shipping address</div>
-          <div class="grid grid-cols-1 gap-2">
-            {#if shipStreetRequired}
-              <label class="form-control">
-                <span class="label-text text-xs">Street address</span>
-                <input
-                  class="input input-xs input-bordered"
-                  bind:value={shippingStreet}
-                  data-popup-initial-input
-                  onblur={validateOnBlur}
-                  class:border-error={fieldHasError('/shippingAddress/streetAddress')}
-                  required
-                />
-              </label>
-            {/if}
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {#if shipLocalityRequired}
-                <label class="form-control">
-                  <span class="label-text text-xs">City / locality</span>
-                  <input
-                    class="input input-xs input-bordered"
-                    bind:value={shippingLocality}
-                    onblur={validateOnBlur}
-                    class:border-error={fieldHasError('/shippingAddress/addressLocality')}
-                    required
-                  />
-                </label>
-              {/if}
-              {#if shipPostalRequired}
-                <label class="form-control">
-                  <span class="label-text text-xs">Postal code</span>
-                  <input
-                    class="input input-xs input-bordered"
-                    bind:value={shippingPostal}
-                    onblur={validateOnBlur}
-                    class:border-error={fieldHasError('/shippingAddress/postalCode')}
-                    required
-                  />
-                </label>
-              {/if}
-              {#if shipCountryRequired}
-                <label class="form-control">
-                  <span class="label-text text-xs">Country</span>
-                  <input
-                    class="input input-xs input-bordered"
-                    bind:value={shippingCountry}
-                    placeholder="DE, FR, …"
-                    onblur={validateOnBlur}
-                    class:border-error={fieldHasError('/shippingAddress/addressCountry')}
-                    required
-                  />
-                </label>
-              {/if}
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      {#if billingRequired}
-        <div class="space-y-2">
-          <div class="font-semibold opacity-80">Billing address</div>
-          <div class="grid grid-cols-1 gap-2">
-            {#if billStreetRequired}
-              <label class="form-control">
-                <span class="label-text text-xs">Street address</span>
-                <input
-                  class="input input-xs input-bordered"
-                  bind:value={billingStreet}
-                  onblur={validateOnBlur}
-                  class:border-error={fieldHasError('/billingAddress/streetAddress')}
-                  required
-                />
-              </label>
-            {/if}
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {#if billLocalityRequired}
-                <label class="form-control">
-                  <span class="label-text text-xs">City / locality</span>
-                  <input
-                    class="input input-xs input-bordered"
-                    bind:value={billingLocality}
-                    onblur={validateOnBlur}
-                    class:border-error={fieldHasError('/billingAddress/addressLocality')}
-                    required
-                  />
-                </label>
-              {/if}
-              {#if billPostalRequired}
-                <label class="form-control">
-                  <span class="label-text text-xs">Postal code</span>
-                  <input
-                    class="input input-xs input-bordered"
-                    bind:value={billingPostal}
-                    onblur={validateOnBlur}
-                    class:border-error={fieldHasError('/billingAddress/postalCode')}
-                    required
-                  />
-                </label>
-              {/if}
-              {#if billCountryRequired}
-                <label class="form-control">
-                  <span class="label-text text-xs">Country</span>
-                  <input
-                    class="input input-xs input-bordered"
-                    bind:value={billingCountry}
-                    placeholder="DE, FR, …"
-                    onblur={validateOnBlur}
-                    class:border-error={fieldHasError('/billingAddress/addressCountry')}
-                    required
-                  />
-                </label>
-              {/if}
-            </div>
-          </div>
-        </div>
-      {/if}
-
-      {#if emailRequired || phoneRequired}
-        <div class="space-y-2">
-          <div class="font-semibold opacity-80">Contact</div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {#if emailRequired}
-              <label class="form-control">
-                <span class="label-text text-xs">Email</span>
-                <input
-                  class="input input-xs input-bordered"
-                  type="email"
-                  bind:value={contactEmail}
-                  data-popup-initial-input
-                  onblur={validateOnBlur}
-                  class:border-error={fieldHasError('/contactPoint/email')}
-                  required
-                />
-              </label>
-            {/if}
-            {#if phoneRequired}
-              <label class="form-control">
-                <span class="label-text text-xs">Phone</span>
-                <input
-                  class="input input-xs input-bordered"
-                  type="tel"
-                  bind:value={contactPhone}
-                  onblur={validateOnBlur}
-                  class:border-error={fieldHasError('/contactPoint/telephone')}
-                  required
-                />
-              </label>
-            {/if}
-          </div>
-        </div>
-      {/if}
-
-      {#if birthDateRequired}
-        <div class="space-y-2">
-          <div class="font-semibold opacity-80">Age verification</div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <label class="form-control">
-              <span class="label-text text-xs">Birth date</span>
-              <input
-                class="input input-xs input-bordered"
-                type="date"
-                bind:value={birthDate}
+                bind:value={shippingStreet}
                 data-popup-initial-input
-                  onblur={validateOnBlur}
-                class:border-error={fieldHasError('/ageProof/birthDate')}
+                onblur={validateOnBlur}
+                class:border-error={fieldHasError(
+                  '/shippingAddress/streetAddress'
+                )}
                 required
               />
             </label>
+          {/if}
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {#if shipLocalityRequired}
+              <label class="form-control">
+                <span class="label-text text-xs">City / locality</span>
+                <input
+                  class="input input-xs input-bordered"
+                  bind:value={shippingLocality}
+                  onblur={validateOnBlur}
+                  class:border-error={fieldHasError(
+                    '/shippingAddress/addressLocality'
+                  )}
+                  required
+                />
+              </label>
+            {/if}
+            {#if shipPostalRequired}
+              <label class="form-control">
+                <span class="label-text text-xs">Postal code</span>
+                <input
+                  class="input input-xs input-bordered"
+                  bind:value={shippingPostal}
+                  onblur={validateOnBlur}
+                  class:border-error={fieldHasError(
+                    '/shippingAddress/postalCode'
+                  )}
+                  required
+                />
+              </label>
+            {/if}
+            {#if shipCountryRequired}
+              <label class="form-control">
+                <span class="label-text text-xs">Country</span>
+                <input
+                  class="input input-xs input-bordered"
+                  bind:value={shippingCountry}
+                  placeholder="DE, FR, …"
+                  onblur={validateOnBlur}
+                  class:border-error={fieldHasError(
+                    '/shippingAddress/addressCountry'
+                  )}
+                  required
+                />
+              </label>
+            {/if}
           </div>
         </div>
-      {/if}
+      </div>
+    {/if}
 
-      {#if validateAction.error || submitAction.error}
-        <StepAlert variant="error" className="text-xs mt-2" message={validateAction.error || submitAction.error} />
-      {/if}
+    {#if billingRequired}
+      <div class="space-y-2">
+        <div class="font-semibold opacity-80">Billing address</div>
+        <div class="grid grid-cols-1 gap-2">
+          {#if billStreetRequired}
+            <label class="form-control">
+              <span class="label-text text-xs">Street address</span>
+              <input
+                class="input input-xs input-bordered"
+                bind:value={billingStreet}
+                onblur={validateOnBlur}
+                class:border-error={fieldHasError(
+                  '/billingAddress/streetAddress'
+                )}
+                required
+              />
+            </label>
+          {/if}
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {#if billLocalityRequired}
+              <label class="form-control">
+                <span class="label-text text-xs">City / locality</span>
+                <input
+                  class="input input-xs input-bordered"
+                  bind:value={billingLocality}
+                  onblur={validateOnBlur}
+                  class:border-error={fieldHasError(
+                    '/billingAddress/addressLocality'
+                  )}
+                  required
+                />
+              </label>
+            {/if}
+            {#if billPostalRequired}
+              <label class="form-control">
+                <span class="label-text text-xs">Postal code</span>
+                <input
+                  class="input input-xs input-bordered"
+                  bind:value={billingPostal}
+                  onblur={validateOnBlur}
+                  class:border-error={fieldHasError(
+                    '/billingAddress/postalCode'
+                  )}
+                  required
+                />
+              </label>
+            {/if}
+            {#if billCountryRequired}
+              <label class="form-control">
+                <span class="label-text text-xs">Country</span>
+                <input
+                  class="input input-xs input-bordered"
+                  bind:value={billingCountry}
+                  placeholder="DE, FR, …"
+                  onblur={validateOnBlur}
+                  class:border-error={fieldHasError(
+                    '/billingAddress/addressCountry'
+                  )}
+                  required
+                />
+              </label>
+            {/if}
+          </div>
+        </div>
+      </div>
+    {/if}
 
-      <StepActionBar>
-        {#snippet primary()}
-          <button
-            type="button"
-            class="btn btn-sm btn-primary"
-            onclick={goToReview}
-            onmousedown={markSkipNextBlurValidation}
-            data-skip-blur-validation="true"
-            disabled={submitAction.loading}
-          >
-            {submitAction.loading ? 'Checking…' : 'Continue'}
-          </button>
-        {/snippet}
-      </StepActionBar>
-    </div>
-  </FlowStepScaffold>
+    {#if emailRequired || phoneRequired}
+      <div class="space-y-2">
+        <div class="font-semibold opacity-80">Contact</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {#if emailRequired}
+            <label class="form-control">
+              <span class="label-text text-xs">Email</span>
+              <input
+                class="input input-xs input-bordered"
+                type="email"
+                bind:value={contactEmail}
+                data-popup-initial-input
+                onblur={validateOnBlur}
+                class:border-error={fieldHasError('/contactPoint/email')}
+                required
+              />
+            </label>
+          {/if}
+          {#if phoneRequired}
+            <label class="form-control">
+              <span class="label-text text-xs">Phone</span>
+              <input
+                class="input input-xs input-bordered"
+                type="tel"
+                bind:value={contactPhone}
+                onblur={validateOnBlur}
+                class:border-error={fieldHasError('/contactPoint/telephone')}
+                required
+              />
+            </label>
+          {/if}
+        </div>
+      </div>
+    {/if}
+
+    {#if birthDateRequired}
+      <div class="space-y-2">
+        <div class="font-semibold opacity-80">Age verification</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <label class="form-control">
+            <span class="label-text text-xs">Birth date</span>
+            <input
+              class="input input-xs input-bordered"
+              type="date"
+              bind:value={birthDate}
+              data-popup-initial-input
+              onblur={validateOnBlur}
+              class:border-error={fieldHasError('/ageProof/birthDate')}
+              required
+            />
+          </label>
+        </div>
+      </div>
+    {/if}
+
+    {#if validateAction.error || submitAction.error}
+      <StepAlert
+        variant="error"
+        className="text-xs mt-2"
+        message={validateAction.error || submitAction.error}
+      />
+    {/if}
+
+    <StepActionBar>
+      {#snippet primary()}
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          onclick={goToReview}
+          onmousedown={markSkipNextBlurValidation}
+          data-skip-blur-validation="true"
+          disabled={submitAction.loading}
+        >
+          {submitAction.loading ? 'Checking…' : 'Continue'}
+        </button>
+      {/snippet}
+    </StepActionBar>
+  </div>
+</FlowStepScaffold>

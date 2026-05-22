@@ -26,7 +26,12 @@
     <p class="text-base-content/70">Loading invitations...</p>
   {:else if invitations.length > 0}
     {#each invitations as inviter (inviter.avatar)}
-      <RowFrame clickable={true} dense={true} noLeading={true} onclick={() => onSelect(inviter.avatar)}>
+      <RowFrame
+        clickable={true}
+        dense={true}
+        noLeading={true}
+        onclick={() => onSelect(inviter.avatar)}
+      >
         <div class="flex items-center gap-x-2 min-w-0">
           <input
             type="radio"
@@ -38,7 +43,12 @@
               onSelect(inviter.avatar);
             }}
           />
-          <Avatar topInfo="Inviter" clickable={false} address={inviter.avatar} view="horizontal" />
+          <Avatar
+            topInfo="Inviter"
+            clickable={false}
+            address={inviter.avatar}
+            view="horizontal"
+          />
         </div>
       </RowFrame>
     {/each}

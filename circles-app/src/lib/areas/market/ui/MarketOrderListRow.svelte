@@ -11,17 +11,33 @@
   let { onOpen, srLabel, children }: Props = $props();
 
   function focusMarketSearchInput(anchor?: HTMLElement | null): void {
-    const scope = anchor?.closest<HTMLElement>('[data-market-orders-list-scope], [data-sales-orders-list-scope]');
-    const input = scope?.querySelector<HTMLInputElement>('[data-market-auth-search-input]')
-      ?? document.querySelector<HTMLInputElement>('[data-market-auth-search-input]');
+    const scope = anchor?.closest<HTMLElement>(
+      '[data-market-orders-list-scope], [data-sales-orders-list-scope]'
+    );
+    const input =
+      scope?.querySelector<HTMLInputElement>(
+        '[data-market-auth-search-input]'
+      ) ??
+      document.querySelector<HTMLInputElement>(
+        '[data-market-auth-search-input]'
+      );
     input?.focus();
   }
 
   const listNavigator = createKeyboardListNavigator({
     getRows: (anchor) => {
-      const scope = anchor?.closest<HTMLElement>('[data-market-orders-list-scope], [data-sales-orders-list-scope]')
-        ?? document.querySelector<HTMLElement>('[data-market-orders-list-scope], [data-sales-orders-list-scope]');
-      return Array.from((scope ?? document).querySelectorAll<HTMLElement>('[data-market-order-row]'));
+      const scope =
+        anchor?.closest<HTMLElement>(
+          '[data-market-orders-list-scope], [data-sales-orders-list-scope]'
+        ) ??
+        document.querySelector<HTMLElement>(
+          '[data-market-orders-list-scope], [data-sales-orders-list-scope]'
+        );
+      return Array.from(
+        (scope ?? document).querySelectorAll<HTMLElement>(
+          '[data-market-order-row]'
+        )
+      );
     },
     focusInput: focusMarketSearchInput,
     onActivateRow: () => onOpen(),
@@ -40,7 +56,7 @@
 <button
   type="button"
   data-market-order-row
-  class="w-full bg-base-100 border shadow-sm rounded-xl px-3 md:px-4 py-2 md:py-2.5 flex items-center justify-between cursor-pointer hover:bg-base-200/40 transition-colors text-left"
+  class="w-full bg-base-100 border shadow-sm rounded-3xl px-3 md:px-4 py-2 md:py-2.5 flex items-center justify-between cursor-pointer hover:bg-base-200/40 transition-colors text-left"
   onkeydown={onRowKeydown}
   onclick={onRowClick}
 >
@@ -48,7 +64,12 @@
     {@render children?.()}
   </div>
   <div class="shrink-0 flex items-center gap-2">
-    <img src="/chevron-right.svg" alt="" class="h-4 w-4 opacity-70" aria-hidden="true" />
+    <img
+      src="/chevron-right.svg"
+      alt=""
+      class="h-4 w-4 opacity-70"
+      aria-hidden="true"
+    />
   </div>
 
   {#if srLabel}

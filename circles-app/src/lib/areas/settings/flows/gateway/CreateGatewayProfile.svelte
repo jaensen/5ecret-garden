@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
   import StepActionButtons from '$lib/shared/ui/flow/StepActionButtons.svelte';
   import { GATEWAY_PROFILE_FLOW_SCAFFOLD_BASE } from './constants';
@@ -25,13 +24,14 @@
     context ?? {
       factoryAddress: FACTORY_ADDRESS,
       gatewayName: '',
-      metadataDigest: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      metadataDigest:
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
       profile: {
         name: '',
         description: '',
         imageUrl: '',
-        previewImageUrl: ''
-      }
+        previewImageUrl: '',
+      },
     }
   );
 
@@ -45,13 +45,17 @@
 
   const trimmedGatewayName = $derived((ctx.gatewayName ?? '').trim());
   const hasName = $derived(trimmedGatewayName.length > 0);
-  const onChainNameValid = $derived(hasName && isValidOnChainName(trimmedGatewayName));
+  const onChainNameValid = $derived(
+    hasName && isValidOnChainName(trimmedGatewayName)
+  );
   const factoryValid = $derived(isAddress((ctx.factoryAddress ?? '').trim()));
 
   // Metadata digest will be derived from the pinned gateway profile.
 
   const profileHasName = $derived((ctx.profile?.name ?? '').trim().length > 0);
-  const canContinue = $derived(onChainNameValid && factoryValid && profileHasName);
+  const canContinue = $derived(
+    onChainNameValid && factoryValid && profileHasName
+  );
 
   function goNext() {
     if (!canContinue) {
@@ -60,7 +64,7 @@
     openStep({
       title: 'Confirm payment gateway',
       component: ConfirmCreateGateway,
-      props: { context: ctx, onCreated }
+      props: { context: ctx, onCreated },
     });
   }
 </script>
@@ -71,7 +75,6 @@
   title="Gateway profile"
   subtitle="Define metadata and on-chain name for the payment gateway."
 >
-
   <div class="space-y-4">
     <p class="text-sm text-base-content/70">
       Define the basic details for your payment gateway.

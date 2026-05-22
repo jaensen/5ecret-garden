@@ -52,7 +52,9 @@
   const PAGE_SIZE = 25;
   const query = writable('');
   const mergedRowsStore = writable<AvatarSearchItem[]>([]);
-  const paginatedRows = createPaginatedList(mergedRowsStore, { pageSize: PAGE_SIZE });
+  const paginatedRows = createPaginatedList(mergedRowsStore, {
+    pageSize: PAGE_SIZE,
+  });
 
   let listScopeEl: HTMLDivElement | null = $state(null);
   let remoteRows: AvatarSearchItem[] = $state([]);
@@ -65,15 +67,18 @@
   const minRemoteLength = SEARCH_POLICY.MIN_REMOTE_QUERY_LENGTH;
   const inputAttributes = $derived.by(() => {
     const attrs = new Set<string>(['data-avatar-search-input']);
-    for (const attr of (inputDataAttribute ?? '').split(/\s+/).map((v) => v.trim()).filter(Boolean)) {
+    for (const attr of (inputDataAttribute ?? '')
+      .split(/\s+/)
+      .map((v) => v.trim())
+      .filter(Boolean)) {
       attrs.add(attr);
     }
     return Array.from(attrs).join(' ');
   });
 
   const computedTitle = $derived(
-    titleLabel
-      ?? (searchType === 'send'
+    titleLabel ??
+      (searchType === 'send'
         ? 'Recipient'
         : searchType === 'contact'
           ? 'Found Account'
@@ -87,25 +92,44 @@
   const queryLower = $derived(queryTrimmed.toLowerCase());
 
   const localRows = $derived.by(() => {
-    return buildLocalAvatarSearchRows($contacts?.data ?? {}, $profileBookmarksStore ?? [], queryLower);
+    return buildLocalAvatarSearchRows(
+      $contacts?.data ?? {},
+      $profileBookmarksStore ?? [],
+      queryLower
+    );
   });
 
-  const mergedRows = $derived.by(() => mergeAvatarSearchRows(localRows, remoteRows, queryLower));
+  const mergedRows = $derived.by(() =>
+    mergeAvatarSearchRows(localRows, remoteRows, queryLower)
+  );
   const preferredRows = $derived.by(() => {
-    const directAddressRows = buildDirectAddressSelectionRows(queryTrimmed, mergedRows);
+    const directAddressRows = buildDirectAddressSelectionRows(
+      queryTrimmed,
+      mergedRows
+    );
     if (directAddressRows) return directAddressRows;
 
     if (queryTrimmed.length > 0) return mergedRows;
 
-    const preferred = mergedRows.filter((row) => row.isVipBookmarked || row.isBookmarked || row.isContact);
+    const preferred = mergedRows.filter(
+      (row) => row.isVipBookmarked || row.isBookmarked || row.isContact
+    );
     const vip = preferred.filter((row) => row.isVipBookmarked);
-    const bookmarked = preferred.filter((row) => !row.isVipBookmarked && row.isBookmarked);
-    const contactsOnly = preferred.filter((row) => !row.isVipBookmarked && !row.isBookmarked && row.isContact);
+    const bookmarked = preferred.filter(
+      (row) => !row.isVipBookmarked && row.isBookmarked
+    );
+    const contactsOnly = preferred.filter(
+      (row) => !row.isVipBookmarked && !row.isBookmarked && row.isContact
+    );
     return [...vip, ...bookmarked, ...contactsOnly].slice(0, 20);
   });
 
-  const showEmpty = $derived(!remoteLoading && queryTrimmed.length > 0 && mergedRows.length === 0);
-  const canInviteTrust = $derived(ethers.isAddress(queryTrimmed) && searchType === 'contact');
+  const showEmpty = $derived(
+    !remoteLoading && queryTrimmed.length > 0 && mergedRows.length === 0
+  );
+  const canInviteTrust = $derived(
+    ethers.isAddress(queryTrimmed) && searchType === 'contact'
+  );
 
   $effect(() => {
     if (queryTrimmed.length === 0 && Object.keys(resultByAddress).length > 0) {
@@ -129,10 +153,20 @@
   });
 
   function onSearchInputKeydown(event: KeyboardEvent): void {
-    const input = event.currentTarget instanceof HTMLInputElement ? event.currentTarget : null;
+    const input =
+      event.currentTarget instanceof HTMLInputElement
+        ? event.currentTarget
+        : null;
     const hasInputFocus = !!input && document.activeElement === input;
 
-    if (shouldAutoSelectSingleRowOnEnter(event.key, preferredRows.length, event.isComposing, hasInputFocus)) {
+    if (
+      shouldAutoSelectSingleRowOnEnter(
+        event.key,
+        preferredRows.length,
+        event.isComposing,
+        hasInputFocus
+      )
+    ) {
       event.preventDefault();
       activateItem(preferredRows[0]);
       return;
@@ -172,7 +206,11 @@
       remoteLoading = true;
       try {
         const sdk = get(circles);
-        const rows = await searchRemoteAvatarRows({ sdk, query: q, avatarTypes });
+        const rows = await searchRemoteAvatarRows({
+          sdk,
+          query: q,
+          avatarTypes,
+        });
         if (seq !== searchSeq) return;
 
         remoteRows = rows;
@@ -221,8 +259,8 @@
   <p class="menu-title pl-0">{computedTitle}</p>
 
   <ListShell
-    query={query}
-    searchPlaceholder={searchPlaceholder}
+    {query}
+    {searchPlaceholder}
     onInputKeydown={onSearchInputKeydown}
     inputDataAttribute={inputAttributes}
     loading={false}
@@ -230,7 +268,9 @@
     isEmpty={false}
     wrapInListContainer={false}
   >
-    <div class="-mt-1 mb-3 text-xs text-base-content/60 flex items-center gap-2">
+    <div
+      class="-mt-1 mb-3 text-xs text-base-content/60 flex items-center gap-2"
+    >
       <span>{preferredRows.length} result(s)</span>
       {#if queryTrimmed.length === 0}
         <span>• Showing bookmarks and contacts first</span>
@@ -240,7 +280,10 @@
       {/if}
       {#if remoteLoading}
         <span class="inline-flex items-center gap-1">
-          <span class="loading loading-spinner loading-xs text-primary" aria-hidden="true"></span>
+          <span
+            class="loading loading-spinner loading-xs text-primary"
+            aria-hidden="true"
+          ></span>
           <span>Searching network…</span>
         </span>
       {/if}
@@ -259,10 +302,14 @@
     {:else if showEmpty}
       <div class="text-center py-4">
         {#if canInviteTrust}
-          <button class="btn mt-2" onclick={onInviteClick}>Invite {queryTrimmed}</button>
+          <button class="btn mt-2" onclick={onInviteClick}
+            >Invite {queryTrimmed}</button
+          >
           {#if ontrust}
             <br />
-            <button class="btn mt-4" onclick={onTrustClick}>Trust {queryTrimmed}</button>
+            <button class="btn mt-4" onclick={onTrustClick}
+              >Trust {queryTrimmed}</button
+            >
           {/if}
         {:else}
           <p>No accounts found.</p>
