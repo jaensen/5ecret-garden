@@ -1,6 +1,13 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import { get } from 'svelte/store';
-import { initPopupHistorySync, popupControls, popupState, popupHistoryForwardNoopTick } from '../../packages/ui-popup-runtime/src/index';
+import {
+  configurePopupRuntime,
+  initPopupHistorySync,
+  popupControls,
+  popupHistoryForwardNoopTick,
+  popupState,
+  resetPopupRuntimeConfiguration,
+} from '../../packages/ui-popup-runtime/src/index';
 
 const COMPONENT_A = {} as any;
 const COMPONENT_B = {} as any;
@@ -51,6 +58,7 @@ function setupFakeWindow() {
 afterEach(() => {
   popupState.set({ content: null, stack: [] });
   popupHistoryForwardNoopTick.set(0);
+  resetPopupRuntimeConfiguration();
 });
 
 describe('@garden-ui/popup-runtime', () => {
@@ -102,5 +110,41 @@ describe('@garden-ui/popup-runtime', () => {
     popupControls.close();
     expect(onC).toHaveBeenCalledTimes(1);
     expect(get(popupState).content).toBeNull();
+  });
+
+  it('supports a configured history state key', () => {
+    const { restore } = setupFakeWindow();
+    configurePopupRuntime({ historyStateKey: '__customPopupHistory' });
+    const dispose = initPopupHistorySync();
+
+    popupControls.open({ title: 'A', component: COMPONENT_A, props: {} });
+
+    expect((window.history.state as any).__customPopupHistory?.depth).toBe(1);
+    expect((window.history.state as any).__gardenUiPopupHistory).toBeUndefined();
+
+    dispose();
+    restore();
+  });
+
+  it('closes runtime state and then runs a follow-up action', () => {
+    const { restore } = setupFakeWindow();
+    const dispose = initPopupHistorySync();
+    const action = vi.fn(() => {
+      expect(get(popupState).content).toBeNull();
+      expect(get(popupState).stack).toHaveLength(0);
+    });
+    const onA = vi.fn();
+    const onB = vi.fn();
+
+    popupControls.open({ title: 'A', component: COMPONENT_A, props: {}, onClose: onA });
+    popupControls.open({ title: 'B', component: COMPONENT_B, props: {}, onClose: onB });
+    popupControls.closeAndThen(action);
+
+    expect(onB).toHaveBeenCalledTimes(1);
+    expect(onA).toHaveBeenCalledTimes(1);
+    expect(action).toHaveBeenCalledTimes(1);
+
+    dispose();
+    restore();
   });
 });
