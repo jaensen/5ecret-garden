@@ -11,7 +11,7 @@
   import {formatCurrency} from '$lib/shared/utils/money';
   import OrderLineTable from './OrderLineTable.svelte';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar } from '@garden-ui/flow-step';
   import { CHECKOUT_FLOW_SCAFFOLD_BASE } from './constants';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import { resetResolvedProductsCache, useResolvedProducts } from '$lib/areas/market/flows/checkout/useResolvedProducts';

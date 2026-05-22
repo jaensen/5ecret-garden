@@ -3,7 +3,7 @@
   import { normalizeEvmAddress as normalizeAddress } from '@circles-market/sdk';
   import { openStep } from '$lib/shared/flow';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar } from '@garden-ui/flow-step';
   import { NEW_PRODUCT_FLOW_SCAFFOLD_BASE } from './constants';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import DetailsStep from './5_Details.svelte';

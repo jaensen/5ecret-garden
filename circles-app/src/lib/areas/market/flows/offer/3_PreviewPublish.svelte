@@ -14,8 +14,7 @@
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import { OFFER_FLOW_SCAFFOLD_BASE } from './constants';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
-  import StepSection from '$lib/shared/ui/flow/StepSection.svelte';
+  import { StepActionBar, StepSection } from '@garden-ui/flow-step';
   import StepReviewRow from '$lib/shared/ui/flow/StepReviewRow.svelte';
   import OfferStep1 from './1_Product.svelte';
   import OfferStep2 from './2_Pricing.svelte';

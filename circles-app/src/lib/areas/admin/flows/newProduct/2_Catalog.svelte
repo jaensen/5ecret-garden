@@ -12,7 +12,7 @@
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import { NEW_PRODUCT_FLOW_SCAFFOLD_BASE } from './constants';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar } from '@garden-ui/flow-step';
   import TypeStep from './3_Type.svelte';
   import type { AdminUnifiedProduct, AdminOdooConnection } from '$lib/areas/admin/types';
   import type { AdminNewProductFlowContext } from './context';

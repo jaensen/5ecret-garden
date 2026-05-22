@@ -5,7 +5,7 @@
   import { normalizeAddressInput } from '$lib/areas/admin/productEditorUtils';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import StepReviewRow from '$lib/shared/ui/flow/StepReviewRow.svelte';
-  import StepSection from '$lib/shared/ui/flow/StepSection.svelte';
+  import { StepActionBar, StepSection } from '@garden-ui/flow-step';
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
   import type { AdminNewConnectionFlowContext } from '$lib/areas/admin/flows/newConnection/context';
   import type { AdminNewProductFlowContext } from '$lib/areas/admin/flows/newProduct/context';

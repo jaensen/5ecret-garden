@@ -4,7 +4,7 @@
   import FlowDecoration from '$lib/shared/ui/flow/FlowDecoration.svelte';
   import FlowStepHeader from '$lib/shared/ui/flow/FlowStepHeader.svelte';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar } from '@garden-ui/flow-step';
   import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
   import PageScaffold from '$lib/shared/ui/shell/PageScaffold.svelte';
   import ActionButtonBar from '$lib/shared/ui/shell/ActionButtonBar.svelte';

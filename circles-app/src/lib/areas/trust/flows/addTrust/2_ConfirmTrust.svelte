@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { Address } from '@circles-sdk/utils';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepSection from '$lib/shared/ui/flow/StepSection.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar, StepSection } from '@garden-ui/flow-step';
   import ActionButton from '$lib/shared/ui/primitives/ActionButton.svelte';
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
   import { popToOrOpen } from '$lib/shared/flow';

@@ -2,11 +2,10 @@
   import { ethers } from 'ethers';
 
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar, StepSection } from '@garden-ui/flow-step';
   import ActionButton from '$lib/shared/ui/primitives/ActionButton.svelte';
   import { GATEWAY_PROFILE_FLOW_SCAFFOLD_BASE } from './constants';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
-  import StepSection from '$lib/shared/ui/flow/StepSection.svelte';
   import StepReviewRow from '$lib/shared/ui/flow/StepReviewRow.svelte';
   import { wallet } from '$lib/shared/state/wallet.svelte';
   import { runTask } from '$lib/shared/utils/tasks';

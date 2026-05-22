@@ -1,7 +1,7 @@
 <!-- lib/flows/checkout/CheckoutReview.svelte -->
 <script lang="ts">
     import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-    import StepActionButtons from '$lib/shared/ui/flow/StepActionButtons.svelte';
+    import { StepActionButtons } from '@garden-ui/flow-step';
     import { CHECKOUT_FLOW_SCAFFOLD_BASE } from './constants';
     import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
     import { openStep, popToOrOpen, useAsyncAction } from '$lib/shared/flow';

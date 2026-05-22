@@ -2,7 +2,7 @@
   import Untrust from '$lib/areas/contacts/ui/pages/Untrust.svelte';
   import type { AddContactFlowContext } from '$lib/areas/contacts/flows/addContact/context';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar } from '@garden-ui/flow-step';
   import { ADD_CONTACT_FLOW_SCAFFOLD_BASE } from './constants';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import AdvancedDetails from '$lib/shared/ui/flow/AdvancedDetails.svelte';

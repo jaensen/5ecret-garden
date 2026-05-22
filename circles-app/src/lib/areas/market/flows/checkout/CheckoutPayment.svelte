@@ -3,7 +3,7 @@
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import { CHECKOUT_FLOW_SCAFFOLD_BASE } from './constants';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar } from '@garden-ui/flow-step';
   import QrCode from '$lib/shared/ui/primitives/QrCode.svelte';
   import { cartState } from '$lib/areas/market/cart/store';
 

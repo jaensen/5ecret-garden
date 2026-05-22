@@ -3,7 +3,7 @@
   import type { Address } from '@circles-sdk/utils';
   import type { SearchProfileResult } from '$lib/shared/model/profile';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionButtons from '$lib/shared/ui/flow/StepActionButtons.svelte';
+  import { StepActionButtons } from '@garden-ui/flow-step';
   import { ListShell } from '@garden-ui/list-shell';
   import { ListStates } from '@garden-ui/list-shell';
   import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';

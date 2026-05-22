@@ -1,6 +1,5 @@
 <script lang="ts">
-    import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-    import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+    import { StepActionBar, StepSection } from '@garden-ui/flow-step';
     import { CREATE_GROUP_FLOW_SCAFFOLD_BASE } from './constants';
     import Tooltip from '$lib/shared/ui/primitives/Tooltip.svelte';
     import { ethers } from 'ethers';

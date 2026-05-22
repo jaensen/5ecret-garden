@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar } from '@garden-ui/flow-step';
   import { MIGRATE_FLOW_SCAFFOLD_BASE } from './constants';
   import type { MigrateToV2Context } from '$lib/areas/wallet/flows/migrateToV2/context';
   import Migrate from './4_Migrate.svelte';

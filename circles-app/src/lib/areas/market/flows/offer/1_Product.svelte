@@ -2,7 +2,7 @@
   import {popupControls} from '$lib/shared/state/popup';
   import { openStep } from '$lib/shared/flow';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionButtons from '$lib/shared/ui/flow/StepActionButtons.svelte';
+  import { StepActionButtons } from '@garden-ui/flow-step';
   import { OFFER_FLOW_SCAFFOLD_BASE } from './constants';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import MarkdownEditor from '$lib/shared/ui/content/markdown/MarkdownEditor.svelte';

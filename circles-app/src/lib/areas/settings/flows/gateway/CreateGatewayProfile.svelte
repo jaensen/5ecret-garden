@@ -1,7 +1,7 @@
 <script lang="ts">
 
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionButtons from '$lib/shared/ui/flow/StepActionButtons.svelte';
+  import { StepActionButtons } from '@garden-ui/flow-step';
   import { GATEWAY_PROFILE_FLOW_SCAFFOLD_BASE } from './constants';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import OnChainNameSection from '$lib/shared/ui/flow/OnChainNameSection.svelte';

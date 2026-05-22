@@ -5,8 +5,7 @@
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
   import { NEW_PRODUCT_FLOW_SCAFFOLD_BASE } from './constants';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
-  import StepSection from '$lib/shared/ui/flow/StepSection.svelte';
+  import { StepActionBar, StepSection } from '@garden-ui/flow-step';
   import StepReviewRow from '$lib/shared/ui/flow/StepReviewRow.svelte';
   import { openStep, popToOrOpen } from '$lib/shared/flow';
   import { popupControls } from '$lib/shared/state/popup';

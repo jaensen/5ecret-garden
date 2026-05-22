@@ -1,10 +1,9 @@
 <script lang="ts">
   import { ethers } from 'ethers';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar, StepSection } from '@garden-ui/flow-step';
   import { GATEWAY_UNTRUST_FLOW_SCAFFOLD_BASE } from './constants';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
-  import StepSection from '$lib/shared/ui/flow/StepSection.svelte';
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
   import ActionButton from '$lib/shared/ui/primitives/ActionButton.svelte';
   import { wallet } from '$lib/shared/state/wallet.svelte';
