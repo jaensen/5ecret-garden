@@ -3,8 +3,15 @@
   import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
   import type { ActionButton } from '$lib/shared/ui/shell/action-buttons';
 
-  // Default to empty array and filter out invalid entries to avoid runtime errors
-  let { actions = [] as any[] } = $props();
+  interface Props {
+    actions?: ActionButton[];
+    compactAfterMs?: number | false;
+  }
+
+  // Default to empty array and filter out invalid entries to avoid runtime errors.
+  // Compacting is opt-in so page-level action bars do not unexpectedly collapse
+  // into icon pills like the bottom nav.
+  let { actions = [] as any[], compactAfterMs = false }: Props = $props();
 
   const LABEL_HIDE_DELAY_MS = 2200;
 
@@ -24,13 +31,19 @@
   }
 
   function scheduleCompactMode(): void {
+    if (compactAfterMs === false) {
+      clearCompactTimer();
+      compactActions = false;
+      return;
+    }
+
     clearCompactTimer();
     compactActions = false;
 
     compactTimer = setTimeout(() => {
       compactActions = true;
       compactTimer = null;
-    }, LABEL_HIDE_DELAY_MS);
+    }, compactAfterMs ?? LABEL_HIDE_DELAY_MS);
   }
 
   function handleActionClick(action: ActionButton, index: number): void {

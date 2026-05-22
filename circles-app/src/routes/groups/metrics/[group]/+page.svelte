@@ -54,12 +54,10 @@
   contentWidthClass="page page--lg"
   usePagePadding={true}
   headerTopGapClass="mt-4 md:mt-6"
->
+  >
   {#snippet title()}
     <h1 class="h2 font-bold text-base-content">Group Metrics</h1>
-    <p class="text-sm text-base-content/70">
-      Analytics and insights for your group
-    </p>
+    <p class="text-sm text-base-content/70">Analytics and insights for your group</p>
   {/snippet}
   {#snippet meta()}
     <Avatar address={data.group} view="horizontal" />
@@ -77,9 +75,7 @@
     <!-- Charts Grid -->
     <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
       {#if groupMetrics?.memberCountPerHour && groupMetrics.memberCountPerHour.length > 0 && groupMetrics.memberCountPerDay && groupMetrics.memberCountPerDay.length > 0}
-        <div
-          class="bg-base-100 border border-base-300 p-6 rounded-3xl shadow-sm"
-        >
+        <div class="bg-base-100 border border-base-300 p-6 rounded-xl shadow-sm">
           <ModernHistoryChart
             dataSet1={groupMetrics.memberCountPerHour}
             dataSet2={groupMetrics.memberCountPerDay}
@@ -90,9 +86,7 @@
       {/if}
 
       {#if groupMetrics?.mintRedeemPerHour && groupMetrics.mintRedeemPerHour.length > 0 && groupMetrics.mintRedeemPerDay && groupMetrics.mintRedeemPerDay.length > 0}
-        <div
-          class="bg-base-100 border border-base-300 p-6 rounded-3xl shadow-sm"
-        >
+        <div class="bg-base-100 border border-base-300 p-6 rounded-xl shadow-sm">
           <ModernHistoryChart
             dataSet1={groupMetrics.mintRedeemPerHour}
             dataSet2={groupMetrics.mintRedeemPerDay}
@@ -103,9 +97,7 @@
       {/if}
 
       {#if groupMetrics?.wrapUnwrapPerHour && groupMetrics.wrapUnwrapPerHour.length > 0 && groupMetrics.wrapUnwrapPerDay && groupMetrics.wrapUnwrapPerDay.length > 0}
-        <div
-          class="bg-base-100 border border-base-300 p-6 rounded-3xl shadow-sm"
-        >
+        <div class="bg-base-100 border border-base-300 p-6 rounded-xl shadow-sm">
           <ModernHistoryChart
             dataSet1={groupMetrics.wrapUnwrapPerHour}
             dataSet2={groupMetrics.wrapUnwrapPerDay}
@@ -120,9 +112,7 @@
     <!-- Distribution Charts -->
     <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
       {#if groupMetrics?.collateralInTreasury && groupMetrics.collateralInTreasury.length > 0}
-        <div
-          class="bg-base-100 border border-base-300 p-6 rounded-3xl shadow-sm"
-        >
+        <div class="bg-base-100 border border-base-300 p-6 rounded-xl shadow-sm">
           <h2 class="text-lg font-semibold text-base-content mb-4">
             Treasury Collateral
           </h2>
@@ -136,9 +126,7 @@
       {/if}
 
       {#if groupMetrics?.tokenHolderBalance && groupMetrics.tokenHolderBalance.length > 0}
-        <div
-          class="bg-base-100 border border-base-300 p-6 rounded-3xl shadow-sm"
-        >
+        <div class="bg-base-100 border border-base-300 p-6 rounded-xl shadow-sm">
           <h2 class="text-lg font-semibold text-base-content mb-4">
             Token Distribution
           </h2>

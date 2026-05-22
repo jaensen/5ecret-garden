@@ -9,9 +9,9 @@
   import { profileBookmarksStore } from '$lib/areas/settings/state/profileBookmarks';
   import { SEARCH_POLICY } from '$lib/shared/ui/lists/utils/searchPolicies';
   import { createPaginatedList } from '$lib/shared/state/paginatedList';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
-  import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
+  import { ListShell } from '@garden-ui/list-shell';
+  import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
   import { buildLocalAvatarSearchRows } from './avatarSearch.local';
   import {
     buildDirectAddressSelectionRows,
@@ -290,7 +290,7 @@
     </div>
 
     {#if preferredRows.length > 0}
-      <GenericList
+      <VirtualList
         store={paginatedRows}
         row={AvatarSearchRow}
         getKey={(item) => item.key}

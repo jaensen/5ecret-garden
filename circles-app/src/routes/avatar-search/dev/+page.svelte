@@ -11,7 +11,7 @@
   contentWidthClass="page page--lg"
   usePagePadding={true}
   headerTopGapClass="mt-4 md:mt-6"
->
+  >
   {#snippet title()}
     <h1 class="h2 m-0">Avatar Search Dev Workspace</h1>
   {/snippet}
@@ -20,18 +20,16 @@
     Unified list planning and staged implementation
   {/snippet}
 
-  <section class="rounded-3xl border border-base-300 bg-base-100 p-4">
+  <section class="rounded-xl border border-base-300 bg-base-100 p-4">
     <p class="text-sm text-base-content/80 m-0">
-      This sub-route keeps development assets close to the new route during
-      iterative implementation.
+      This sub-route keeps development assets close to the new route during iterative implementation.
     </p>
     <p class="text-sm text-base-content/60 mt-2 mb-0">
-      See <code>src/routes/avatar-search/dev/PLAN.md</code> for architecture and rollout
-      plan.
+      See <code>src/routes/avatar-search/dev/PLAN.md</code> for architecture and rollout plan.
     </p>
   </section>
 
-  <section class="mt-4 rounded-3xl border border-base-300 bg-base-100 p-4">
+  <section class="mt-4 rounded-xl border border-base-300 bg-base-100 p-4">
     <AvatarSearchList />
   </section>
 </PageScaffold>

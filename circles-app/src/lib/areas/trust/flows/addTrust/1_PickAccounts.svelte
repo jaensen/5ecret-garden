@@ -3,12 +3,12 @@
   import type { Address } from '@circles-sdk/utils';
   import type { SearchProfileResult } from '$lib/shared/model/profile';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionButtons from '$lib/shared/ui/flow/StepActionButtons.svelte';
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
-  import ListStates from '$lib/shared/ui/lists/ListStates.svelte';
+  import { StepActionButtons } from '@garden-ui/flow-step';
+  import { ListShell } from '@garden-ui/list-shell';
+  import { ListStates } from '@garden-ui/list-shell';
   import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
-  import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+  import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
   import { createSearchOverlayController } from '$lib/shared/ui/lists/utils/searchOverlayController';
   import { registerOutsidePointerClose } from '$lib/shared/ui/lists/utils/outsidePointerClose';
   import { SEARCH_POLICY } from '$lib/shared/ui/lists/utils/searchPolicies';

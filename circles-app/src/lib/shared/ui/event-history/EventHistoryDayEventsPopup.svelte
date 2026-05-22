@@ -1,7 +1,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import { writable } from 'svelte/store';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import { createPaginatedList } from '$lib/shared/state/paginatedList';
   import EventHistoryRowPlaceholder from '$lib/shared/ui/lists/placeholders/EventHistoryRowPlaceholder.svelte';
   import type {
@@ -294,7 +294,7 @@
       class="overflow-auto rounded-lg border border-base-300 max-h-[calc(80vh-14rem)]"
     >
       <div class="px-2">
-        <GenericList
+        <VirtualList
           store={listStoreAny}
           row={rowComponentAny}
           getKey={getKeyAny}

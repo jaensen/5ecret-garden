@@ -33,7 +33,10 @@ export function createSearchablePaginatedList<T>(
     return ($items ?? []).filter((it) => allowed.has(String(opts.addressOf(it)).toLowerCase()));
   });
 
-  const paginatedItems = createPaginatedList(filteredItems, { pageSize: opts.pageSize });
+  const paginatedItems = createPaginatedList(filteredItems, {
+    pageSize: opts.pageSize,
+    initialPageCount: 1,
+  });
 
   return { searchQuery, profileNames, filteredItems, paginatedItems };
 }

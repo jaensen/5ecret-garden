@@ -5,7 +5,7 @@
   import { openProfilePopup } from '$lib/shared/ui/profile/openProfilePopup';
   import type { Address } from '@circles-sdk/utils';
   import type { TrustRelation } from '@circles-sdk/data';
-  import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+  import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
 
   interface HolderRow {
     avatar: Address;

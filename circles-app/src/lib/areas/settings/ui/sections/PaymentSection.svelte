@@ -2,13 +2,13 @@
   import type { Address } from '@circles-sdk/utils';
   import type { Readable } from 'svelte/store';
   import { derived, writable } from 'svelte/store';
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import { ListShell } from '@garden-ui/list-shell';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import GatewayRowPlaceholder from '$lib/shared/ui/lists/placeholders/GatewayRowPlaceholder.svelte';
   import GatewayRowView from '$lib/areas/settings/ui/components/GatewayRow.svelte';
   import { openStep } from '$lib/shared/flow';
   import CreateGatewayProfile from '$lib/areas/settings/flows/gateway/CreateGatewayProfile.svelte';
-  import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+  import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
 
   type ListValue = {
     data: any[];
@@ -128,7 +128,7 @@
         noMatchesLabel="No matching gateways"
         wrapInListContainer={false}
       >
-        <GenericList
+        <VirtualList
           store={filteredGatewaysStore}
           row={GatewayRowView}
           rowHeight={64}

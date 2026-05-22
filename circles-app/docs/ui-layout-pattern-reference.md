@@ -144,7 +144,6 @@ The important design implication is that row states are intentionally coordinate
 
 - hover changes background and border together,
 - selection is not only color-filled but also inset-highlighted,
-- focus is visible through a 3px ring,
 - disabled rows reduce opacity and suppress interaction.
 
 ### 4.3 Muted text as a structural color pattern
@@ -621,7 +620,7 @@ This means components should continue to be laid out with keyboard progression i
 
 ### 13.2 Focus is a visible design layer
 
-The row primitive includes a strong focus ring and popup focus targets are explicitly marked. This is not incidental. The app’s UI expects focus affordances to remain visible and meaningful.
+The row primitive exposes a visible focus treatment and popup focus targets are explicitly marked. Focus affordances should remain visible and meaningful, but the current heavier border treatment should not be treated as a normative design requirement.
 
 ### 13.3 Dense interfaces still preserve discoverability
 

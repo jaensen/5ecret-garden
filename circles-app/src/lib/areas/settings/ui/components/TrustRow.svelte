@@ -3,7 +3,7 @@
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
   import { openProfilePopup } from '$lib/shared/ui/profile/openProfilePopup';
   import type { TrustRow as TrustRowType } from '$lib/areas/settings/model/gatewayTypes';
-  import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+  import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
 
   type TrustRowItem = TrustRowType & {
     showRemove?: boolean;

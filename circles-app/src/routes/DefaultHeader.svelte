@@ -10,48 +10,8 @@
   let { homeLink = '/' }: Props = $props();
 
   import { page } from '$app/stores';
-  import {
-    openFlowPopup,
-    popupControls,
-    popupState,
-  } from '$lib/shared/state/popup';
-  import { writable, type Unsubscriber } from 'svelte/store';
+  import { popupControls, popupState } from '$lib/shared/state/popup';
   import GlobalAvatarSearchPopup from '$lib/shared/ui/avatar-search/GlobalAvatarSearchPopup.svelte';
-
-  const cartItemCount = writable(0);
-  let cartCountUnsub: Unsubscriber | null = null;
-
-  async function ensureCartCountSubscription(): Promise<void> {
-    if (cartCountUnsub) return;
-    const { cartItemCount: cartItemCountStore } =
-      await import('$lib/areas/market/cart/store');
-    cartCountUnsub = cartItemCountStore.subscribe((value) => {
-      cartItemCount.set(value);
-    });
-  }
-
-  async function openBasket(): Promise<void> {
-    const [{ default: CartPanel }, { cartItemCount: cartItemCountStore }] =
-      await Promise.all([
-        import('$lib/areas/market/flows/checkout/CartPanel.svelte'),
-        import('$lib/areas/market/cart/store'),
-      ]);
-
-    if (!cartCountUnsub) {
-      cartCountUnsub = cartItemCountStore.subscribe((value) => {
-        cartItemCount.set(value);
-      });
-    }
-
-    openFlowPopup({
-      title: 'Basket',
-      component: CartPanel,
-      props: {
-        // No catalog available in global header context
-        catalog: [],
-      },
-    });
-  }
 
   function openGlobalSearch(): void {
     popupControls.open({
@@ -61,8 +21,6 @@
       component: GlobalAvatarSearchPopup,
     });
   }
-
-  const isMarketPage = $derived($page.url.pathname.startsWith('/market'));
 
   let menuEl: HTMLDetailsElement | null = $state(null);
 
@@ -125,12 +83,9 @@
   });
 
   onMount(() => {
-    void ensureCartCountSubscription();
     document.addEventListener('click', handleDocClick);
     document.addEventListener('keydown', handleKeydown);
     return () => {
-      cartCountUnsub?.();
-      cartCountUnsub = null;
       document.removeEventListener('click', handleDocClick);
       document.removeEventListener('keydown', handleKeydown);
     };
@@ -149,16 +104,6 @@
       </span>
     </a>
   </div>
-  {#if isMarketPage || $cartItemCount > 0}
-    <button
-      type="button"
-      class="btn btn-sm btn-ghost mr-2"
-      onclick={openBasket}
-      disabled={$cartItemCount === 0}
-    >
-      Basket ({$cartItemCount})
-    </button>
-  {/if}
   <button
     type="button"
     class="btn btn-circle btn-ghost btn-sm btn-touch-square mr-1"
@@ -200,15 +145,6 @@
             </li>
             <li>
               <a href="/settings?tab=bookmarks">Bookmarks</a>
-            </li>
-            <li>
-              <a href="/settings?tab=orders">Orders</a>
-            </li>
-            <li>
-              <a href="/settings?tab=sales">Sales</a>
-            </li>
-            <li>
-              <a href="/settings?tab=marketplace">Offers</a>
             </li>
             <li>
               <a href="/settings?tab=payment">Payment gateways</a>

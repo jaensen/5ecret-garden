@@ -3,7 +3,7 @@
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
   import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
   import { formatTrustRelation } from '$lib/shared/utils/helpers';
-  import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+  import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
   import type { AvatarSearchItem } from './avatarSearch.types';
 
   const ACTIVATE_CTX_KEY = 'avatar-search-row-activate';

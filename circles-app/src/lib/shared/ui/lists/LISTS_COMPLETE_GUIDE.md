@@ -24,9 +24,9 @@ using this file only.
 
 List implementation is layered:
 
-1. `ListShell.svelte` — search toolbar + state gating + optional list container
-2. `GenericList.svelte` — generic paged row renderer
-3. State helpers:
+1. `@garden-ui/list-shell` `ListShell` — search toolbar + state gating + optional list container
+2. `VirtualList.svelte` — app-owned paged + virtualized row renderer
+3. Shared app adapters/state helpers:
    - `createPaginatedList(...)`
    - `createSearchablePaginatedList(...)`
 4. Interaction helpers:
@@ -43,9 +43,9 @@ Primary goal: feature screens compose these, and avoid local adapter/boilerplate
 
 ## 3) Shared UI/API reference
 
-## 3.1 `ListToolbar.svelte`
+## 3.1 `@garden-ui/list-shell` `ListToolbar`
 
-Path: `src/lib/shared/ui/lists/ListToolbar.svelte`
+Path: `packages/ui-list-shell/src/ListToolbar.svelte`
 
 Props:
 
@@ -58,9 +58,9 @@ Props:
 - `inputDataAttribute?: string` (auto-applied as `...="true"`)
 - `inputEl?: HTMLInputElement | null` (`$bindable`)
 
-## 3.2 `ListStates.svelte`
+## 3.2 `@garden-ui/list-shell` `ListStates`
 
-Path: `src/lib/shared/ui/lists/ListStates.svelte`
+Path: `packages/ui-list-shell/src/ListStates.svelte`
 
 Props:
 
@@ -72,9 +72,9 @@ Props:
 - `emptyLabel?: string`
 - `noMatchesLabel?: string`
 
-## 3.3 `ListShell.svelte`
+## 3.3 `@garden-ui/list-shell` `ListShell`
 
-Path: `src/lib/shared/ui/lists/ListShell.svelte`
+Path: `packages/ui-list-shell/src/ListShell.svelte`
 
 Core props:
 
@@ -98,9 +98,9 @@ Core props:
   - `listRole?: string` (default `list`)
   - `listClass?: string`
 
-## 3.4 `GenericList.svelte`
+## 3.4 `VirtualList.svelte`
 
-Path: `src/lib/shared/ui/lists/GenericList.svelte`
+Path: `src/lib/shared/ui/lists/VirtualList.svelte`
 
 Store contract:
 
@@ -121,35 +121,7 @@ Props:
 - `maxPlaceholderPages?: number` (default `2`)
 - `expectedPageSize?: number`
 
-Behavior: intersection-observer paging, placeholder staging, retry UI.
-
-## 3.5 `SearchablePaginatedList.svelte`
-
-Path: `src/lib/shared/ui/lists/SearchablePaginatedList.svelte`
-
-Props:
-
-- `items: Readable<T[]>` (required)
-- `row: Component<{ item: T }>` (required)
-- `addressOf: (item: T) => string` (required)
-- `getKey?: (item: T) => string`
-- `onInputKeydown?: (KeyboardEvent) => void`
-- `inputDataAttribute?: string`
-- `loading?: boolean`
-- `error?: string | null`
-- `rowHeight?: number`
-- `pageSize?: number`
-- `emptyLabel?: string`
-- `noMatchesLabel?: string`
-- `searchPlaceholder?: string`
-
-Internally composes:
-
-- `createSearchablePaginatedList(...)`
-- `ListShell`
-- `GenericList`
-
----
+Behavior: virtualized paging, placeholder staging, retry UI, focus-aware scrolling.
 
 ## 4) Shared state + utility reference
 
@@ -173,7 +145,7 @@ Returns:
 
 ## 4.3 `createKeyboardListNavigator`
 
-Path: `src/lib/shared/ui/lists/utils/keyboardListNavigator.ts`
+Path: `packages/ui-keyboard-list/src/index.ts`
 
 Returns:
 
@@ -184,7 +156,7 @@ Returns:
 
 ## 4.4 `createListInputArrowDownHandler`
 
-Path: `src/lib/shared/ui/lists/utils/listInputArrowDown.ts`
+Path: `packages/ui-keyboard-list/src/index.ts`
 
 Canonical helper for input-level ArrowDown handoff:
 
@@ -251,13 +223,17 @@ For any request/response based search (RPC, HTTP, SDK):
 
 ## 7) Canonical list modes
 
-### Mode A — `ListShell + GenericList`
+### Mode A — `@garden-ui/list-shell/ListShell + VirtualList`
 
 Use when you already have `{ data, next, ended }` or need custom filter wiring.
 
-### Mode B — `SearchablePaginatedList`
+### Mode B — address-search composition
 
-Use when rows have address identity and need name+address search quickly.
+Use when rows have address identity and need name+address search quickly. Compose:
+
+- `createSearchablePaginatedList(...)`
+- `@garden-ui/list-shell` `ListShell`
+- `VirtualList`
 
 ### Mode C — Overlay search + picked list
 
@@ -275,14 +251,14 @@ Use only when domain UX requires non-shell behavior (example: day-events histogr
 
 ## 8) Canonical implementation snippets
 
-## 8.1 `ListShell + GenericList`
+## 8.1 `ListShell + VirtualList`
 
 ```svelte
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
-  import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+  import { ListShell } from '@garden-ui/list-shell';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
+  import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
 
   const query = writable('');
   let listScopeEl: HTMLDivElement | null = null;
@@ -300,21 +276,39 @@ Use only when domain UX requires non-shell behavior (example: day-events histogr
     onInputKeydown={onSearchInputKeydown}
     wrapInListContainer={false}
   >
-    <GenericList store={myStore} row={MyRow} />
+    <VirtualList store={myStore} row={MyRow} />
   </ListShell>
 </div>
 ```
 
-## 8.2 `SearchablePaginatedList`
+## 8.2 Address-search composition
 
 ```svelte
-<SearchablePaginatedList
-  items={rows}
-  row={MyRow}
-  addressOf={(row) => String(row.address)}
+<script lang="ts">
+  import { ListShell } from '@garden-ui/list-shell';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
+  import { createSearchablePaginatedList } from '$lib/shared/state/searchablePaginatedList';
+
+  const searchable = createSearchablePaginatedList(rows, {
+    pageSize: 25,
+    addressOf: (row) => String(row.address)
+  });
+</script>
+
+<ListShell
+  query={searchable.searchQuery}
   onInputKeydown={onInputArrowDown}
   inputDataAttribute="data-my-search-input"
-/>
+  isEmpty={$rows.length === 0}
+  isNoMatches={$rows.length > 0 && $searchable.filteredItems.length === 0}
+>
+  <VirtualList
+    store={searchable.paginatedItems}
+    row={MyRow}
+    rowHeight={64}
+    expectedPageSize={25}
+  />
+</ListShell>
 ```
 
 ---
@@ -331,9 +325,19 @@ searchInputEl.setAttribute('data-...-search-input', 'true')
 
 Use shared helper instead.
 
-3. Global document row queries when scoped query is possible.
+3. Importing deleted app-local list shell wrappers:
 
-4. Row handlers that swallow nested interactive key behavior.
+```ts
+import ListShell from '$lib/shared/ui/lists/ListShell.svelte'
+import ListStates from '$lib/shared/ui/lists/ListStates.svelte'
+import ListToolbar from '$lib/shared/ui/lists/ListToolbar.svelte'
+```
+
+Use `@garden-ui/list-shell` directly instead.
+
+4. Global document row queries when scoped query is possible.
+
+5. Row handlers that swallow nested interactive key behavior.
 
 ---
 

@@ -421,13 +421,13 @@
     --row-gap: 12px;
     --row-radius: 12px;
 
-    --row-bg: var(--p);
-    --row-bg-hover: var(--p, 96);
-    --row-bg-selected: var(--p, 96);
+    --row-bg: transparent;
+    --row-bg-hover: color-mix(in srgb, var(--brand-blue) 6%, transparent);
+    --row-bg-selected: color-mix(in srgb, var(--brand-blue) 10%, transparent);
 
-    --row-border: color-mix(in oklch, var(--bc) 12%, transparent);
-    --row-border-hover: color-mix(in oklch, var(--bc) 20%, transparent);
-    --row-border-selected: var(--p);
+    --row-border: transparent;
+    --row-border-hover: transparent;
+    --row-border-selected: transparent;
     --row-focus-ring: color-mix(in oklch, var(--p) 35%, transparent);
 
     --row-fg-strong: var(--bc);
@@ -451,13 +451,13 @@ html {
     --row-gap: 12px;
     --row-radius: 12px;
 
-    --row-bg: var(--p);
-    --row-bg-hover: var(--p, 96);
-    --row-bg-selected: var(--p, 96);
+    --row-bg: transparent;
+    --row-bg-hover: color-mix(in srgb, var(--brand-blue) 6%, transparent);
+    --row-bg-selected: color-mix(in srgb, var(--brand-blue) 10%, transparent);
 
-    --row-border: color-mix(in oklch, var(--bc) 12%, transparent);
-    --row-border-hover: color-mix(in oklch, var(--bc) 20%, transparent);
-    --row-border-selected: var(--p);
+    --row-border: transparent;
+    --row-border-hover: transparent;
+    --row-border-selected: transparent;
     --row-focus-ring: color-mix(in oklch, var(--p) 35%, transparent);
 
     --row-fg-strong: var(--bc);

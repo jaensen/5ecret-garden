@@ -2,7 +2,7 @@
   import type { GroupRow } from '@circles-sdk/data';
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
   import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
-  import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+  import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
   import { goto } from '$app/navigation';
 
   interface Props {

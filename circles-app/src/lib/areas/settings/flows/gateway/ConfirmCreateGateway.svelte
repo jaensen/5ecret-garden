@@ -2,27 +2,20 @@
   import { ethers } from 'ethers';
 
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar, StepSection } from '@garden-ui/flow-step';
   import ActionButton from '$lib/shared/ui/primitives/ActionButton.svelte';
   import { GATEWAY_PROFILE_FLOW_SCAFFOLD_BASE } from './constants';
   import StepAlert from '$lib/shared/ui/flow/StepAlert.svelte';
-  import StepSection from '$lib/shared/ui/flow/StepSection.svelte';
   import StepReviewRow from '$lib/shared/ui/flow/StepReviewRow.svelte';
   import { wallet } from '$lib/shared/state/wallet.svelte';
   import { runTask } from '$lib/shared/utils/tasks';
-  import {
-    isAddress,
-    sendRunnerTransactionAndWait,
-  } from '$lib/shared/utils/tx';
+  import { isAddress, sendRunnerTransactionAndWait } from '$lib/shared/utils/tx';
   import { popupControls } from '$lib/shared/state/popup';
   import { popToOrOpen } from '$lib/shared/flow';
   import type { CreateGatewayFlowContext } from './context';
   import { gnosisConfig } from '$lib/shared/config/circles';
-  import { getProfilesBindings } from '$lib/areas/market/offers';
-  import {
-    ensureProfileShape,
-    cidV0ToDigest32Strict,
-  } from '@circles-profile/core';
+  import { getProfilesBindings } from '$lib/shared/model/profile/bindings';
+  import { ensureProfileShape, cidV0ToDigest32Strict } from '@circles-profile/core';
   import { isValidOnChainName } from '$lib/shared/utils/isValid';
   import ProfilePreviewCard from '$lib/shared/ui/profile/ProfilePreviewCard.svelte';
   import AdvancedDetails from '$lib/shared/ui/flow/AdvancedDetails.svelte';
@@ -37,28 +30,20 @@
 
   const factoryAbi = [
     'function createGateway(string name, bytes32 metadataDigest) returns (address)',
-    'event GatewayCreated(address indexed owner, address indexed gateway)',
+    'event GatewayCreated(address indexed owner, address indexed gateway)'
   ];
   const factoryIface = new ethers.Interface(factoryAbi);
 
-  const factoryValid = $derived(
-    isAddress((context.factoryAddress ?? '').trim())
-  );
+  const factoryValid = $derived(isAddress((context.factoryAddress ?? '').trim()));
   const trimmedGatewayName = $derived((context.gatewayName ?? '').trim());
-  const nameValid = $derived(
-    trimmedGatewayName.length > 0 && isValidOnChainName(trimmedGatewayName)
-  );
-  const profileNameValid = $derived(
-    (context.profile?.name ?? '').trim().length > 0
-  );
+  const nameValid = $derived(trimmedGatewayName.length > 0 && isValidOnChainName(trimmedGatewayName));
+  const profileNameValid = $derived((context.profile?.name ?? '').trim().length > 0);
 
   const canSubmit = $derived(factoryValid && nameValid && profileNameValid);
   let creatingGateway = $state(false);
 
   function getBindings() {
-    return getProfilesBindings({
-      pinApiBase: gnosisConfig.production.profilePinningServiceUrl,
-    }).bindings;
+    return getProfilesBindings({ pinApiBase: gnosisConfig.production.profilePinningServiceUrl }).bindings;
   }
 
   async function createGateway() {
@@ -103,18 +88,14 @@
 
           const data = factoryIface.encodeFunctionData('createGateway', [
             context.gatewayName,
-            context.metadataDigest,
+            context.metadataDigest
           ]);
 
-          const receipt = await sendRunnerTransactionAndWait(
-            runner,
-            {
-              to: factoryAddress,
-              value: 0n,
-              data,
-            },
-            { label: 'Create gateway transaction' }
-          );
+          const receipt = await sendRunnerTransactionAndWait(runner, {
+            to: factoryAddress,
+            value: 0n,
+            data
+          }, { label: 'Create gateway transaction' });
 
           let createdGateway: string | null = null;
 
@@ -141,7 +122,7 @@
             }
             onCreated?.(createdGateway);
           }
-        })(),
+        })()
       });
 
       // Close the flow after a successful submit.
@@ -154,17 +135,17 @@
   function editGatewayProfile() {
     popToOrOpen(CreateGatewayProfile, {
       title: 'Create payment gateway',
-      props: { context, onCreated },
+      props: { context, onCreated }
     });
   }
 </script>
-
 <FlowStepScaffold
   {...GATEWAY_PROFILE_FLOW_SCAFFOLD_BASE}
   step={2}
   title="Confirm"
   subtitle="Review receiver details before updating trust."
 >
+
   <div class="space-y-4">
     <p class="text-sm text-base-content/70">
       Please confirm the details of the payment gateway before creating it.
@@ -181,10 +162,7 @@
       <ProfilePreviewCard profile={context.profile} title="Gateway profile" />
     </StepSection>
 
-    <AdvancedDetails
-      title="Advanced gateway details"
-      subtitle="Factory + on-chain name"
-    >
+    <AdvancedDetails title="Advanced gateway details" subtitle="Factory + on-chain name">
       <div class="flex flex-col gap-1">
         <span class="text-xs text-base-content/60">On-chain name</span>
         <span class="text-sm font-semibold">{context.gatewayName}</span>
@@ -199,10 +177,7 @@
       <StepAlert variant="warning" className="text-xs">
         <ul class="list-disc list-inside">
           {#if !nameValid}
-            <li>
-              On-chain name is required and must follow the on-chain naming
-              rules.
-            </li>
+            <li>On-chain name is required and must follow the on-chain naming rules.</li>
           {/if}
           {#if !profileNameValid}
             <li>Gateway profile name is required.</li>
@@ -216,11 +191,7 @@
 
     <StepActionBar>
       {#snippet primary()}
-        <ActionButton
-          action={createGateway}
-          disabled={!canSubmit || creatingGateway}
-          title="Create gateway"
-        >
+        <ActionButton action={createGateway} disabled={!canSubmit || creatingGateway} title="Create gateway">
           {#snippet children()}Create gateway{/snippet}
         </ActionButton>
       {/snippet}

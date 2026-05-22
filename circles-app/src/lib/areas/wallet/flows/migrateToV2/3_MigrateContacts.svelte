@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import FlowStepScaffold from '$lib/shared/ui/flow/FlowStepScaffold.svelte';
-  import StepActionBar from '$lib/shared/ui/flow/StepActionBar.svelte';
+  import { StepActionBar } from '@garden-ui/flow-step';
   import { MIGRATE_FLOW_SCAFFOLD_BASE } from './constants';
   import type { MigrateToV2Context } from '$lib/areas/wallet/flows/migrateToV2/context';
   import Migrate from './4_Migrate.svelte';
@@ -10,9 +10,9 @@
   import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
   import { openStep } from '$lib/shared/flow';
   import type { ReviewStepProps } from '$lib/shared/flow';
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
+  import { ListShell } from '@garden-ui/list-shell';
   import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
-  import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+  import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
   import { createSearchablePaginatedList } from '$lib/shared/state/searchablePaginatedList';
   import { writable } from 'svelte/store';
 

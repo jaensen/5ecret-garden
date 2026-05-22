@@ -134,6 +134,25 @@ describe('popup history sync', () => {
     restore();
   });
 
+  it('falls back to in-memory popup stack when history marker is stale during back', () => {
+    const { fakeWindow, restore } = setupFakeWindow();
+    const dispose = initPopupHistorySync();
+
+    popupControls.open({ title: 'A', component: COMPONENT_A, props: {} });
+    popupControls.open({ title: 'B', component: COMPONENT_B, props: {} });
+
+    fakeWindow.history.replaceState({}, '', fakeWindow.location.href);
+
+    popupControls.back();
+
+    expect(fakeWindow.history.back).toHaveBeenCalledTimes(0);
+    expect(get(popupState).stack).toHaveLength(0);
+    expect(get(popupState).content?.component).toBe(COMPONENT_A);
+
+    dispose();
+    restore();
+  });
+
   it('navigates one popup step per back and closes without extra page back', () => {
     const { fakeWindow, restore } = setupFakeWindow();
     const dispose = initPopupHistorySync();

@@ -1,18 +1,13 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import PageScaffold from '$lib/shared/ui/shell/PageScaffold.svelte';
-  import Tabs from '$lib/shared/ui/primitives/tabs/Tabs.svelte';
-  import Tab from '$lib/shared/ui/primitives/tabs/Tab.svelte';
-  import { readable, writable } from 'svelte/store';
-  import { browser } from '$app/environment';
+  import { Tabs, Tab } from '@garden-ui/tabs';
+  import { writable } from 'svelte/store';
   import { page } from '$app/stores';
 
   import PersonalSection from '$lib/areas/settings/ui/sections/PersonalSection.svelte';
-  import OrdersSection from '$lib/areas/settings/ui/sections/OrdersSection.svelte';
-  import SalesSection from '$lib/areas/settings/ui/sections/SalesSection.svelte';
   import KeysSection from '$lib/areas/settings/ui/sections/KeysSection.svelte';
   import NamespacesSection from '$lib/areas/settings/ui/sections/NamespacesSection.svelte';
-  import MarketplaceSection from '$lib/areas/settings/ui/sections/MarketplaceSection.svelte';
   import PaymentSection from '$lib/areas/settings/ui/sections/PaymentSection.svelte';
   import BookmarksSection from '$lib/areas/settings/ui/sections/BookmarksSection.svelte';
 
@@ -20,11 +15,7 @@
 
   // ——— Personal settings state/actions ———
   import { avatarState } from '$lib/shared/state/avatar.svelte';
-  import {
-    clearSession,
-    signer,
-    wallet,
-  } from '$lib/shared/state/wallet.svelte';
+  import { clearSession, signer, wallet } from '$lib/shared/state/wallet.svelte';
   import { circles } from '$lib/shared/state/circles';
   import { openFlowPopup, popupControls } from '$lib/shared/state/popup';
   import { openMigrateToV2Flow } from '$lib/areas/wallet/flows/migrateToV2/openMigrateToV2Flow';
@@ -34,7 +25,7 @@
   import ActionButtonDropDown from '$lib/shared/ui/shell/ActionButtonDropDown.svelte';
   import ActionButtonBar from '$lib/shared/ui/shell/ActionButtonBar.svelte';
   import type { Action } from '$lib/shared/ui/shell/actions';
-  import { getProfilesBindings } from '$lib/areas/market/offers';
+  import { getProfilesBindings } from '$lib/shared/model/profile/bindings';
   import { CirclesStorage } from '$lib/shared/utils/storage';
   import { gnosisConfig } from '$lib/shared/config/circles';
   import {
@@ -42,49 +33,15 @@
     saveNamespacesProfileForSettings,
   } from '$lib/areas/settings/state/settingsNamespaces';
   import { fetchGatewayRowsByOwner } from '$lib/shared/data/circles/paymentGateways';
-  import {
-    openConfirmPopup,
-    openInfoPopup,
-  } from '$lib/shared/ui/shell/confirmDialogs';
-
-  // ——— Marketplace state/actions (connected avatar as seller) ———
-  import { normalizeEvmAddress as normalizeAddress } from '@circles-market/sdk';
-  import type { AggregatedCatalogItem } from '$lib/areas/market/model';
-  import OfferStep1 from '$lib/areas/market/flows/offer/1_Product.svelte';
-  import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
-  import { signInWithSafe } from '$lib/areas/market/auth/signin';
-  import { getSalesBySeller } from '$lib/areas/market/orders/ordersQueries';
-  import {
-    mapMarketSales,
-    mapMarketOrderSummaries,
-    type MarketSalesListItem,
-    type MarketOrderSummaryListItem,
-  } from '$lib/areas/market/orders/ordersMappers';
-  import {
-    createPagedListStore,
-    createBuyerOrdersStore,
-  } from '$lib/areas/market/orders/ordersStores';
-  import OrderDetailsPopup from '$lib/areas/market/orders/OrderDetailsPopup.svelte';
+  import { openConfirmPopup, openInfoPopup } from '$lib/shared/ui/shell/confirmDialogs';
 
   // ——— Payment gateways state/actions ———
   import type { GatewayRow } from '$lib/areas/settings/model/gatewayTypes';
   import type { PaginatedReadable } from '$lib/shared/state/paginatedList';
   import CreateGatewayProfile from '$lib/areas/settings/flows/gateway/CreateGatewayProfile.svelte';
-  import {
-    coerceTabId,
-    type TabIdOf,
-  } from '$lib/shared/ui/primitives/tabs/tabId';
+  import { coerceTabId, type TabIdOf } from '$lib/shared/ui/primitives/tabs/tabId';
 
-  const TAB_IDS = [
-    'personal',
-    'bookmarks',
-    'orders',
-    'sales',
-    'keys',
-    'namespaces',
-    'marketplace',
-    'payment',
-  ] as const;
+  const TAB_IDS = ['personal', 'bookmarks', 'keys', 'namespaces', 'payment'] as const;
   type TabId = TabIdOf<typeof TAB_IDS>;
 
   let selectedTab = $state<TabId>('personal');
@@ -94,99 +51,10 @@
     selectedTab = coerceTabId(TAB_IDS, fromUrl, 'personal');
   });
 
-  // Canonical orders list item model from market/orders domain.
-  type OrdersListItem = MarketOrderSummaryListItem;
-
-  // Auth state must be initialized before using in $derived stores to avoid TDZ
-  let ordersAuthed = $state(false);
-  let salesAuthed = $state(false);
-
-  function createStaticListStore<T>(data: T[] = []) {
-    return readable({ data, next: async () => true, ended: true });
-  }
-
-  function buildOrdersAuthedStore() {
-    return createBuyerOrdersStore({
-      pageSize: 50,
-      onOrderUpdatedWithOutbox: (snap) => {
-        popupControls.open({
-          title: 'Order updated',
-          component: OrderDetailsPopup,
-          props: { snapshot: snap },
-        });
-      },
-    });
-  }
-
-  function buildSalesAuthedStore() {
-    return createPagedListStore<MarketSalesListItem>({
-      pageSize: 50,
-      loadPage: async (page, pageSize) => {
-        const resp = await getSalesBySeller(page, pageSize);
-        const items = Array.isArray(resp?.items) ? resp.items : [];
-        return mapMarketSales(items);
-      },
-      isEnded: (items) => items.length === 0,
-    });
-  }
-
-  function buildOrdersFallbackStore() {
-    return createStaticListStore<OrdersListItem>();
-  }
-
-  function buildSalesFallbackStore() {
-    return createStaticListStore<MarketSalesListItem>();
-  }
-
-  const ordersStore = $derived(
-    browser
-      ? ordersAuthed
-        ? buildOrdersAuthedStore()
-        : buildOrdersFallbackStore()
-      : buildOrdersFallbackStore()
-  );
-
-  const salesStore = $derived(
-    browser
-      ? salesAuthed
-        ? buildSalesAuthedStore()
-        : buildSalesFallbackStore()
-      : buildSalesFallbackStore()
-  );
-
-  async function ensureOrdersAuthed(): Promise<void> {
-    try {
-      const avatar = (avatarAddress ?? '').toLowerCase();
-      if (!avatar || !/^0x[a-f0-9]{40}$/.test(avatar)) {
-        throw new Error('No Circles avatar address available for Safe login');
-      }
-      await signInWithSafe(avatar);
-      ordersAuthed = !!getMarketClient().auth.getAuthMeta();
-    } catch (e) {
-      console.error('[settings/orders] safe sign-in failed:', e);
-      ordersAuthed = false;
-    }
-  }
-
-  async function ensureSalesAuthed(): Promise<void> {
-    try {
-      const avatar = (avatarAddress ?? '').toLowerCase();
-      if (!avatar || !/^0x[a-f0-9]{40}$/.test(avatar)) {
-        throw new Error('No Circles avatar address available for Safe login');
-      }
-      await signInWithSafe(avatar);
-      salesAuthed = !!getMarketClient().auth.getAuthMeta();
-    } catch (e) {
-      console.error('[settings/sales] safe sign-in failed:', e);
-      salesAuthed = false;
-    }
-  }
 
   // ——— Shared / personal derived state ———
   const avatarAddress = $derived(
-    (avatarState.avatar?.address ??
-      avatarState.avatar?.avatarInfo?.avatar ??
-      '') as Address | ''
+    (avatarState.avatar?.address ?? avatarState.avatar?.avatarInfo?.avatar ?? '') as Address | '',
   );
 
   const headerTitle = $derived(avatarState.profile?.name?.trim() || 'Settings');
@@ -233,17 +101,11 @@
   let nsNamespaces: Record<string, string> = $state({});
 
   const connectedAvatarLower = $derived(
-    (
-      avatarState.avatar?.address ??
-      avatarState.avatar?.avatarInfo?.avatar ??
-      ''
-    ).toLowerCase()
+    (avatarState.avatar?.address ?? avatarState.avatar?.avatarInfo?.avatar ?? '').toLowerCase(),
   );
   const nsAvatarLower = $derived((nsResolvedAvatar ?? '').toLowerCase());
   const nsIsOwner = $derived(
-    !!connectedAvatarLower &&
-      !!nsAvatarLower &&
-      connectedAvatarLower === nsAvatarLower
+    !!connectedAvatarLower && !!nsAvatarLower && connectedAvatarLower === nsAvatarLower,
   );
 
   async function loadNamespacesProfile(): Promise<void> {
@@ -300,9 +162,7 @@
     }
 
     try {
-      const selector = ethers
-        .keccak256(ethers.toUtf8Bytes('stop()'))
-        .slice(0, 10);
+      const selector = ethers.keccak256(ethers.toUtf8Bytes('stop()')).slice(0, 10);
       const tx = await $wallet.sendTransaction!({
         to: v1TokenAddress,
         data: selector,
@@ -330,8 +190,7 @@
       } catch {}
       await openInfoPopup({
         title: 'Key deleted',
-        message:
-          'Local key deleted from this device. You remain connected until you disconnect.',
+        message: 'Local key deleted from this device. You remain connected until you disconnect.',
         tone: 'success',
       });
     } catch (e) {
@@ -344,67 +203,6 @@
     }
   }
 
-  // ——— Marketplace seller data for connected avatar ———
-  type ProductLike = AggregatedCatalogItem;
-  let marketLoading: boolean = $state(false);
-  let marketErrorMsg: string = $state('');
-  let marketProducts: ProductLike[] = $state([]);
-
-  async function loadSellerCatalog(): Promise<void> {
-    marketLoading = true;
-    marketErrorMsg = '';
-    marketProducts = [];
-
-    try {
-      if (!avatarAddress) {
-        marketLoading = false;
-        return;
-      }
-      const normalized = normalizeAddress(avatarAddress);
-
-      const catalog = getMarketClient().catalog.forOperator(
-        gnosisConfig.production.marketOperator
-      );
-      const items = await catalog.fetchSellerCatalog(normalized);
-      // fetchSellerCatalog already filters by seller, but keep this defensive filter
-      marketProducts = items.filter(
-        (p) => (p.seller ?? '').toLowerCase() === normalized.toLowerCase()
-      );
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : typeof err === 'string'
-            ? err
-            : 'Unknown error';
-      marketErrorMsg = msg;
-    } finally {
-      marketLoading = false;
-    }
-  }
-
-  $effect(() => {
-    // only load when the Marketplace tab is visible
-    if (selectedTab !== 'marketplace') return;
-    void loadSellerCatalog();
-  });
-
-  function openCreateListing() {
-    openFlowPopup({
-      title: 'Create Offer',
-      component: OfferStep1,
-      props: {
-        context: {
-          operator: gnosisConfig.production.marketOperator,
-          pinApiBase: gnosisConfig.production.profilePinningServiceUrl,
-        },
-      },
-      onClose: () => {
-        void loadSellerCatalog();
-      },
-    });
-  }
-
   const actionsPersonal: Action[] = [
     {
       id: 'disconnect',
@@ -415,63 +213,12 @@
     },
   ];
 
-  const actionsMarketplace: Action[] = [
-    {
-      id: 'create-offer',
-      label: 'Create Listing',
-      variant: 'primary',
-      onClick: openCreateListing,
-    },
-    ...actionsPersonal,
-  ];
-
-  const actionsOrders: Action[] = $derived([
-    {
-      id: 'signin-orders',
-      label: ordersAuthed ? 'Signed in' : 'Sign in to view all orders',
-      variant: ordersAuthed ? 'ghost' : 'primary',
-      onClick: () => {
-        if (!ordersAuthed) void ensureOrdersAuthed();
-      },
-    },
-    ...actionsPersonal,
-  ]);
-
-  const actionsSales: Action[] = $derived([
-    {
-      id: 'signin-sales',
-      label: salesAuthed ? 'Signed in' : 'Sign in to view all sales',
-      variant: salesAuthed ? 'ghost' : 'primary',
-      onClick: () => {
-        if (!salesAuthed) void ensureSalesAuthed();
-      },
-    },
-    ...actionsPersonal,
-  ]);
-
   const headerActions = $derived(
-    selectedTab === 'marketplace'
-      ? actionsMarketplace
-      : selectedTab === 'orders'
-        ? actionsOrders
-        : selectedTab === 'sales'
-          ? actionsSales
-          : selectedTab === 'payment'
-            ? actionsPayment
-            : actionsPersonal
+    selectedTab === 'payment' ? actionsPayment : actionsPersonal,
   );
 
-  if (browser) {
-    ordersAuthed = !!getMarketClient().auth.getAuthMeta();
-    salesAuthed = ordersAuthed;
-  }
-
   // ——— Payment gateways list store ———
-  const myGatewaysStoreInner = writable<{
-    data: GatewayRow[];
-    next: () => Promise<boolean>;
-    ended: boolean;
-  }>({
+  const myGatewaysStoreInner = writable<{ data: GatewayRow[]; next: () => Promise<boolean>; ended: boolean }>({
     data: [],
     next: async () => true,
     ended: true,
@@ -484,8 +231,7 @@
   let loadingGateways: boolean = $state(false);
 
   const gatewayOwnerAddress = $derived(avatarAddress as Address | '');
-  const shortGatewayAddr = (a?: string) =>
-    a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '';
+  const shortGatewayAddr = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '');
 
   async function loadMyGateways(): Promise<void> {
     if (!gatewayOwnerAddress || !$circles?.circlesRpc) {
@@ -499,10 +245,7 @@
 
     try {
       loadingGateways = true;
-      const rowsMapped: GatewayRow[] = await fetchGatewayRowsByOwner(
-        $circles,
-        gatewayOwnerAddress
-      );
+      const rowsMapped: GatewayRow[] = await fetchGatewayRowsByOwner($circles, gatewayOwnerAddress);
 
       myGatewaysStoreInner.set({
         data: rowsMapped,
@@ -566,18 +309,16 @@
   collapsedMode="bar"
   collapsedHeightClass="h-12"
   headerTopGapClass="mt-4 md:mt-6"
->
+  >
   {#snippet title()}
     <h1 class="h2">{headerTitle}</h1>
   {/snippet}
 
   {#snippet meta()}
     {#if avatarAddress}
-      <span class="font-mono text-xs text-base-content/70 select-all"
-        >{avatarAddress}</span
-      >
+      <span class="font-mono text-xs text-base-content/70 select-all">{avatarAddress}</span>
     {:else}
-      Profile, wallet, marketplace
+      Profile and wallet settings
     {/if}
   {/snippet}
 
@@ -590,23 +331,16 @@
   {/snippet}
 
   {#snippet collapsedLeft()}
-    <span
-      class="text-base md:text-lg font-semibold tracking-tight text-base-content"
-    >
+    <span class="text-base md:text-lg font-semibold tracking-tight text-base-content">
       {headerTitle}
     </span>
   {/snippet}
 
-  <div
-    class="flex flex-col items-center rounded-md px-3 py-4 md:px-4 md:py-5 gap-y-3"
-  >
+  <div class="flex flex-col items-center rounded-md px-3 py-4 md:px-4 md:py-5 gap-y-3">
     <div class="w-full">
       <Tabs bind:selected={selectedTab} variant="boxed" size="sm">
         <Tab id="personal" title="Profile" />
         <Tab id="bookmarks" title="Bookmarks" />
-        <Tab id="orders" title="Orders" />
-        <Tab id="sales" title="Sales" />
-        <Tab id="marketplace" title="Offers" />
         <Tab id="payment" title="Payment gateways" />
         <Tab id="namespaces" title="Applications" />
         <Tab id="keys" title="Signing keys" />
@@ -628,20 +362,6 @@
         />
       {:else if selectedTab === 'bookmarks'}
         <BookmarksSection />
-      {:else if selectedTab === 'orders'}
-        <OrdersSection
-          {avatarAddress}
-          {ordersAuthed}
-          {ensureOrdersAuthed}
-          {ordersStore}
-        />
-      {:else if selectedTab === 'sales'}
-        <SalesSection
-          {avatarAddress}
-          {salesAuthed}
-          {ensureSalesAuthed}
-          {salesStore}
-        />
       {:else if selectedTab === 'keys'}
         <KeysSection {avatarAddress} {pinApiBase} {deleteLocalKey} />
       {:else if selectedTab === 'namespaces'}
@@ -654,15 +374,6 @@
           {nsNamespaces}
           {nsIsOwner}
           {onNamespacesChanged}
-        />
-      {:else if selectedTab === 'marketplace'}
-        <MarketplaceSection
-          {avatarAddress}
-          {marketLoading}
-          {marketErrorMsg}
-          {marketProducts}
-          {openCreateListing}
-          {loadSellerCatalog}
         />
       {:else if selectedTab === 'payment'}
         <PaymentSection

@@ -174,7 +174,6 @@
           link: '/contacts',
         },
         ...(!avatarState.isGroup ? [{ name: 'Groups', link: '/groups' }] : []),
-        { name: 'Market', link: '/market' },
       ];
     }
   });
@@ -214,20 +213,6 @@
 
   $effect(() => {
     const currentAddress = avatarState.avatar?.address?.toLowerCase();
-    if (
-      lastAvatarAddress &&
-      currentAddress &&
-      lastAvatarAddress !== currentAddress
-    ) {
-      void (async () => {
-        const [{ PersistentAuthContext }, { clearCart }] = await Promise.all([
-          import('$lib/shared/integrations/market'),
-          import('$lib/areas/market/cart/store'),
-        ]);
-        new PersistentAuthContext().clear();
-        clearCart();
-      })();
-    }
     lastAvatarAddress = currentAddress;
   });
 
