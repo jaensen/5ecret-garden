@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { ListStates as GardenListStates } from '@garden-ui/list-shell';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -6,11 +7,9 @@
     error?: string | null;
     isEmpty?: boolean;
     isNoMatches?: boolean;
-
     loadingLabel?: string;
     emptyLabel?: string;
     noMatchesLabel?: string;
-
     children?: Snippet;
   }
 
@@ -22,18 +21,24 @@
     loadingLabel = 'Loading…',
     emptyLabel = 'No entries',
     noMatchesLabel = 'No matches',
-    children
+    children,
   }: Props = $props();
 </script>
 
-{#if loading}
-  <div class="w-full py-6 text-center text-base-content/60">{loadingLabel}</div>
-{:else if error}
-  <div class="w-full py-6 text-center text-error">{error}</div>
-{:else if isEmpty}
-  <div class="w-full py-6 text-center text-base-content/60">{emptyLabel}</div>
-{:else if isNoMatches}
-  <div class="w-full py-6 text-center text-base-content/60">{noMatchesLabel}</div>
-{:else}
-  {@render children?.()}
-{/if}
+<div class="app-list-states-theme">
+  <GardenListStates {loading} {error} {isEmpty} {isNoMatches} {loadingLabel} {emptyLabel} {noMatchesLabel}>
+    {@render children?.()}
+  </GardenListStates>
+</div>
+
+<style>
+  :global(.app-list-states-theme .gui-list-state) {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    color: oklch(var(--bc) / 0.6);
+  }
+
+  :global(.app-list-states-theme .gui-list-state--error) {
+    color: oklch(var(--er));
+  }
+</style>

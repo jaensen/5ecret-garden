@@ -1,8 +1,7 @@
 <script lang="ts">
+  import { ListShell as GardenListShell } from '@garden-ui/list-shell';
   import type { Snippet } from 'svelte';
   import type { Writable } from 'svelte/store';
-  import ListToolbar from './ListToolbar.svelte';
-  import ListStates from './ListStates.svelte';
 
   interface Props {
     query: Writable<string>;
@@ -14,7 +13,6 @@
     onInputFocus?: (event: FocusEvent) => void;
     inputDataAttribute?: string;
     inputEl?: HTMLInputElement | null;
-
     loading?: boolean;
     error?: string | null;
     isEmpty?: boolean;
@@ -24,11 +22,9 @@
     loadingLabel?: string;
     emptyLabel?: string;
     noMatchesLabel?: string;
-
     wrapInListContainer?: boolean;
     listRole?: string;
     listClass?: string;
-
     children?: Snippet;
   }
 
@@ -56,43 +52,51 @@
     listClass = 'w-full flex flex-col gap-y-1.5',
     children,
   }: Props = $props();
-
-  const effectiveIsEmpty = $derived(
-    emptyRequiresEnd ? (ended && isEmpty) : isEmpty
-  );
 </script>
 
-<ListToolbar
-  query={query}
-  placeholder={searchPlaceholder}
-  class={toolbarClass}
-  actions={toolbarActions}
-  bind:inputEl={inputEl}
-  {onInputKeydown}
-  {onInputFocus}
-  {inputDataAttribute}
-/>
-
-{#if toolbarBelow}
-  <div class="mb-3">
-    {@render toolbarBelow?.()}
-  </div>
-{/if}
-
-<ListStates
-  {loading}
-  {error}
-  isEmpty={effectiveIsEmpty}
-  {isNoMatches}
-  {loadingLabel}
-  {emptyLabel}
-  {noMatchesLabel}
->
-  {#if wrapInListContainer}
-    <div role={listRole} class={listClass}>
-      {@render children?.()}
-    </div>
-  {:else}
+<div class="app-list-shell-theme">
+  <GardenListShell
+    {query}
+    {searchPlaceholder}
+    toolbarClass={`app-list-toolbar-theme ${toolbarClass}`.trim()}
+    {toolbarActions}
+    {toolbarBelow}
+    {onInputKeydown}
+    {onInputFocus}
+    {inputDataAttribute}
+    bind:inputEl
+    {loading}
+    {error}
+    {isEmpty}
+    {isNoMatches}
+    {ended}
+    {emptyRequiresEnd}
+    {loadingLabel}
+    {emptyLabel}
+    {noMatchesLabel}
+    {wrapInListContainer}
+    {listRole}
+    {listClass}
+  >
     {@render children?.()}
-  {/if}
-</ListStates>
+  </GardenListShell>
+</div>
+
+<style>
+  :global(.app-list-shell-theme .gui-list-toolbar__input) {
+    border-color: oklch(var(--bc) / 0.2);
+    border-radius: var(--rounded-btn, 0.5rem);
+    background: oklch(var(--b1));
+    color: oklch(var(--bc));
+  }
+
+  :global(.app-list-shell-theme .gui-list-state) {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    color: oklch(var(--bc) / 0.6);
+  }
+
+  :global(.app-list-shell-theme .gui-list-state--error) {
+    color: oklch(var(--er));
+  }
+</style>

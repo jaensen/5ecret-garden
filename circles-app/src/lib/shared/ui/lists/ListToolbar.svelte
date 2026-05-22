@@ -1,6 +1,7 @@
 <script lang="ts">
-  import type { Writable } from 'svelte/store';
+  import { ListToolbar as GardenListToolbar } from '@garden-ui/list-shell';
   import type { Snippet } from 'svelte';
+  import type { Writable } from 'svelte/store';
 
   interface Props {
     query: Writable<string>;
@@ -21,40 +22,26 @@
     onInputKeydown,
     onInputFocus,
     inputDataAttribute,
-    inputEl = $bindable(null)
+    inputEl = $bindable(null),
   }: Props = $props();
-
-  function handleInputKeydown(event: KeyboardEvent): void {
-    onInputKeydown?.(event);
-  }
-
-  $effect(() => {
-    if (!inputEl || !inputDataAttribute) return;
-    const attrs = inputDataAttribute
-      .split(/\s+/)
-      .map((it) => it.trim())
-      .filter(Boolean);
-    for (const attr of attrs) {
-      inputEl.setAttribute(attr, 'true');
-    }
-    return () => {
-      if (!inputEl) return;
-      for (const attr of attrs) {
-        inputEl.removeAttribute(attr);
-      }
-    };
-  });
 </script>
 
-<div class={`mb-3 flex items-center gap-2 ${className}`.trim()}>
-  <input
-    type="text"
-    bind:this={inputEl}
-    class="input input-bordered w-full"
-    {placeholder}
-    bind:value={$query}
-    onkeydown={handleInputKeydown}
-    onfocus={onInputFocus}
-  />
-  {@render actions?.()}
-</div>
+<GardenListToolbar
+  {query}
+  {placeholder}
+  class={`app-list-toolbar-theme ${className}`.trim()}
+  {actions}
+  {onInputKeydown}
+  {onInputFocus}
+  {inputDataAttribute}
+  bind:inputEl
+/>
+
+<style>
+  :global(.app-list-toolbar-theme .gui-list-toolbar__input) {
+    border-color: oklch(var(--bc) / 0.2);
+    border-radius: var(--rounded-btn, 0.5rem);
+    background: oklch(var(--b1));
+    color: oklch(var(--bc));
+  }
+</style>
