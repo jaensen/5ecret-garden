@@ -1,19 +1,18 @@
 <script lang="ts">
-  import type { AppProfileCore as Profile } from '$lib/shared/model/profile';
-  import Markdown from '$lib/shared/ui/content/markdown/Markdown.svelte';
+  import type { AvatarDisplayProfile } from './index';
 
   interface Props {
-    profile: Profile | undefined;
+    profile: AvatarDisplayProfile | undefined;
     showBookmarkBadge?: boolean;
     onclick?: (e: MouseEvent) => void | undefined;
+    descriptionRenderer?: import('svelte').Snippet<[string]>;
   }
 
-  let { profile, showBookmarkBadge = false, onclick }: Props = $props();
+  let { profile, showBookmarkBadge = false, onclick, descriptionRenderer }: Props = $props();
 
   let imgError: boolean = $state(false);
   const imgUrl = $derived(profile?.previewImageUrl || '');
   function onImgError() { imgError = true; }
-  // Reset image error when profile/image changes
   $effect(() => { imgUrl; imgError = false; });
 </script>
 
@@ -45,7 +44,11 @@
   <div class="flex flex-col items-center p-4 gap-y-0.5">
     <span class="font-semibold text-base-content">{profile?.name}</span>
     {#if profile?.description}
-      <Markdown content={profile.description} class="prose prose-sm max-w-none text-base-content/70 mt-0" />
+      {#if descriptionRenderer}
+        {@render descriptionRenderer(profile.description)}
+      {:else}
+        <p class="text-sm text-base-content/70 mt-0">{profile.description}</p>
+      {/if}
     {/if}
   </div>
 </div>

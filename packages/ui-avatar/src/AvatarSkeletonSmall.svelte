@@ -22,15 +22,8 @@
 </div>
 
 <style>
-  .avatar-skeleton {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .avatar-skeleton-block {
-    background: hsl(var(--b3) / 0.7);
-  }
-
+  .avatar-skeleton { position: relative; overflow: hidden; }
+  .avatar-skeleton-block { background: hsl(var(--b3) / 0.7); }
   @media (prefers-reduced-motion: no-preference) {
     .avatar-skeleton::after {
       content: '';
@@ -41,11 +34,6 @@
       animation: avatar-shimmer 1.1s infinite;
       pointer-events: none;
     }
-
-    @keyframes avatar-shimmer {
-      100% {
-        transform: translateX(100%);
-      }
-    }
+    @keyframes avatar-shimmer { 100% { transform: translateX(100%); } }
   }
 </style>

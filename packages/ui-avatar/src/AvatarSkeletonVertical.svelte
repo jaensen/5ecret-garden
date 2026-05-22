@@ -20,10 +20,7 @@
       <div class="avatar-skeleton-block w-20 h-20 rounded-full" aria-hidden="true"></div>
     {/if}
     {#if showBookmarkBadge}
-      <span
-        class="absolute -top-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full avatar-skeleton-block"
-        aria-hidden="true"
-      ></span>
+      <span class="absolute -top-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full avatar-skeleton-block" aria-hidden="true"></span>
     {/if}
   </span>
   <div class="flex flex-col items-center p-4 gap-y-0.5 w-full">
@@ -37,15 +34,8 @@
 </div>
 
 <style>
-  .avatar-skeleton {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .avatar-skeleton-block {
-    background: hsl(var(--b3) / 0.7);
-  }
-
+  .avatar-skeleton { position: relative; overflow: hidden; }
+  .avatar-skeleton-block { background: hsl(var(--b3) / 0.7); }
   @media (prefers-reduced-motion: no-preference) {
     .avatar-skeleton::after {
       content: '';
@@ -56,11 +46,6 @@
       animation: avatar-shimmer 1.1s infinite;
       pointer-events: none;
     }
-
-    @keyframes avatar-shimmer {
-      100% {
-        transform: translateX(100%);
-      }
-    }
+    @keyframes avatar-shimmer { 100% { transform: translateX(100%); } }
   }
 </style>

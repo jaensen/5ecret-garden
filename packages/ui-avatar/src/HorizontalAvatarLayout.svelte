@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { AppProfileCore as Profile } from '$lib/shared/model/profile';
+  import type { AvatarDisplayProfile } from './index';
 
   interface Props {
-    profile: Profile | undefined;
+    profile: AvatarDisplayProfile | undefined;
     pictureOverlayUrl?: string | undefined;
     showBookmarkBadge?: boolean;
     reverse?: boolean;
@@ -24,7 +24,6 @@
   let imgError: boolean = $state(false);
   const imgUrl = $derived(profile?.previewImageUrl || '');
   function onImgError() { imgError = true; }
-  // Reset image error when profile/image changes
   $effect(() => { imgUrl; imgError = false; });
 </script>
 
@@ -53,12 +52,12 @@
         {/if}
 
         {#if pictureOverlayUrl}
-        <img
-          src={pictureOverlayUrl}
-          alt="Overlay"
-          class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full border border-base-100 bg-base-100 block"
-        />
-      {/if}
+          <img
+            src={pictureOverlayUrl}
+            alt="Overlay"
+            class="absolute bottom-0 right-0 h-5 w-5 translate-x-[10%] translate-y-[8%] rounded-full border border-base-100 bg-base-100 block"
+          />
+        {/if}
     </div>
   </button>
   <div class={`flex flex-col gap-y-0.5 min-w-0 ${reverse ? 'items-end pr-4 text-right' : 'items-start pl-4'}`}>

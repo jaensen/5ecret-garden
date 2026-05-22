@@ -24,16 +24,10 @@
       <div class="avatar-skeleton-block w-10 h-10 rounded-full block" aria-hidden="true"></div>
     {/if}
     {#if showBookmarkBadge}
-      <span
-        class="absolute -top-1 -right-1 inline-flex h-4 w-4 items-center justify-center rounded-full avatar-skeleton-block"
-        aria-hidden="true"
-      ></span>
+      <span class="absolute -top-1 -right-1 inline-flex h-4 w-4 items-center justify-center rounded-full avatar-skeleton-block" aria-hidden="true"></span>
     {/if}
     {#if showOverlay}
-      <span
-        class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full border border-base-100 avatar-skeleton-block"
-        aria-hidden="true"
-      ></span>
+      <span class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full border border-base-100 avatar-skeleton-block" aria-hidden="true"></span>
     {/if}
   </div>
   <div class={`flex flex-col gap-y-0.5 min-w-0 ${reverse ? 'items-end pr-4 text-right' : 'items-start pl-4'}`}>
@@ -48,15 +42,8 @@
 </div>
 
 <style>
-  .avatar-skeleton {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .avatar-skeleton-block {
-    background: color-mix(in oklab, currentColor 16%, transparent);
-  }
-
+  .avatar-skeleton { position: relative; overflow: hidden; }
+  .avatar-skeleton-block { background: color-mix(in oklab, currentColor 16%, transparent); }
   @media (prefers-reduced-motion: no-preference) {
     .avatar-skeleton::after {
       content: '';
@@ -67,11 +54,6 @@
       animation: avatar-shimmer 1.1s infinite;
       pointer-events: none;
     }
-
-    @keyframes avatar-shimmer {
-      100% {
-        transform: translateX(100%);
-      }
-    }
+    @keyframes avatar-shimmer { 100% { transform: translateX(100%); } }
   }
 </style>

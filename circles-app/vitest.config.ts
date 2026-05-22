@@ -15,6 +15,7 @@ export default defineConfig({
       '@garden-ui/list-data': fileURLToPath(new URL('../packages/ui-list-data/src/index.ts', import.meta.url)),
       '@garden-ui/flow-step': fileURLToPath(new URL('../packages/ui-flow-step/src/index.ts', import.meta.url)),
       '@garden-ui/row': fileURLToPath(new URL('../packages/ui-row/src/index.ts', import.meta.url)),
+      '@garden-ui/avatar': fileURLToPath(new URL('../packages/ui-avatar/src/index.ts', import.meta.url)),
     },
     conditions: ['browser'],
   },

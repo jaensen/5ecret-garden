@@ -1,12 +1,8 @@
 <script lang="ts">
+  import { AvatarDisplay } from '@garden-ui/avatar';
   import { openProfilePopup } from '$lib/shared/ui/profile/openProfilePopup';
   import { getProfile } from '$lib/shared/utils/profile';
   import { getTypeString } from '$lib/shared/utils/helpers';
-  import HorizontalAvatarLayout from './HorizontalAvatarLayout.svelte';
-  import VerticalAvatarLayout from './VerticalAvatarLayout.svelte';
-  import AvatarSkeletonHorizontal from './AvatarSkeletonHorizontal.svelte';
-  import AvatarSkeletonSmall from './AvatarSkeletonSmall.svelte';
-  import AvatarSkeletonVertical from './AvatarSkeletonVertical.svelte';
   import { isVipProfileBookmark, profileBookmarksStore } from '$lib/areas/settings/state/profileBookmarks';
   import type { Address } from '@circles-sdk/utils';
   import type { AppProfileCore as Profile } from '$lib/shared/model/profile';
@@ -184,112 +180,23 @@
   }
 </script>
 
-<!-- If no profile, show placeholders; otherwise fade in final layout. -->
-{#if !profile}
-    {#if view === 'horizontal' || view === 'horizontal_reverse'}
-        <AvatarSkeletonHorizontal
-            reverse={view === 'horizontal_reverse'}
-            showAvatar={placeholderAvatar}
-            showTop={placeholderHasTopInfo}
-            showBottom={placeholderHasBottomInfo}
-            showBookmarkBadge={effectiveShowBookmarkBadge}
-            showOverlay={!!pictureOverlayUrl}
-        />
-    {:else if view === 'small' || view === 'small_no_text'}
-        <AvatarSkeletonSmall
-            showAvatar={placeholderAvatar}
-            showText={view === 'small' && placeholderTop}
-        />
-    {:else if view === 'small_reverse'}
-        <AvatarSkeletonSmall
-            reverse={true}
-            showAvatar={placeholderAvatar}
-            showText={placeholderTop}
-        />
-    {:else}
-        <AvatarSkeletonVertical
-            showAvatar={placeholderAvatar}
-            showTop={placeholderTop}
-            showBottom={placeholderBottom}
-            showBookmarkBadge={effectiveShowBookmarkBadge}
-        />
-    {/if}
-{:else if view === 'horizontal' || view === 'horizontal_reverse'}
-    <!-- Fade in the final layout once profile is loaded -->
-    <div transition:fade title={tooltipText}>
-        <HorizontalAvatarLayout
-                {pictureOverlayUrl}
-                showBookmarkBadge={effectiveShowBookmarkBadge}
-                reverse={view === 'horizontal_reverse'}
-                onclick={openAvatar}
-                {profile}
-                {topInfo}
-                bottomInfo={computedBottomInfo}
-        />
-    </div>
-{:else if view === 'small' || view === 'small_no_text'}
-    <div class="inline-flex items-center gap-2" transition:fade>
-        <button
-            class="cursor-pointer inline-flex items-center"
-            onclick={openAvatar}
-            aria-label={tooltipText}
-            title={tooltipText}
-        >
-            <span class="relative inline-flex">
-                <img
-                    src={profile?.previewImageUrl}
-                    alt="User Icon"
-                    class="w-6 h-6 object-cover rounded-full"
-                />
-                {#if effectiveShowBookmarkBadge}
-                    <span
-                        class="absolute -top-1 -right-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-warning text-warning-content text-[9px] leading-none font-bold border border-base-100"
-                        aria-label="Bookmarked"
-                        title="Bookmarked"
-                    >
-                        ★
-                    </span>
-                {/if}
-            </span>
-        </button>
-        {#if view === 'small'}
-            <span class="text-sm font-medium truncate max-w-[12rem] align-middle">{profile?.name}</span>
-        {/if}
-    </div>
-{:else if view === 'small_reverse'}
-    <div class="inline-flex items-center gap-2" transition:fade>
-        <span class="text-sm font-medium truncate max-w-[12rem] align-middle text-right">{profile?.name}</span>
-        <button
-            class="cursor-pointer inline-flex items-center"
-            onclick={openAvatar}
-            aria-label={tooltipText}
-            title={tooltipText}
-        >
-            <span class="relative inline-flex">
-                <img
-                    src={profile?.previewImageUrl}
-                    alt="User Icon"
-                    class="w-6 h-6 object-cover rounded-full"
-                />
-                {#if effectiveShowBookmarkBadge}
-                    <span
-                        class="absolute -top-1 -right-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-warning text-warning-content text-[9px] leading-none font-bold border border-base-100"
-                        aria-label="Bookmarked"
-                        title="Bookmarked"
-                    >
-                        ★
-                    </span>
-                {/if}
-            </span>
-        </button>
-    </div>
-{:else}
-    <div transition:fade title={tooltipText}>
-        <VerticalAvatarLayout
-                onclick={openAvatar}
-                {profile}
-                showBookmarkBadge={effectiveShowBookmarkBadge}
-        />
-    </div>
-{/if}
+<AvatarDisplay
+  {profile}
+  {clickable}
+  {view}
+  {pictureOverlayUrl}
+  showBookmarkBadge={effectiveShowBookmarkBadge}
+  {topInfo}
+  bottomInfo={computedBottomInfo}
+  placeholderAvatar={placeholderAvatar}
+  placeholderTop={placeholderTop}
+  placeholderBottom={placeholderBottom}
+  title={tooltipText}
+  typeLabel={showTypeInfo ? typeLabel : undefined}
+  onActivate={openAvatar}
+>
+  {#snippet descriptionRenderer(description: string)}
+    <div class="prose prose-sm max-w-none text-base-content/70 mt-0">{description}</div>
+  {/snippet}
+</AvatarDisplay>
 
