@@ -1,4 +1,4 @@
-import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
+import { getMarketClient } from '$lib/shared/integrations/market';
 import type { AggregatedCatalogItem } from '$lib/areas/market/model';
 import { pickFirstProductImageUrl } from '$lib/areas/market/services';
 import { gnosisConfig } from '$lib/shared/config/circles';

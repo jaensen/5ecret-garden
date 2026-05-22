@@ -2,7 +2,7 @@ import {browser} from '$app/environment';
 import type {Address} from '@circles-sdk/utils';
 import {getWalletProvider} from '$lib/shared/integrations/wallet';
 import {ensureGnosisChain} from '$lib/shared/integrations/chain/gnosis';
-import {getMarketClient} from '$lib/shared/data/market/marketClientProxy';
+import {getMarketClient} from '$lib/shared/integrations/market';
 import {gnosisConfig} from '$lib/shared/config/circles';
 
 export interface AdminChallengeResponse {

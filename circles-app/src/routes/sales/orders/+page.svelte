@@ -4,7 +4,7 @@
   import { ListShell } from '@garden-ui/list-shell';
   import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import { browser } from '$app/environment';
-  import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
+  import { getMarketClient } from '$lib/shared/integrations/market';
   import { onMount } from 'svelte';
   import type { PaginatedReadable } from '$lib/shared/state/paginatedList';
 

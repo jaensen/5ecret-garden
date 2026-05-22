@@ -38,7 +38,7 @@
     import ProductCard from '$lib/areas/market/ui/product/ProductCard.svelte';
     import { normalizeEvmAddress as normalizeAddress } from '@circles-market/sdk';
     import type { AggregatedCatalogItem } from '$lib/areas/market/model';
-    import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
+    import { getMarketClient } from '$lib/shared/integrations/market';
     // Namespaces explorer (read-only) for other profiles
     import { ProfileNamespaces } from '$lib/shared/ui/profile';
     import { loadProfileOrInit } from '@circles-market/sdk';

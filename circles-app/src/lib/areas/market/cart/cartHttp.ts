@@ -1,4 +1,4 @@
-import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
+import { getMarketClient } from '$lib/shared/integrations/market';
 import type { Basket, BasketPatch, OrderItemPreview } from './types';
 import { normalizeAddr, normalizeSku, normalizeImageUrl } from './basketUtils';
 

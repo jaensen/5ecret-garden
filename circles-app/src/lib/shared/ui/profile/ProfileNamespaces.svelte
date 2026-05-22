@@ -27,7 +27,7 @@
     import { getProfilesBindings } from '$lib/areas/market/offers';
     import { getWalletProvider } from '$lib/shared/integrations/wallet';
     import { ensureGnosisChain } from '$lib/shared/integrations/chain/gnosis';
-    import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
+    import { getMarketClient } from '$lib/shared/integrations/market';
     import { gnosisConfig } from '$lib/shared/config/circles';
 
     interface Props {

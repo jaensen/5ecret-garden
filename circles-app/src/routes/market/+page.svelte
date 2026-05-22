@@ -4,7 +4,7 @@
     import PageScaffold from '$lib/shared/ui/shell/PageScaffold.svelte';
     import ProductCard from '$lib/areas/market/ui/product/ProductCard.svelte';
     import ProductCardPlaceholder from '$lib/shared/ui/lists/placeholders/ProductCardPlaceholder.svelte';
-    import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
+    import { getMarketClient } from '$lib/shared/integrations/market';
     import type { AggregatedCatalogItem } from '$lib/areas/market/model';
     import ActionButtonBar from '$lib/shared/ui/shell/ActionButtonBar.svelte';
     import ActionButtonDropDown from '$lib/shared/ui/shell/ActionButtonDropDown.svelte';

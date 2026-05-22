@@ -4,7 +4,7 @@
   import { getOrderStatusHistory, subscribeBuyerOrderEvents, getOrder } from '$lib/areas/market/orders/ordersQueries';
   import type { OrderStatusChange } from '$lib/areas/market/orders/types';
   import { createLoadable } from '$lib/areas/market/utils/loadable';
-  import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
+  import { getMarketClient } from '$lib/shared/integrations/market';
 
   // Security: Do NOT accept or render order keys in the UI. Instead, this popup
   // expects a full snapshot to be provided by the caller (e.g., from an
