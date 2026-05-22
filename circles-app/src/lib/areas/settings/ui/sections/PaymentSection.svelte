@@ -3,7 +3,7 @@
   import type { Readable } from 'svelte/store';
   import { derived, writable } from 'svelte/store';
   import { ListShell } from '@garden-ui/list-shell';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import GatewayRowPlaceholder from '$lib/shared/ui/lists/placeholders/GatewayRowPlaceholder.svelte';
   import GatewayRowView from '$lib/areas/settings/ui/components/GatewayRow.svelte';
   import { openStep } from '$lib/shared/flow';
@@ -107,7 +107,7 @@
         noMatchesLabel="No matching gateways"
         wrapInListContainer={false}
       >
-        <GenericList
+        <VirtualList
           store={filteredGatewaysStore}
           row={GatewayRowView}
           rowHeight={64}

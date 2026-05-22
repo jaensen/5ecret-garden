@@ -7,7 +7,7 @@
     import BalanceRowPlaceholder from '$lib/shared/ui/lists/placeholders/BalanceRowPlaceholder.svelte';
     import type {EventRow} from '@circles-sdk/data';
     import Filter from '$lib/shared/ui/lists/Filter.svelte';
-    import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+    import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
     import { ListShell } from '@garden-ui/list-shell';
     import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
     import { CircleHelp as LCircleHelp, X as LX } from 'lucide';
@@ -204,7 +204,7 @@
             </div>
         {/if}
 
-        <GenericList
+        <VirtualList
             store={filteredStore}
             row={BalanceRow}
             rowHeight={72}

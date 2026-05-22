@@ -2,7 +2,7 @@
   import type { Component } from 'svelte';
   import { ListShell } from '@garden-ui/list-shell';
   import { readable, writable, type Readable, type Writable } from 'svelte/store';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import { createPaginatedList } from '$lib/shared/state/paginatedList';
   import { createSearchablePaginatedList } from '$lib/shared/state/searchablePaginatedList';
 
@@ -79,7 +79,7 @@
   emptyLabel={emptyLabel}
   noMatchesLabel={noMatchesLabel}
 >
-  <GenericList
+  <VirtualList
     store={paginatedItems}
     {row}
     getKey={getKey}

@@ -8,7 +8,7 @@
   import type { AvatarSearchItem } from '../../avatar-search/dev/avatarSearch.types';
 
   import { ListShell } from '@garden-ui/list-shell';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import { createPaginatedList } from '$lib/shared/state/paginatedList';
 
   import ContactRow from '../../contacts/ContactRow.svelte';
@@ -413,7 +413,7 @@
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Contacts list (ContactRow)</h3>
       <ListShell query={contactsQuery} searchPlaceholder="Search contacts" wrapInListContainer={false}>
-        <GenericList
+        <VirtualList
           store={contactsPaginated}
           row={ContactRow}
           rowHeight={64}
@@ -426,7 +426,7 @@
 
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Wallet balances (BalanceRow)</h3>
-      <GenericList
+      <VirtualList
         store={balanceStore}
         row={BalanceRow}
         rowHeight={72}
@@ -440,7 +440,7 @@
   <div class="grid gap-4 lg:grid-cols-2">
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Transaction history (TransactionRow)</h3>
-      <GenericList
+      <VirtualList
         store={transactionStore}
         row={TransactionRow}
         rowHeight={64}
@@ -453,7 +453,7 @@
 
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Groups list (GroupRowView)</h3>
-      <GenericList
+      <VirtualList
         store={groupsStore}
         row={GroupRowView}
         rowHeight={64}
@@ -468,7 +468,7 @@
   <div class="grid gap-4 lg:grid-cols-2">
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Sales orders (SalesOrderRow)</h3>
-      <GenericList
+      <VirtualList
         store={salesOrderStore}
         row={SalesOrderRow}
         rowHeight={64}
@@ -482,7 +482,7 @@
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Avatar search dev list (AvatarSearchRow)</h3>
       <ListShell query={avatarSearchQuery} searchPlaceholder="Search avatar results" wrapInListContainer={false}>
-        <GenericList
+        <VirtualList
           store={avatarSearchPaginated}
           row={AvatarSearchRow}
           rowHeight={64}
@@ -502,7 +502,7 @@
 
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Payment gateways (GatewayRow)</h3>
-      <GenericList
+      <VirtualList
         store={gatewayStore}
         row={GatewayRowView}
         rowHeight={64}
@@ -516,7 +516,7 @@
   <div class="grid gap-4 lg:grid-cols-2">
     <section class="rounded-xl border border-base-300 p-3 space-y-2">
       <h3 class="font-medium">Holders list (HoldersRow)</h3>
-      <GenericList
+      <VirtualList
         store={holderStore}
         row={HoldersRow}
         rowHeight={64}

@@ -2,7 +2,7 @@
   import PageScaffold from '$lib/shared/ui/shell/PageScaffold.svelte';
   import { derived, readable, writable } from 'svelte/store';
   import { ListShell } from '@garden-ui/list-shell';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import { browser } from '$app/environment';
   import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
   import { onMount } from 'svelte';
@@ -175,7 +175,7 @@
       wrapInListContainer={false}
     >
       <div data-sales-orders-list-scope bind:this={salesListScopeEl}>
-        <GenericList
+        <VirtualList
           store={filteredStore}
           row={SalesOrderRow}
           getKey={(it) => it.key}

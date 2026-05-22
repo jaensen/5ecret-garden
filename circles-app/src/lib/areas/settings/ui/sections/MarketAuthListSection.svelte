@@ -3,7 +3,7 @@
   import type { Readable } from 'svelte/store';
   import { derived, writable } from 'svelte/store';
   import { ListShell } from '@garden-ui/list-shell';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import MarketOrderRowPlaceholder from '$lib/shared/ui/lists/placeholders/MarketOrderRowPlaceholder.svelte';
   import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
 
@@ -106,7 +106,7 @@
       wrapInListContainer={false}
     >
       <div data-market-orders-list-scope bind:this={marketListScopeEl}>
-        <GenericList
+        <VirtualList
           store={filteredStore}
           {row}
           getKey={(it) => it.key}

@@ -2,7 +2,7 @@
     import { browser } from '$app/environment';
     import {contacts} from '$lib/shared/state/contacts';
     import Papa from 'papaparse';
-    import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+    import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
     import { ListShell } from '@garden-ui/list-shell';
     import ContactRow from './ContactRow.svelte';
     import AvatarRowPlaceholder from '$lib/shared/ui/lists/placeholders/AvatarRowPlaceholder.svelte';
@@ -303,7 +303,7 @@
         wrapInListContainer={false}
     >
         <div data-contacts-list-scope bind:this={contactsListScopeEl}>
-            <GenericList
+            <VirtualList
                 store={contactsPaginatedWithEnd}
                 row={ContactRow}
                 rowHeight={64}

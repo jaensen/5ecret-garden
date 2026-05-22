@@ -2,7 +2,7 @@
   import { derived, writable, type Readable } from 'svelte/store';
 
   import { ListShell } from '@garden-ui/list-shell';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import BalanceRowSkeleton from '$lib/areas/wallet/ui/components/BalanceRowSkeleton.svelte';
   import DemoGenericRow from '../DemoGenericRow.svelte';
   import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
@@ -105,7 +105,7 @@
         noMatchesLabel="No matching demo rows"
         wrapInListContainer={false}
       >
-        <GenericList
+        <VirtualList
           store={filteredDemoListStore}
           row={DemoGenericRow}
           getKey={(item) => item.id}

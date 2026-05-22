@@ -1,6 +1,6 @@
         <script lang="ts">
     import { derived, readable, writable, type Readable } from 'svelte/store';
-    import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+    import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
     import {createCMGroups} from '$lib/areas/groups/state';
     import type {EventRow} from '@circles-sdk/data';
     import GroupRowView from './GroupRowView.svelte';
@@ -303,7 +303,7 @@
             {:else}
                 {#if groups}
                     <div data-groups-list-scope bind:this={allGroupsListScopeEl}>
-                        <GenericList
+                        <VirtualList
                             store={groups}
                             row={GroupRowView}
                             rowHeight={64}

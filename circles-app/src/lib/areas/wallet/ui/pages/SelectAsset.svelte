@@ -59,7 +59,7 @@
     import { ListShell } from '@garden-ui/list-shell';
     import type { Readable } from 'svelte/store';
     import { derived, readable } from 'svelte/store';
-    import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+    import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
     import SelectableBalanceRow, { type SelectableBalanceRowItem } from '$lib/areas/wallet/ui/components/SelectableBalanceRow.svelte';
     import BalanceRowPlaceholder from '$lib/shared/ui/lists/placeholders/BalanceRowPlaceholder.svelte';
     import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
@@ -168,7 +168,7 @@
         wrapInListContainer={false}
 >
     <div data-select-asset-list-scope bind:this={selectAssetListScopeEl}>
-        <GenericList
+        <VirtualList
                 store={selectableBalances}
                 row={SelectableBalanceRow}
                 getKey={(it) => String(it.balance.tokenAddress)}

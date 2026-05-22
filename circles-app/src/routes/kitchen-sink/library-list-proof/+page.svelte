@@ -12,7 +12,7 @@
     type ListController,
     type ListSnapshot
   } from '@garden-ui/list-data';
-  import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
+  import VirtualList from '$lib/shared/ui/lists/VirtualList.svelte';
   import ListProofRow from '$lib/mock-ui/list-proof/ListProofRow.svelte';
   import { MOCK_LIST_ITEMS, type MockListItem } from '$lib/mock-ui/list-proof/mockListData';
 
@@ -270,7 +270,7 @@
     isEmpty={displayFilteredTotal === 0}
     emptyLabel="No generated rows match your search"
   >
-    <GenericList
+    <VirtualList
       store={genericListStore}
       row={ListProofRow}
       getKey={(item: MockListItem) => item.id}
