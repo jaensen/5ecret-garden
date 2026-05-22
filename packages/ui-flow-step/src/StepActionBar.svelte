@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { StepActionBar as PackageStepActionBar } from '@garden-ui/flow-step';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -19,6 +18,16 @@
     secondary,
     children,
   }: Props = $props();
+
+  const layoutClass = $derived(
+    stackOnMobile
+      ? `flex flex-col sm:flex-row gap-2 ${align === 'between' ? 'sm:justify-between' : 'sm:justify-end'}`
+      : `flex flex-row gap-2 ${align === 'between' ? 'justify-between' : 'justify-end'}`,
+  );
 </script>
 
-<PackageStepActionBar {align} {stackOnMobile} {className} {primary} {secondary} {children} />
+<div class={`mt-5 ${layoutClass} ${className}`.trim()}>
+  {@render children?.()}
+  {@render secondary?.()}
+  {@render primary?.()}
+</div>

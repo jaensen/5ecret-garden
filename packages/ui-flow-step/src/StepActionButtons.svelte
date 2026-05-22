@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { StepActionButtons as PackageStepActionButtons } from '@garden-ui/flow-step';
+  import StepActionBar from './StepActionBar.svelte';
 
   interface Props {
     className?: string;
@@ -34,18 +34,25 @@
   }: Props = $props();
 </script>
 
-<PackageStepActionButtons
-  {className}
-  {align}
-  {stackOnMobile}
-  {primaryLabel}
-  {onPrimary}
-  {primaryDisabled}
-  {primaryType}
-  {primaryClass}
-  {secondaryLabel}
-  {onSecondary}
-  {secondaryDisabled}
-  {secondaryType}
-  {secondaryClass}
-/>
+<StepActionBar {className} {align} {stackOnMobile}>
+  {#if secondaryLabel}
+    <button
+      type={secondaryType}
+      class={secondaryClass}
+      onclick={onSecondary}
+      disabled={secondaryDisabled}
+    >
+      {secondaryLabel}
+    </button>
+  {/if}
+
+    <button
+      type={primaryType}
+      class={primaryClass}
+      data-popup-default-action
+      onclick={onPrimary}
+      disabled={primaryDisabled}
+    >
+      {primaryLabel}
+    </button>
+</StepActionBar>

@@ -1,7 +1,17 @@
 <script lang="ts">
-  import { FlowStepHeader, FlowStepScaffold, StepAlert, StepReviewRow } from '@garden-ui/flow-step';
+  import {
+    FlowStepHeader,
+    FlowStepScaffold,
+    StepActionBar,
+    StepActionButtons,
+    StepAlert,
+    StepReviewRow,
+    StepSection,
+  } from '@garden-ui/flow-step';
 
   let changed = $state(false);
+  let primaryClicked = $state(false);
+  let secondaryClicked = $state(false);
 </script>
 
 <FlowStepScaffold
@@ -50,5 +60,29 @@
     buttonClassName="fixture-review-button"
   />
 
+  <StepSection title="Section title" subtitle="Section subtitle" className="fixture-section" titleClassName="fixture-section-header">
+    <div class="fixture-section-body">Section body</div>
+  </StepSection>
+
+  <StepActionBar className="fixture-action-bar" align="between" stackOnMobile={false}>
+    {#snippet secondary()}
+      <button class="fixture-action-secondary" onclick={() => (secondaryClicked = true)}>Back</button>
+    {/snippet}
+    {#snippet primary()}
+      <button class="fixture-action-primary" onclick={() => (primaryClicked = true)}>Continue</button>
+    {/snippet}
+  </StepActionBar>
+
+  <StepActionButtons
+    className="fixture-action-buttons"
+    primaryLabel="Save"
+    secondaryLabel="Cancel"
+    onPrimary={() => (primaryClicked = true)}
+    onSecondary={() => (secondaryClicked = true)}
+    primaryClass="fixture-buttons-primary"
+    secondaryClass="fixture-buttons-secondary"
+  />
+
   <div data-changed={changed ? 'yes' : 'no'}></div>
+  <div data-primary={primaryClicked ? 'yes' : 'no'} data-secondary={secondaryClicked ? 'yes' : 'no'}></div>
 </FlowStepScaffold>
