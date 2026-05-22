@@ -3,7 +3,7 @@
     import {contacts} from '$lib/shared/state/contacts';
     import Papa from 'papaparse';
     import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
-    import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
+    import { ListShell } from '@garden-ui/list-shell';
     import ContactRow from './ContactRow.svelte';
     import AvatarRowPlaceholder from '$lib/shared/ui/lists/placeholders/AvatarRowPlaceholder.svelte';
     import {derived, writable, type Writable} from 'svelte/store';
@@ -19,7 +19,7 @@
     import type { Action } from '$lib/shared/ui/shell/actions';
     import { goto } from '$app/navigation';
     import { createPaginatedList } from '$lib/shared/state/paginatedList';
-    import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+    import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
     import HelpPopover from '$lib/shared/ui/primitives/HelpPopover.svelte';
     import { getProfilesCoreBatch } from '$lib/shared/model/profile/coreRepo';
 

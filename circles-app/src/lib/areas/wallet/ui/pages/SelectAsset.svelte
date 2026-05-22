@@ -56,13 +56,13 @@
 <script lang="ts">
     import type { TokenBalanceRow } from '@circles-sdk/data';
     import { writable } from 'svelte/store';
-    import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
+    import { ListShell } from '@garden-ui/list-shell';
     import type { Readable } from 'svelte/store';
     import { derived, readable } from 'svelte/store';
     import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
     import SelectableBalanceRow, { type SelectableBalanceRowItem } from '$lib/areas/wallet/ui/components/SelectableBalanceRow.svelte';
     import BalanceRowPlaceholder from '$lib/shared/ui/lists/placeholders/BalanceRowPlaceholder.svelte';
-    import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+    import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
     import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
     import { roundToDecimals } from '$lib/shared/utils/shared';
     import AutoRouteSummary from '$lib/areas/wallet/ui/components/AutoRouteSummary.svelte';

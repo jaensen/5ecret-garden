@@ -2,10 +2,10 @@
   import type { Address } from '@circles-sdk/utils';
   import type { Readable } from 'svelte/store';
   import { derived, writable } from 'svelte/store';
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
+  import { ListShell } from '@garden-ui/list-shell';
   import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
   import MarketOrderRowPlaceholder from '$lib/shared/ui/lists/placeholders/MarketOrderRowPlaceholder.svelte';
-  import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+  import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
 
   type ListValue = { data: any[]; next: () => Promise<boolean>; ended: boolean; error?: string | null };
   type ListStore = Readable<ListValue>;

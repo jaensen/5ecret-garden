@@ -5,7 +5,7 @@
     import type { Address } from '@circles-sdk/utils';
     import type { AppProfileCore as Profile } from '$lib/shared/model/profile';
     import type { AvatarRow } from '@circles-sdk/data';
-    import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+    import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
 
     interface Props {
         address?: Address;

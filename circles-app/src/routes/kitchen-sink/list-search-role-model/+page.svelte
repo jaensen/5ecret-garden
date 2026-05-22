@@ -7,7 +7,7 @@
   import type { MonthlyItem, RangeOverlayEvent } from '$lib/shared/ui/event-history/types';
   import type { AvatarSearchItem } from '../../avatar-search/dev/avatarSearch.types';
 
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
+  import { ListShell } from '@garden-ui/list-shell';
   import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
   import { createPaginatedList } from '$lib/shared/state/paginatedList';
 

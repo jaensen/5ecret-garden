@@ -3,7 +3,7 @@
     import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
     import { openProfilePopup } from '$lib/shared/ui/profile/openProfilePopup';
     import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
-    import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+    import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
 
     interface Props { item: GroupRow; }
     let { item }: Props = $props();

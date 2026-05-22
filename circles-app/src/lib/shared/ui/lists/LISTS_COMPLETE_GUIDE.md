@@ -282,7 +282,7 @@ Use only when domain UX requires non-shell behavior (example: day-events histogr
   import { writable } from 'svelte/store';
   import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
   import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
-  import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+  import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
 
   const query = writable('');
   let listScopeEl: HTMLDivElement | null = null;

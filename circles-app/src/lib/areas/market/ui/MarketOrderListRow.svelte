@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+  import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
 
   interface Props {
     onOpen: () => void;

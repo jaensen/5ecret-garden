@@ -7,7 +7,7 @@
     import RowFrame from '$lib/shared/ui/primitives/RowFrame.svelte';
     import { popupControls, type PopupContentDefinition } from '$lib/shared/state/popup';
     import TransactionDetailsPopup from './TransactionDetailsPopup.svelte';
-    import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+    import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
     import {
         VIRTUAL_LIST_CONTEXT_KEY,
         type VirtualListController,

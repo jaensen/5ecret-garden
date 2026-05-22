@@ -8,10 +8,10 @@
     import type {EventRow} from '@circles-sdk/data';
     import Filter from '$lib/shared/ui/lists/Filter.svelte';
     import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
-    import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
+    import { ListShell } from '@garden-ui/list-shell';
     import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
     import { CircleHelp as LCircleHelp, X as LX } from 'lucide';
-    import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+    import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
     import { WHY_MANY_CIRCLES_LINES } from '$lib/shared/content/trustRoutingCopy';
 
     let filterVersion = writable<number | undefined>(undefined);

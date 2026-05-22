@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { Component } from 'svelte';
+  import { ListShell } from '@garden-ui/list-shell';
   import { readable, writable, type Readable, type Writable } from 'svelte/store';
   import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
   import { createPaginatedList } from '$lib/shared/state/paginatedList';
   import { createSearchablePaginatedList } from '$lib/shared/state/searchablePaginatedList';
 

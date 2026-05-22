@@ -4,7 +4,7 @@
   import AvatarRowPlaceholder from '$lib/shared/ui/lists/placeholders/AvatarRowPlaceholder.svelte';
   import TrustRowView from '$lib/areas/settings/ui/components/TrustRow.svelte';
   import type { TrustRow } from '$lib/areas/settings/model/gatewayTypes';
-  import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+  import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
 
   type TrustRowItem = TrustRow & {
     showRemove?: boolean;

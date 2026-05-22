@@ -17,7 +17,7 @@
     import { circles } from '$lib/shared/state/circles';
     import { get } from 'svelte/store';
     import { formatEther } from 'ethers';
-    import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+    import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
     import { openInfoPopup } from '$lib/shared/ui/shell/confirmDialogs';
     import { openTextPromptPopup } from '$lib/shared/ui/shell/promptDialogs';
     import { runTask } from '$lib/shared/utils/tasks';

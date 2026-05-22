@@ -3,7 +3,7 @@
     import Avatar from '$lib/shared/ui/avatar/Avatar.svelte';
     import { openProfilePopup } from '$lib/shared/ui/profile/openProfilePopup';
     import type { Address } from '@circles-sdk/utils';
-    import { createKeyboardListNavigator } from '$lib/shared/ui/lists/utils/keyboardListNavigator';
+    import { createKeyboardListNavigator } from '@garden-ui/keyboard-list';
 
     interface Props {
         item: Address;

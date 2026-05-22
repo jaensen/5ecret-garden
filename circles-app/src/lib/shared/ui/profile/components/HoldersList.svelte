@@ -5,7 +5,7 @@
     import type { Address } from '@circles-sdk/utils';
     import type { TrustRelation } from '@circles-sdk/data';
     import { writable } from 'svelte/store';
-    import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+    import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
     import { usePopupListFocusRestore } from '$lib/shared/ui/profile/utils/popupListFocusRestore';
 
     interface HolderRow {

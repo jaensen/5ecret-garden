@@ -1,7 +1,7 @@
 <script lang="ts">
   import PageScaffold from '$lib/shared/ui/shell/PageScaffold.svelte';
   import { derived, readable, writable } from 'svelte/store';
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
+  import { ListShell } from '@garden-ui/list-shell';
   import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
   import { browser } from '$app/environment';
   import { getMarketClient } from '$lib/shared/data/market/marketClientProxy';
@@ -15,7 +15,7 @@
 
   import { signInWithSafe } from '$lib/areas/market/auth/signin';
   import { avatarState } from '$lib/shared/state/avatar.svelte';
-  import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+  import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
   import {
     getSalesBySeller,
   } from '$lib/areas/market/orders/ordersQueries';

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { derived, writable, type Readable } from 'svelte/store';
 
-  import ListShell from '$lib/shared/ui/lists/ListShell.svelte';
+  import { ListShell } from '@garden-ui/list-shell';
   import GenericList from '$lib/shared/ui/lists/GenericList.svelte';
   import BalanceRowSkeleton from '$lib/areas/wallet/ui/components/BalanceRowSkeleton.svelte';
   import DemoGenericRow from '../DemoGenericRow.svelte';
-  import { createListInputArrowDownHandler } from '$lib/shared/ui/lists/utils/listInputArrowDown';
+  import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
 
   type DemoItem = {
     id: string;
