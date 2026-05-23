@@ -594,6 +594,35 @@ Before creating a new component, determine whether it is:
 - do not create app-local clones of package primitives
 - if the component exposes a reusable interaction model, consider whether it belongs in a package or wrapper
 
+## 10.1.1 Experimentation guardrail for proven components
+
+When a change is exploratory or may alter a proven component substantially, protect the existing component first.
+
+This applies especially when the change would significantly alter:
+
+- layout
+- interaction shape
+- review/edit ergonomics
+- keyboard behavior
+- focus flow
+- public composition surface
+
+### Guardrails
+
+- prefer creating a parallel experimental component instead of rewriting a known-good component in place
+- use the experimental component to explore the new direction until the behavior and structure are stable
+- replace the old component only once the new component has proven itself and is likely to survive
+- avoid mixing high-risk experiments directly into established shared components unless the user explicitly wants that tradeoff
+
+### Agent instruction
+
+If the requested change sounds like a significant redesign or experiment, ask the user whether they want:
+
+1. a parallel experimental component first, or
+2. direct modification of the proven component
+
+Default to recommending the parallel experimental component approach when the existing component is already trusted and widely reused.
+
 ## 10.2 New shared library/package
 
 Create or extend a package when the problem is truly reusable and interaction-centric.

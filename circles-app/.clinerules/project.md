@@ -29,6 +29,7 @@ In particular:
 - solve app-wide product integration in app wrappers,
 - solve domain-specific composition in feature code,
 - preserve keyboard, focus, popup, list, tab, row, and flow-step contracts.
+- for major UI experiments on proven components, prefer a parallel experimental component first and ask before modifying the trusted component directly.
 
 Do not restate those rules here; the guardrail doc is the source of truth.
 
