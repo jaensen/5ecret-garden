@@ -1,0 +1,1 @@
+Dear agents, never break the rules in `circles-app/docs/ui-architecture-guardrails.md`. Have fun!
