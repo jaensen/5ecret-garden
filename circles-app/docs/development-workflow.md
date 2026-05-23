@@ -235,15 +235,12 @@ When changing UI:
 - Do not duplicate popup, tabs, list, focus, or flow primitives.
 - Use the Send flow as the reference for multi-step popup UX.
 - Keep keyboard behavior and focus behavior intentional.
-- Prefer semantic DaisyUI/Tailwind theme classes over one-off hardcoded colors.
 
 Important references:
 
 - `AGENTS.md`
 - `.clinerules/project.md`
-- `docs/multi-step-flows-send-gold-standard-blueprint.md`
-- `docs/ui-layout-pattern-reference.md`
-- `docs/ui-ux-patterns-audit-for-automated-tests.md`
+- `docs/ui-architecture-guardrails.md`
 
 ---
 
