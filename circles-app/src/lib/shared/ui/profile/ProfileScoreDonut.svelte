@@ -49,7 +49,7 @@
   let overallDangerScore: number | null = $state(null);
   let trustScoreSummary: string = $state('');
   let imgError: boolean = $state(false);
-  let activeRingIndex: number | 'trust' | null = $state(null);
+  let activeRingIndex: number | null = $state(null);
   let ringsAnimatedIn: boolean = $state(false);
   let isDesktop: boolean = $state(false);
 
@@ -148,17 +148,6 @@
   const canvasSize = $derived(Math.max(viewBoxSize, outerRingExtent * 2 + 24));
   const canvasCenter = $derived(canvasSize / 2);
   const activeRing = $derived.by(() => {
-    if (activeRingIndex === 'trust') {
-      return {
-        label: 'Trust score',
-        value: scoreValue ?? 0,
-        displayValue: `${scoreValue ?? 0} / 100`,
-        hint:
-          trustScoreSummary ||
-          'How safe and trustworthy this profile appears based on current signals.',
-      };
-    }
-
     if (typeof activeRingIndex === 'number') {
       return normalizedRings[activeRingIndex] ?? null;
     }
@@ -367,21 +356,7 @@
       </g>
     {/each}
 
-    <g
-      class="origin-center -rotate-90"
-      role="button"
-      tabindex="0"
-      onpointerenter={() => (activeRingIndex = 'trust')}
-      onpointerleave={() => (activeRingIndex = null)}
-      onclick={() =>
-        (activeRingIndex = activeRingIndex === 'trust' ? null : 'trust')}
-      onkeydown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          activeRingIndex = activeRingIndex === 'trust' ? null : 'trust';
-        }
-      }}
-    >
+    <g class="origin-center -rotate-90">
       <title>{trustScoreTitle ?? 'Trust score ring'}</title>
       <circle
         cx={canvasCenter}
@@ -452,25 +427,6 @@
       {/if}
     </div>
   </div>
-
-  {#if activeRingIndex === 'trust'}
-    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2">
-      <div
-        class="badge badge-neutral badge-sm gap-1 px-2 py-2 shadow-sm border border-base-300/70 bg-base-100/95 backdrop-blur-sm"
-      >
-        {#if trustScoreLoading}
-          <span class="loading loading-spinner loading-xs"></span>
-          <span>Score</span>
-        {:else if trustScoreError}
-          <span>Score —</span>
-        {:else if trustScoreSupported === false}
-          <span>Score n/a</span>
-        {:else}
-          <span>Score {formattedScore}</span>
-        {/if}
-      </div>
-    </div>
-  {/if}
 
   {#if activeRing}
     <div

@@ -352,6 +352,7 @@
   let trustedByCount = $state(0);
   let trustHistoryEventCount = $state(0);
   let mintingHistoryEventCount = $state(0);
+  let showTrustDetails = $state(false);
   let bookmarkedProfiles: ProfileBookmark[] = $state([]);
   let showBookmarkEditor: boolean = $state(false);
   let bookmarkNoteInput: string = $state('');
@@ -568,11 +569,7 @@
       aria-label="Trust details"
       title="Trust details"
       onclick={() => {
-        const infoButton = document.querySelector<HTMLElement>(
-          '.hero-overlay-button'
-        );
-        infoButton?.click();
-        infoButton?.focus();
+        showTrustDetails = !showTrustDetails;
       }}
     >
       <img src="/trust.svg" alt="" class="w-5 h-5" aria-hidden="true" />
@@ -715,6 +712,16 @@
       {@render profileActions()}
     </div>
   {/if}
+
+  <div class="flex justify-end -mt-1 mb-2 min-h-[3.25rem]">
+    <div
+      class={`mini-popover-surface overflow-hidden transition-all duration-200 ease-out ${showTrustDetails ? 'max-h-24 opacity-100 translate-y-0 px-3 py-2 border' : 'max-h-0 opacity-0 -translate-y-1 px-3 py-0 border-transparent'}`}
+    >
+      {#if showTrustDetails}
+        <TrustScoreBadge {address} />
+      {/if}
+    </div>
+  </div>
 
   <div class={isPopup ? '-mt-10 sm:-mt-14 mb-2' : ''}>
     <ProfileHeroCard
