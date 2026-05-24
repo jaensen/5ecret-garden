@@ -431,6 +431,39 @@
     background: transparent;
 }
 
+/* Collapsed quick-actions tray: same soft white surface language as popup/popover,
+   but anchored directly under the trigger button with a gentle vertical reveal. */
+.ui-action-tray-surface {
+    border: 1px solid oklch(var(--b3) / 0.7);
+    border-radius: 1.5rem;
+    background: linear-gradient(180deg,
+            oklch(var(--b1) / 0.96),
+            oklch(var(--b1) / 0.92));
+    box-shadow:
+        0 18px 44px -26px rgba(17, 24, 39, 0.28),
+        0 10px 22px -18px rgba(56, 49, 139, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.ui-action-tray-enter {
+    transform-origin: top center;
+    animation: ui-action-tray-enter 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes ui-action-tray-enter {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px) scaleY(0.94);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scaleY(1);
+    }
+}
+
 /* Header/settings dropdown: clearer hierarchy for nested navigation. */
 .header-menu {
     border: 1px solid oklch(var(--b3) / 0.7);

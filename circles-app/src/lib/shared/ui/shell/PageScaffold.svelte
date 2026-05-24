@@ -73,6 +73,10 @@
     hasActions = computeHasChildren(actionsHost);
   }
 
+  function closeCollapsedMenu(): void {
+    collapsedMenuOpen = false;
+  }
+
   function observeActions(node: HTMLElement) {
     const mo = new MutationObserver(updateHasActions);
     mo.observe(node, { childList: true });
@@ -80,6 +84,25 @@
     return {
       destroy() {
         mo.disconnect();
+      },
+    };
+  }
+
+  function closeOnTraySelection(node: HTMLElement) {
+    const onClick = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      const interactive = target.closest('button, a[href], [role="button"]');
+      if (!interactive) return;
+      if (interactive.hasAttribute('disabled')) return;
+      if (interactive.getAttribute('aria-disabled') === 'true') return;
+      queueMicrotask(() => closeCollapsedMenu());
+    };
+
+    node.addEventListener('click', onClick);
+    return {
+      destroy() {
+        node.removeEventListener('click', onClick);
       },
     };
   }
@@ -315,11 +338,13 @@
           {/if}
 
           {#if collapsedMenuOpen && hasActions}
-            <div class="absolute left-0 right-0 mt-2 pointer-events-auto z-50">
+            <div
+              class="absolute left-0 right-0 top-full pt-2 pointer-events-none z-50"
+            >
               <div
-                class="rounded-3xl border border-base-content/10 bg-base-100/78 p-2 shadow-xl backdrop-blur-xl supports-[backdrop-filter]:bg-base-100/74"
+                class="ui-action-tray-surface ui-action-tray-enter pointer-events-auto p-2"
                 style={`--collapsed-h:${collapsedHeight}; --collapsed-h-md:${collapsedHeightMd};`}
-                use:closeOnMenuSelection
+                use:closeOnTraySelection
               >
                 {@render collapsedMenu?.()}
               </div>
