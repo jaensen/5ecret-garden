@@ -267,7 +267,7 @@
             <!-- Entire bar is clickable when actions exist -->
             <button
               type="button"
-              class={`w-full rounded-full border border-base-content/10 bg-base-100/72 pl-3 md:pl-4 ${collapsedInlineActions ? 'pr-28 md:pr-32' : 'pr-14 md:pr-16'} ${collapsedHeightClass}
+              class={`w-full rounded-full border border-base-content/10 bg-base-100/72 pl-3 md:pl-4 ${collapsedInlineActions ? 'pr-32 md:pr-36' : 'pr-14 md:pr-16'} ${collapsedHeightClass}
                                 flex items-center justify-between gap-3 pointer-events-auto cursor-pointer shadow-sm backdrop-blur-[10px] supports-[backdrop-filter]:bg-base-100/68
                                 transition-all duration-200 ease-out hover:border-base-content/14 hover:bg-base-100/78 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-base-100`}
               aria-expanded={collapsedMenuOpen}
@@ -324,7 +324,7 @@
 
           {#if collapsedInlineActions}
             <div
-              class="absolute right-[4.6rem] md:right-[5.2rem] top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-auto z-10"
+              class="absolute right-[4.9rem] md:right-[5.7rem] top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-auto z-10"
             >
               {@render collapsedInlineActions()}
             </div>
