@@ -322,19 +322,11 @@
             </div>
           {/if}
 
-          {#if collapsedInlineActions}
-            <div
-              class="absolute right-[4.9rem] md:right-[5.7rem] top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-auto z-10"
-            >
-              {@render collapsedInlineActions()}
-            </div>
-          {/if}
-
           <!-- NEW: avatar inside collapsed header bar (pinned top-right) -->
           {#if hasAvatar}
             <button
               type="button"
-              class="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 rounded-full pointer-events-auto"
+              class="absolute right-[3rem] md:right-[3.75rem] top-1/2 -translate-y-1/2 rounded-full pointer-events-auto z-10"
               onclick={openProfile}
               aria-label="Open profile"
               title="Open profile"
@@ -347,6 +339,14 @@
                 decoding="async"
               />
             </button>
+          {/if}
+
+          {#if collapsedInlineActions}
+            <div
+              class="absolute right-[5.5rem] md:right-[6.8rem] top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-auto z-10"
+            >
+              {@render collapsedInlineActions()}
+            </div>
           {/if}
 
           {#if collapsedMenuOpen && hasActions}

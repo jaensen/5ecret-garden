@@ -471,7 +471,8 @@
 }
 
 .collapsed-header-icon-button.btn-ghost {
-    background: rgb(255 255 255 / 0.94);
+    background: transparent;
+    box-shadow: none;
 }
 
 .collapsed-header-icon-button.btn-primary {
@@ -513,6 +514,15 @@
     background: transparent;
     border: 0;
     box-shadow: none;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.collapsed-header-context-button:hover,
+.collapsed-header-context-button:focus-visible {
+    background: color-mix(in srgb, var(--brand-blue) 8%, transparent);
+    color: var(--brand-blue);
 }
 
 @media (min-width: 768px) {
