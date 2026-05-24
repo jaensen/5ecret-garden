@@ -465,6 +465,13 @@
     border-radius: 999px;
     border: 1px solid oklch(var(--b3) / 0.8);
     background: rgb(255 255 255 / 0.94);
+    width: 2rem;
+    min-width: 2rem;
+    max-width: 2rem;
+    height: 2rem;
+    min-height: 2rem;
+    max-height: 2rem;
+    padding: 0;
     box-shadow:
         0 6px 18px -12px rgba(17, 24, 39, 0.2),
         0 0 0 1px rgba(255, 255, 255, 0.34) inset;
@@ -528,6 +535,15 @@
 }
 
 @media (min-width: 768px) {
+    .collapsed-header-icon-button {
+        width: 2.25rem;
+        min-width: 2.25rem;
+        max-width: 2.25rem;
+        height: 2.25rem;
+        min-height: 2.25rem;
+        max-height: 2.25rem;
+    }
+
     .collapsed-header-context-button {
         right: 1rem;
         width: 2.25rem;
