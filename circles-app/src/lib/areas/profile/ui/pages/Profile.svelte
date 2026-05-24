@@ -571,7 +571,7 @@
         infoButton?.focus();
       }}
     >
-      <img src="/trust.svg" alt="Trust details" class="w-5 h-5" />
+      <img src="/question-mark.svg" alt="Trust details" class="w-5 h-5" />
       Trust details
     </button>
 
@@ -720,6 +720,16 @@
       avatarInfo={otherAvatar}
       {relationText}
       {relationOverlayUrl}
+      compactActionLabel="Trust details"
+      compactActionIconUrl="/question-mark.svg"
+      compactActionTone="default"
+      onCompactAction={() => {
+        const infoButton = document.querySelector<HTMLElement>(
+          '.hero-overlay-button'
+        );
+        infoButton?.click();
+        infoButton?.focus();
+      }}
       {hasTrustRow}
       {relationIsPositive}
       {isBookmarked}

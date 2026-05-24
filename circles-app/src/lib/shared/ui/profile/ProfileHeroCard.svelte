@@ -89,7 +89,7 @@
         <div class="flex justify-center sm:justify-end">
           <button
             type="button"
-            class={`pointer-events-auto inline-flex items-center justify-center overflow-hidden rounded-full border bg-base-100/95 px-3 py-2 shadow-lg backdrop-blur-md motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out hover:px-4 hover:shadow-xl focus-visible:px-4 ${compactActionTone === 'success' ? 'border-success/35 text-success hover:bg-success/10' : 'border-base-300/80 text-base-content/75 hover:border-base-content/20 hover:bg-base-200/80'}`}
+            class={`hero-compact-action pointer-events-auto inline-flex items-center justify-center overflow-hidden rounded-full border bg-base-100/95 px-2.5 py-2 shadow-lg backdrop-blur-md motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out hover:px-4 hover:shadow-xl focus-visible:px-4 ${compactActionTone === 'success' ? 'border-success/35 text-success hover:bg-success/10' : 'border-base-300/80 text-base-content/75 hover:border-base-content/20 hover:bg-base-200/80'}`}
             aria-label={compactActionLabel}
             title={compactActionLabel}
             onclick={onCompactAction}
@@ -337,3 +337,11 @@
     </div>
   </div>
 </div>
+
+<style>
+  .hero-compact-action:not(:hover):not(:focus-visible) {
+    width: 3.25rem;
+    min-width: 3.25rem;
+    max-width: 3.25rem;
+  }
+</style>

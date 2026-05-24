@@ -107,7 +107,7 @@
     if (scoreValue >= 45) return 'text-warning';
     return 'text-error';
   });
-  const ringStrokeWidth = $derived(isDesktop ? 16 : 12);
+  const ringStrokeWidth = $derived(isDesktop ? 16 : 16);
   const ringStep = $derived(ringStrokeWidth + 2);
   const normalizedRings = $derived.by(() =>
     rings.map((ring, index) => {

@@ -375,6 +375,15 @@
         0 0 0 1px rgba(255, 255, 255, 0.35) inset;
 }
 
+.btn-action-outline img,
+.btn-action-outline--warm img {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(35%) saturate(2677%) hue-rotate(226deg) brightness(89%) contrast(97%);
+}
+
+.btn-action-outline--warm img {
+    filter: brightness(0) saturate(100%) invert(48%) sepia(33%) saturate(1400%) hue-rotate(325deg) brightness(96%) contrast(91%);
+}
+
 .btn-action-outline:hover,
 .btn-action-outline:focus-visible {
     border-color: color-mix(in srgb, var(--brand-blue) 82%, white 18%);
