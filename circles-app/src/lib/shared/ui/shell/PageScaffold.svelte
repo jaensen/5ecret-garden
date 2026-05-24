@@ -288,7 +288,7 @@
               <span class="collapsed-header-context-button">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="inline-block h-5 w-5 shrink-0 stroke-current text-base-content/70"
+                  class="inline-block h-5 w-5 shrink-0 stroke-current text-base-content/70 rotate-90"
                   viewBox="0 0 24 24"
                   fill="none"
                 >
