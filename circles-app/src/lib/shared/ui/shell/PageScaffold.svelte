@@ -30,6 +30,7 @@
     meta,
     headerActions,
     collapsedLeft,
+    collapsedInlineActions,
     collapsedMenu,
     collapsedLabel,
     headerActionsCollapsed,
@@ -50,6 +51,7 @@
     meta?: Snippet;
     headerActions?: Snippet;
     collapsedLeft?: Snippet;
+    collapsedInlineActions?: Snippet;
     collapsedMenu?: Snippet;
     collapsedLabel?: Snippet;
     headerActionsCollapsed?: Snippet;
@@ -265,7 +267,7 @@
             <!-- Entire bar is clickable when actions exist -->
             <button
               type="button"
-              class={`w-full rounded-full border border-base-content/10 bg-base-100/72 pl-3 md:pl-4 pr-14 md:pr-16 ${collapsedHeightClass}
+              class={`w-full rounded-full border border-base-content/10 bg-base-100/72 pl-3 md:pl-4 ${collapsedInlineActions ? 'pr-28 md:pr-32' : 'pr-14 md:pr-16'} ${collapsedHeightClass}
                                 flex items-center justify-between gap-3 pointer-events-auto cursor-pointer shadow-sm backdrop-blur-[10px] supports-[backdrop-filter]:bg-base-100/68
                                 transition-all duration-200 ease-out hover:border-base-content/14 hover:bg-base-100/78 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-base-100`}
               aria-expanded={collapsedMenuOpen}
@@ -283,19 +285,21 @@
                   </span>
                 {/if}
               </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class={`inline-block h-5 w-5 shrink-0 stroke-current transition-transform duration-200 ease-out ${collapsedMenuOpen ? 'rotate-90 text-primary' : 'text-base-content/70'}`}
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 5h.01M12 12h.01M12 19h.01M13 5a1 1 0 11-2 0 1 1 0 012 0zm0 7a1 1 0 11-2 0 1 1 0 012 0zm0 7a1 1 0 11-2 0 1 1 0 012 0z"
-                />
-              </svg>
+              <span class="collapsed-header-context-button">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="inline-block h-5 w-5 shrink-0 stroke-current text-base-content/70"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 5h.01M12 12h.01M12 19h.01M13 5a1 1 0 11-2 0 1 1 0 012 0zm0 7a1 1 0 11-2 0 1 1 0 012 0zm0 7a1 1 0 11-2 0 1 1 0 012 0z"
+                  />
+                </svg>
+              </span>
             </button>
           {:else}
             <!-- Non-interactive bar when there are no actions -->
@@ -315,6 +319,14 @@
                   </span>
                 {/if}
               </div>
+            </div>
+          {/if}
+
+          {#if collapsedInlineActions}
+            <div
+              class="absolute right-12 md:right-14 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-auto z-10"
+            >
+              {@render collapsedInlineActions()}
             </div>
           {/if}
 

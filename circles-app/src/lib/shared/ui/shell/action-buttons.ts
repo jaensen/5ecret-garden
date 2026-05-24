@@ -8,3 +8,10 @@ export interface ActionButton {
   variant?: ButtonVariant;
   disabled?: boolean;
 }
+
+export function getLeadingActions(
+  actions: ActionButton[] | undefined,
+  maxItems = 2
+): ActionButton[] {
+  return (actions ?? []).filter(Boolean).slice(0, maxItems);
+}

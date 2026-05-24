@@ -1,1 +1,5 @@
-export type { ActionButton as Action, ButtonVariant } from '$lib/shared/ui/shell/action-buttons';
+export {
+  type ActionButton as Action,
+  type ButtonVariant,
+  getLeadingActions,
+} from '$lib/shared/ui/shell/action-buttons';

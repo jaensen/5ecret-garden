@@ -6,12 +6,17 @@
   interface Props {
     actions?: ActionButton[];
     compactAfterMs?: number | false;
+    iconOnly?: boolean;
   }
 
   // Default to empty array and filter out invalid entries to avoid runtime errors.
   // Compacting is opt-in so page-level action bars do not unexpectedly collapse
   // into icon pills like the bottom nav.
-  let { actions = [] as any[], compactAfterMs = false }: Props = $props();
+  let {
+    actions = [] as any[],
+    compactAfterMs = false,
+    iconOnly = false,
+  }: Props = $props();
 
   const LABEL_HIDE_DELAY_MS = 2200;
 
@@ -81,24 +86,26 @@
 
 {#each sanitizedActions as a, i (actionKey(a, i))}
   {@const hasIcon = !!a.iconNode}
-  {@const isCompact = compactActions && hasIcon}
+  {@const isCompact = !iconOnly && compactActions && hasIcon}
   {@const isActive = activeActionId === actionKey(a, i)}
   {@const variantClass = getVariantClass(a, i)}
   <button
     type="button"
-    class={`btn btn-sm overflow-hidden rounded-full motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${variantClass} ${isCompact ? 'w-11 h-11 min-h-11 px-0 justify-center gap-0' : 'w-auto min-h-11 px-4 gap-2'} ${isActive && isCompact ? 'ring-2 ring-primary/30 ring-offset-1 ring-offset-base-100' : ''}`}
+    class={`btn btn-sm overflow-hidden rounded-full motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${variantClass} ${iconOnly ? 'collapsed-header-icon-button w-8 h-8 min-h-8 min-w-8 md:w-9 md:h-9 md:min-h-9 md:min-w-9 px-0 py-0 justify-center gap-0 aspect-square' : isCompact ? 'w-11 h-11 min-h-11 px-0 justify-center gap-0' : 'w-auto min-h-11 px-4 gap-2'} ${isActive && (isCompact || iconOnly) ? 'ring-2 ring-primary/30 ring-offset-1 ring-offset-base-100' : ''}`}
     onclick={() => handleActionClick(a, i)}
     aria-label={a.label}
     disabled={!!a?.disabled}
     aria-disabled={!!a?.disabled}
-    title={isCompact ? a.label : undefined}
+    title={isCompact || iconOnly ? a.label : undefined}
   >
     {#if a.iconNode}
       <Lucide icon={a.iconNode} size={16} class="shrink-0" />
     {/if}
-    <span
-      class={`whitespace-nowrap overflow-hidden motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${isCompact ? 'max-w-0 opacity-0 scale-x-95' : 'max-w-40 opacity-100 scale-x-100'}`}
-      aria-hidden={isCompact ? 'true' : undefined}>{a.label}</span
-    >
+    {#if !iconOnly}
+      <span
+        class={`whitespace-nowrap overflow-hidden motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${isCompact ? 'max-w-0 opacity-0 scale-x-95' : 'max-w-40 opacity-100 scale-x-100'}`}
+        aria-hidden={isCompact ? 'true' : undefined}>{a.label}</span
+      >
+    {/if}
   </button>
 {/each}

@@ -51,7 +51,7 @@
 <style>
   .gui-list-toolbar { display:flex; align-items:center; gap:.5rem; margin-bottom:.75rem; }
   .gui-list-toolbar__input {
-    width:100%; padding:.625rem .75rem; border:1px solid #d4d4d8; border-radius:.75rem; background:#fff;
+    width:100%; padding:.625rem .75rem; border:1px solid #d4d4d8; border-radius:1.5rem; background:#fff;
   }
   .gui-list-toolbar__input:focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
 </style>
