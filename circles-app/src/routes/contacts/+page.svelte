@@ -21,7 +21,11 @@
   import { openAddTrustFlow } from '$lib/areas/trust/flows/addTrust/openAddTrustFlow';
   import ActionButtonBar from '$lib/shared/ui/shell/ActionButtonBar.svelte';
   import ActionButtonDropDown from '$lib/shared/ui/shell/ActionButtonDropDown.svelte';
-  import { getLeadingActions, type Action } from '$lib/shared/ui/shell/actions';
+  import {
+    getLeadingActions,
+    getTrailingActions,
+    type Action,
+  } from '$lib/shared/ui/shell/actions';
   import { goto } from '$app/navigation';
   import { createPaginatedList } from '$lib/shared/state/paginatedList';
   import { createListInputArrowDownHandler } from '@garden-ui/keyboard-list';
@@ -298,7 +302,7 @@
   {/snippet}
 
   {#snippet collapsedMenu()}
-    <ActionButtonDropDown {actions} />
+    <ActionButtonDropDown actions={getTrailingActions(actions, 2)} />
   {/snippet}
 
   {#if $showFilters}

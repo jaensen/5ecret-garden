@@ -472,6 +472,7 @@
 
 .collapsed-header-icon-button.btn-ghost {
     background: transparent;
+    border-color: transparent;
     box-shadow: none;
 }
 
@@ -486,7 +487,8 @@
 
 .collapsed-header-icon-button.btn-action-outline {
     border-color: var(--brand-blue);
-    background: rgb(255 255 255 / 0.96);
+    background: transparent;
+    box-shadow: none;
     color: var(--brand-blue);
 }
 
@@ -502,7 +504,7 @@
 
 .collapsed-header-context-button {
     position: absolute;
-    right: 3rem;
+    right: .75rem;
     top: 50%;
     display: inline-flex;
     align-items: center;
@@ -527,7 +529,7 @@
 
 @media (min-width: 768px) {
     .collapsed-header-context-button {
-        right: 3.5rem;
+        right: 1rem;
         width: 2.25rem;
         height: 2.25rem;
     }
