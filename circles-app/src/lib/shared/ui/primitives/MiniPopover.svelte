@@ -31,11 +31,11 @@
     onClose = undefined,
   }: Props = $props();
 
-  let rootEl: HTMLDivElement | null = null;
-  let triggerEl: HTMLButtonElement | null = null;
-  let desktopPanelEl: HTMLDivElement | null = null;
-  let mobilePanelEl: HTMLDivElement | null = null;
-  let isMobile = false;
+  let rootEl: HTMLDivElement | null = $state(null);
+  let triggerEl: HTMLButtonElement | null = $state(null);
+  let desktopPanelEl: HTMLDivElement | null = $state(null);
+  let mobilePanelEl: HTMLDivElement | null = $state(null);
+  let isMobile = $state(false);
 
   const ALIGN_CLASS: Record<NonNullable<Props['align']>, string> = {
     start: 'left-0',
@@ -136,7 +136,7 @@
   {#if open}
     <button
       type="button"
-      class={`mini-popover-backdrop ${isMobile ? 'mini-popover-backdrop--mobile' : 'mini-popover-backdrop--desktop'}`}
+      class={`mini-popover-backdrop ui-blur-backdrop ${isMobile ? 'mini-popover-backdrop--mobile' : 'mini-popover-backdrop--desktop'}`}
       aria-label={`Close ${mobileTitle || title || 'popover'}`}
       onclick={() => closeOnBackdrop && close()}
     ></button>

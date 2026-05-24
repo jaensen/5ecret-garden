@@ -362,7 +362,7 @@
   {#if collapsedMenuOpen && hasActions}
     <button
       type="button"
-      class="fixed inset-0 z-40 pointer-events-auto bg-base-content/18 backdrop-blur-[10px] transition-[background-color,backdrop-filter,opacity] duration-300 ease-out supports-[backdrop-filter]:bg-base-content/12"
+      class="ui-blur-backdrop fixed inset-0 z-40 pointer-events-auto supports-[backdrop-filter]:bg-base-content/12"
       aria-label="Close menu"
       style="touch-action: none;"
       onpointerdown={(e) => {

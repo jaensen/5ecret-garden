@@ -97,7 +97,11 @@
   }
 
   function hideRevealedLabels(): void {
-    labelsRevealed = false;
+    clearRevealTimer();
+    revealTimer = setTimeout(() => {
+      labelsRevealed = false;
+      revealTimer = null;
+    }, 260);
   }
 
   function revealLabelsTemporarily(): void {
@@ -146,18 +150,18 @@
 </script>
 
 <nav
-  class={`fixed inset-x-0 z-20 transition-all duration-200
+  class={`fixed inset-x-0 z-20 transition-all duration-280 motion-safe:ease-out
             ${shouldHide ? 'translate-y-8 opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
   style="bottom: calc(env(safe-area-inset-bottom) + 16px);"
   aria-hidden={shouldHide ? 'true' : 'false'}
 >
   <div
-    class={`mx-auto ${maxWidthClass} pointer-events-none flex justify-center`}
+    class={`mx-auto ${maxWidthClass} pointer-events-none flex justify-center px-4`}
   >
     <div class="pointer-events-auto max-w-full">
       <!-- Use DaisyUI's look, but kill its full-width/fixed behavior -->
       <div
-        class={`btm-nav btm-nav--float bg-base-100/90 backdrop-blur-md border shadow-lg rounded-full px-2 py-1 max-w-full overflow-hidden justify-center motion-safe:transition-[width] motion-safe:duration-[450ms] motion-safe:ease-out motion-reduce:transition-none ${isCompact ? 'w-[min(calc(100vw-2rem),13rem)] gap-1' : 'w-[min(calc(100vw-2rem),28rem)] gap-0'}`}
+        class={`btm-nav btm-nav--float bg-base-100/90 backdrop-blur-md border shadow-lg rounded-full px-2.5 py-1.5 max-w-full overflow-hidden justify-center motion-safe:transition-[width,padding,gap,transform] motion-safe:duration-[560ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isCompact ? 'w-fit gap-1.5' : 'w-fit gap-1'}`}
         onpointerenter={revealLabelsTemporarily}
         onpointerleave={hideRevealedLabels}
         onfocusin={revealLabelsTemporarily}
@@ -175,8 +179,8 @@
             ? 'bottom-nav-active text-white'
             : 'text-base-content/90 hover:text-base-content hover:bg-base-200'}
           {@const compactClasses = isCompact
-            ? 'h-11 min-h-11 min-w-11 max-w-11 px-0 py-0 justify-center gap-0 aspect-square'
-            : 'h-auto min-w-11 max-w-56 px-4 py-2 gap-3'}
+            ? 'h-11 min-h-11 w-11 min-w-11 px-0 py-0 justify-center gap-0 aspect-square'
+            : 'h-auto min-w-11 max-w-56 px-3.5 py-2 gap-2.5'}
 
           <a
             href={item.link}
@@ -192,11 +196,11 @@
               class="shrink-0 stroke-current pt-2"
             />
             <span
-              class={`leading-none -mt-2 whitespace-nowrap overflow-hidden motion-safe:transition-[max-width] motion-safe:ease-out motion-reduce:transition-none ${isCompact ? 'max-w-0 motion-safe:duration-300 motion-safe:delay-100' : 'max-w-40 motion-safe:duration-[360ms] motion-safe:delay-0'}`}
+              class={`leading-none -mt-2 whitespace-nowrap overflow-hidden motion-safe:transition-[max-width] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isCompact ? 'max-w-0 motion-safe:duration-[420ms] motion-safe:delay-0' : 'max-w-40 motion-safe:duration-[480ms] motion-safe:delay-0'}`}
               aria-hidden={isCompact ? 'true' : undefined}
             >
               <span
-                class={`inline-block motion-safe:transition-opacity motion-safe:ease-out motion-reduce:transition-none ${isCompact ? 'opacity-0 motion-safe:duration-200 motion-safe:delay-0' : 'opacity-100 motion-safe:duration-200 motion-safe:delay-150'}`}
+                class={`inline-block motion-safe:transition-[opacity,transform] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isCompact ? 'translate-x-1 opacity-0 motion-safe:duration-[240ms] motion-safe:delay-0' : 'translate-x-0 opacity-100 motion-safe:duration-[300ms] motion-safe:delay-[150ms]'}`}
                 >{item.name}</span
               >
             </span>

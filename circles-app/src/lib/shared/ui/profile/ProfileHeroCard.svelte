@@ -17,6 +17,10 @@
     avatarInfo: AvatarRow | undefined;
     relationText: string;
     relationOverlayUrl?: string | undefined;
+    compactActionLabel?: string;
+    compactActionIconUrl?: string;
+    compactActionTone?: 'success' | 'default';
+    onCompactAction?: () => void;
     hasTrustRow: boolean;
     relationIsPositive: boolean;
     isBookmarked: boolean;
@@ -46,6 +50,10 @@
     avatarInfo,
     relationText,
     relationOverlayUrl = undefined,
+    compactActionLabel = '',
+    compactActionIconUrl = '/trust.svg',
+    compactActionTone = 'default',
+    onCompactAction,
     hasTrustRow,
     relationIsPositive,
     isBookmarked,
@@ -65,15 +73,50 @@
   }: Props = $props();
 
   const typeLabel = $derived(getTypeString(avatarInfo?.type || ''));
+  const hasCompactAction = $derived(
+    !!compactActionLabel.trim() && typeof onCompactAction === 'function'
+  );
 </script>
 
 <div class="w-full sm:w-[92%] lg:w-3/5 mx-auto">
   <div
-    class="rounded-[2rem] border border-base-300/80 bg-gradient-to-b from-base-100 via-base-100 to-base-200/30 px-4 py-6 sm:px-6 shadow-sm"
+    class="relative rounded-[2rem] bg-gradient-to-b from-base-100 via-base-100 to-base-200/30 px-4 pt-2 pb-4 sm:px-6 sm:pt-3 sm:pb-5 shadow-sm"
   >
+    {#if hasCompactAction}
+      <div
+        class="pointer-events-none absolute left-1/2 top-0 z-20 w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 sm:w-auto"
+      >
+        <div class="flex justify-center sm:justify-end">
+          <button
+            type="button"
+            class={`pointer-events-auto inline-flex items-center justify-center overflow-hidden rounded-full border bg-base-100/95 px-3 py-2 shadow-lg backdrop-blur-md motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out hover:px-4 hover:shadow-xl focus-visible:px-4 ${compactActionTone === 'success' ? 'border-success/35 text-success hover:bg-success/10' : 'border-base-300/80 text-base-content/75 hover:border-base-content/20 hover:bg-base-200/80'}`}
+            aria-label={compactActionLabel}
+            title={compactActionLabel}
+            onclick={onCompactAction}
+          >
+            <span
+              class={`inline-flex h-9 w-9 items-center justify-center rounded-full border ${compactActionTone === 'success' ? 'border-success/25 bg-success/10' : 'border-base-300/80 bg-base-100'}`}
+            >
+              <img
+                src={compactActionIconUrl}
+                alt=""
+                class="h-4 w-4"
+                aria-hidden="true"
+              />
+            </span>
+            <span
+              class="max-w-0 overflow-hidden whitespace-nowrap pl-0 text-sm font-semibold motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out hover:max-w-40 hover:pl-2 focus-visible:max-w-40 focus-visible:pl-2"
+            >
+              {compactActionLabel}
+            </span>
+          </button>
+        </div>
+      </div>
+    {/if}
+
     <div class="flex flex-col items-center text-center gap-4">
       <div
-        class="relative flex min-h-[20rem] items-center justify-center pt-8 pb-10 sm:min-h-0 sm:pt-2 sm:pb-4"
+        class="relative flex min-h-[14rem] items-center justify-center pt-3 pb-4 sm:min-h-0 sm:pt-0 sm:pb-0"
       >
         <div
           class="absolute left-1/2 top-1/2 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-2xl sm:h-[12.5rem] sm:w-[12.5rem]"
@@ -88,7 +131,7 @@
         </div>
 
         <div
-          class="absolute right-0 top-6 sm:top-1/2 sm:-right-6 sm:-translate-y-1/2"
+          class="absolute right-1 top-2 sm:right-0 sm:top-1/2 sm:-translate-y-1/2"
         >
           <HelpPopover
             title="Trust & routing"
@@ -294,18 +337,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  :global(.hero-overlay-button) {
-    @apply btn btn-ghost btn-circle min-h-0 h-[22px] w-[22px] min-w-[22px] max-w-[22px] rounded-full border-2 border-base-100 bg-base-100 p-[2px] shadow-sm;
-  }
-
-  :global(.hero-overlay-button svg) {
-    @apply text-base-content/55;
-  }
-
-  :global(.hero-overlay-button:hover svg),
-  :global(.hero-overlay-button:focus-visible svg) {
-    @apply text-base-content/80;
-  }
-</style>

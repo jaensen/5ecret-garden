@@ -347,7 +347,7 @@
 <div class="gui-popup-shell" class:gui-popup-shell--open={$popupState.content !== null}>
   <button type="button" class="gui-popup-backdrop" onclick={() => attemptClose('backdrop')} aria-label="Close popup" tabindex={-1}></button>
   <div bind:this={popupEl} class="gui-popup" role="dialog" aria-modal="true" aria-label={$popupState.content?.title ?? 'Popup'}>
-    <div bind:this={popupInnerEl} class="gui-popup__inner">
+    <div bind:this={popupInnerEl} class="gui-popup__inner ui-scrollbar-thin">
       {#if !$popupState.content?.hideHeader}
         <div class="gui-popup__header">
           <button data-popup-close-control type="button" class="gui-popup__close" onclick={onClose} aria-label={$popupState.stack.length > 0 ? 'Back' : 'Close'}>
@@ -373,7 +373,19 @@
 <style>
   .gui-popup-shell { position:fixed; inset:0; z-index:100; pointer-events:none; }
   .gui-popup-shell--open { pointer-events:auto; }
-  .gui-popup-backdrop { position:absolute; inset:0; border:0; background:rgba(0,0,0,.35); opacity:0; transition:opacity .2s ease; }
+  .gui-popup-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(15, 23, 42, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    transition:
+      opacity .24s ease,
+      background-color .24s ease,
+      backdrop-filter .24s ease;
+  }
   .gui-popup-shell--open .gui-popup-backdrop { opacity:1; }
   .gui-popup {
     position: absolute;
@@ -392,7 +404,7 @@
   .gui-popup-shell--open .gui-popup { transform:translateY(0); }
   .gui-popup__inner {
     width: min(100% - 1rem, 56rem);
-    max-height: min(80vh, calc(100vh - env(safe-area-inset-top) - 0.75rem));
+    max-height: min(78vh, calc(100vh - env(safe-area-inset-top) - 0.75rem));
     margin: 0 auto;
     padding: 1rem;
     display: flex;

@@ -18,6 +18,7 @@
   let compactActions = $state(false);
   let activeActionId = $state<string | null>(null);
   let compactTimer: ReturnType<typeof setTimeout> | null = null;
+  let sanitizedActions: ActionButton[] = $derived(actions.filter(Boolean));
 
   function actionKey(action: ActionButton, index: number): string {
     return action.id ?? action.label ?? String(index);
@@ -52,19 +53,37 @@
     void action.onClick();
   }
 
+  function getVariantClass(action: ActionButton, index: number): string {
+    if (action.variant === 'primary') {
+      return 'btn-primary';
+    }
+
+    if (action.variant === 'muted') {
+      return 'btn-muted-outline';
+    }
+
+    const nextVariant = sanitizedActions[index + 1]?.variant;
+    const previousVariant = sanitizedActions[index - 1]?.variant;
+
+    if (previousVariant === 'primary') {
+      return 'btn-ghost btn-action-outline btn-action-outline--warm';
+    }
+
+    if (nextVariant === 'primary') {
+      return 'btn-ghost btn-action-outline';
+    }
+
+    return 'btn-ghost';
+  }
+
   onDestroy(clearCompactTimer);
 </script>
 
-{#each actions.filter(Boolean) as a, i (actionKey(a, i))}
+{#each sanitizedActions as a, i (actionKey(a, i))}
   {@const hasIcon = !!a.iconNode}
   {@const isCompact = compactActions && hasIcon}
   {@const isActive = activeActionId === actionKey(a, i)}
-  {@const variantClass =
-    a.variant === 'primary'
-      ? 'btn-primary'
-      : a.variant === 'muted'
-        ? 'btn-muted-outline'
-        : 'btn-ghost'}
+  {@const variantClass = getVariantClass(a, i)}
   <button
     type="button"
     class={`btn btn-sm overflow-hidden rounded-full motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${variantClass} ${isCompact ? 'w-11 h-11 min-h-11 px-0 justify-center gap-0' : 'w-auto min-h-11 px-4 gap-2'} ${isActive && isCompact ? 'ring-2 ring-primary/30 ring-offset-1 ring-offset-base-100' : ''}`}

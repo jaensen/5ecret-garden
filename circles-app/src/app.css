@@ -139,6 +139,19 @@
     @apply bg-base-200 border-base-300;
 }
 
+.hero-overlay-button {
+    @apply btn btn-ghost btn-circle min-h-0 h-[22px] w-[22px] min-w-[22px] max-w-[22px] rounded-full border-2 border-base-100 bg-base-100 p-[2px] shadow-sm;
+}
+
+.hero-overlay-button svg {
+    @apply text-base-content/55;
+}
+
+.hero-overlay-button:hover svg,
+.hero-overlay-button:focus-visible svg {
+    @apply text-base-content/80;
+}
+
 /* Brand button treatment based on /logo.svg colors (#38318B → #DF6552). */
 :root {
     --brand-blue: #38318b;
@@ -219,6 +232,16 @@
     background: transparent;
 }
 
+.ui-blur-backdrop {
+    background: rgba(15, 23, 42, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition:
+        background-color 0.28s ease,
+        backdrop-filter 0.28s ease,
+        opacity 0.28s ease;
+}
+
 .mini-popover-backdrop--desktop {
     z-index: 59;
 }
@@ -293,11 +316,9 @@
 
 /* Muted outline action: same typographic weight as primary, but transparent with a brand-tinted border. */
 .btn-muted-outline {
-    border: 1px solid transparent;
+    border: 1px solid var(--brand-blue);
     border-radius: 999px;
-    background:
-        linear-gradient(#ffffff, #ffffff) padding-box,
-        var(--brand-gradient) border-box;
+    background: rgb(255 255 255 / 0.94);
     color: var(--brand-blue);
     font-weight: 700;
     letter-spacing: 0.01em;
@@ -319,9 +340,8 @@
 .btn-muted-outline:hover,
 .btn-muted-outline:focus-visible {
     color: var(--brand-blue);
-    background:
-        linear-gradient(#ffffff, #ffffff) padding-box,
-        var(--brand-gradient-hover) border-box;
+    border-color: color-mix(in srgb, var(--brand-blue) 82%, white 18%);
+    background: color-mix(in srgb, white 90%, var(--brand-blue) 10%);
     box-shadow:
         0 10px 26px -12px rgba(56, 49, 139, 0.34),
         0 4px 14px -12px rgba(223, 101, 82, 0.26),
@@ -331,6 +351,84 @@
 
 .btn-muted-outline:active {
     transform: translateY(1px) scale(0.99);
+}
+
+.btn-muted-outline--warm {
+    border-color: var(--brand-red);
+}
+
+.btn-muted-outline--warm:hover,
+.btn-muted-outline--warm:focus-visible {
+    border-color: color-mix(in srgb, var(--brand-red) 84%, white 16%);
+    background: color-mix(in srgb, white 90%, var(--brand-red) 10%);
+}
+
+/* Local explicit outline buttons for popup/header action rows.
+   Use these instead of overriding all `btn-ghost` semantics globally. */
+.btn-action-outline {
+    border: 1px solid var(--brand-blue);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.94);
+    color: var(--brand-blue);
+    box-shadow:
+        0 6px 20px -12px rgba(56, 49, 139, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.35) inset;
+}
+
+.btn-action-outline:hover,
+.btn-action-outline:focus-visible {
+    border-color: color-mix(in srgb, var(--brand-blue) 82%, white 18%);
+    background: color-mix(in srgb, white 90%, var(--brand-blue) 10%);
+    color: var(--brand-blue);
+}
+
+.btn-action-outline--warm {
+    border-color: var(--brand-red);
+    color: var(--brand-red);
+}
+
+.btn-action-outline--warm:hover,
+.btn-action-outline--warm:focus-visible {
+    border-color: color-mix(in srgb, var(--brand-red) 84%, white 16%);
+    background: color-mix(in srgb, white 90%, var(--brand-red) 10%);
+    color: var(--brand-red);
+}
+
+/* Shared minimal scrollbar language for popup/list surfaces.
+   Subtle, modern, always unobtrusive, and only visible when needed. */
+.ui-scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--brand-blue) 28%, transparent) transparent;
+}
+
+.ui-scrollbar-thin:hover {
+    scrollbar-color: color-mix(in srgb, var(--brand-blue) 42%, transparent) transparent;
+}
+
+.ui-scrollbar-thin::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.ui-scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ui-scrollbar-thin::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, oklch(var(--bc)) 18%, transparent);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+}
+
+.ui-scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--brand-blue) 30%, oklch(var(--bc)) 14%);
+    border: 3px solid transparent;
+    background-clip: padding-box;
+}
+
+.ui-scrollbar-thin::-webkit-scrollbar-corner {
+    background: transparent;
 }
 
 /* Header/settings dropdown: clearer hierarchy for nested navigation. */

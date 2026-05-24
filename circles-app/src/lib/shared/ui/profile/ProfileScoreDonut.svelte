@@ -21,6 +21,7 @@
     rings?: Array<{
       label: string;
       value: number;
+      rawValue?: number;
       tone?: string;
       hint?: string;
     }>;
@@ -106,8 +107,8 @@
     if (scoreValue >= 45) return 'text-warning';
     return 'text-error';
   });
-  const ringStrokeWidth = $derived(isDesktop ? 15 : 10);
-  const ringStep = $derived(ringStrokeWidth + 1);
+  const ringStrokeWidth = $derived(isDesktop ? 16 : 12);
+  const ringStep = $derived(ringStrokeWidth + 2);
   const normalizedRings = $derived.by(() =>
     rings.map((ring, index) => {
       const value = Math.max(0, Math.min(100, Number(ring.value) || 0));
@@ -134,7 +135,8 @@
         animatedOffset: ringsAnimatedIn ? offset : initialOffset,
         toneClass,
         directionClass,
-        displayValue: `${value} / 100`,
+        displayValue:
+          ring.rawValue != null ? String(ring.rawValue) : `${value} / 100`,
       };
     })
   );
@@ -314,11 +316,20 @@
     {#each normalizedRings as ring}
       <g
         class={`origin-center ${ring.directionClass}`}
+        role="button"
+        tabindex="0"
         onpointerenter={() => (activeRingIndex = ring.index)}
         onpointerleave={() => (activeRingIndex = null)}
         onclick={() =>
           (activeRingIndex =
             activeRingIndex === ring.index ? null : ring.index)}
+        onkeydown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            activeRingIndex =
+              activeRingIndex === ring.index ? null : ring.index;
+          }
+        }}
       >
         <title
           >{ring.hint
@@ -358,10 +369,18 @@
 
     <g
       class="origin-center -rotate-90"
+      role="button"
+      tabindex="0"
       onpointerenter={() => (activeRingIndex = 'trust')}
       onpointerleave={() => (activeRingIndex = null)}
       onclick={() =>
         (activeRingIndex = activeRingIndex === 'trust' ? null : 'trust')}
+      onkeydown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          activeRingIndex = activeRingIndex === 'trust' ? null : 'trust';
+        }
+      }}
     >
       <title>{trustScoreTitle ?? 'Trust score ring'}</title>
       <circle
@@ -434,22 +453,24 @@
     </div>
   </div>
 
-  <div class="absolute -bottom-2 left-1/2 -translate-x-1/2">
-    <div
-      class="badge badge-neutral badge-sm gap-1 px-2 py-2 shadow-sm border border-base-300/70 bg-base-100/95 backdrop-blur-sm"
-    >
-      {#if trustScoreLoading}
-        <span class="loading loading-spinner loading-xs"></span>
-        <span>Score</span>
-      {:else if trustScoreError}
-        <span>Score —</span>
-      {:else if trustScoreSupported === false}
-        <span>Score n/a</span>
-      {:else}
-        <span>Score {formattedScore}</span>
-      {/if}
+  {#if activeRingIndex === 'trust'}
+    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2">
+      <div
+        class="badge badge-neutral badge-sm gap-1 px-2 py-2 shadow-sm border border-base-300/70 bg-base-100/95 backdrop-blur-sm"
+      >
+        {#if trustScoreLoading}
+          <span class="loading loading-spinner loading-xs"></span>
+          <span>Score</span>
+        {:else if trustScoreError}
+          <span>Score —</span>
+        {:else if trustScoreSupported === false}
+          <span>Score n/a</span>
+        {:else}
+          <span>Score {formattedScore}</span>
+        {/if}
+      </div>
     </div>
-  </div>
+  {/if}
 
   {#if activeRing}
     <div
