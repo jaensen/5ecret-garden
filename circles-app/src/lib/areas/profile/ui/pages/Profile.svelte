@@ -431,15 +431,17 @@
 
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node | null;
+      const bookmarkButtonNode = bookmarkButtonEl as HTMLButtonElement | null;
+      const bookmarkPopoverNode = bookmarkPopoverEl as HTMLDivElement | null;
       const insideButton = !!(
-        bookmarkButtonEl &&
+        bookmarkButtonNode &&
         target &&
-        bookmarkButtonEl.contains(target)
+        bookmarkButtonNode.contains(target)
       );
       const insidePopover = !!(
-        bookmarkPopoverEl &&
+        bookmarkPopoverNode &&
         target &&
-        bookmarkPopoverEl.contains(target)
+        bookmarkPopoverNode.contains(target)
       );
       if (!insideButton && !insidePopover) {
         showBookmarkEditor = false;
@@ -561,8 +563,10 @@
 <div class="space-y-6">
   {#snippet profileActions()}
     <button
-      class="btn btn-ghost btn-sm btn-action-outline"
+      class="btn btn-ghost btn-circle btn-sm btn-action-outline btn-touch-square"
       type="button"
+      aria-label="Trust details"
+      title="Trust details"
       onclick={() => {
         const infoButton = document.querySelector<HTMLElement>(
           '.hero-overlay-button'
@@ -571,8 +575,7 @@
         infoButton?.focus();
       }}
     >
-      <img src="/question-mark.svg" alt="Trust details" class="w-5 h-5" />
-      Trust details
+      <img src="/trust.svg" alt="" class="w-5 h-5" aria-hidden="true" />
     </button>
 
     {#if !avatarState.isGroup}
