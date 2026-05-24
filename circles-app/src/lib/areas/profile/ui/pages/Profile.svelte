@@ -720,16 +720,6 @@
       avatarInfo={otherAvatar}
       {relationText}
       {relationOverlayUrl}
-      compactActionLabel="Trust details"
-      compactActionIconUrl="/question-mark.svg"
-      compactActionTone="default"
-      onCompactAction={() => {
-        const infoButton = document.querySelector<HTMLElement>(
-          '.hero-overlay-button'
-        );
-        infoButton?.click();
-        infoButton?.focus();
-      }}
       {hasTrustRow}
       {relationIsPositive}
       {isBookmarked}
