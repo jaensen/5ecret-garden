@@ -470,6 +470,21 @@
         0 0 0 1px rgba(255, 255, 255, 0.34) inset;
 }
 
+.collapsed-header-icon-button.btn-ghost {
+    background: rgb(255 255 255 / 0.94);
+}
+
+.collapsed-header-icon-button.btn-action-outline {
+    border-color: var(--brand-blue);
+    background: rgb(255 255 255 / 0.96);
+    color: var(--brand-blue);
+}
+
+.collapsed-header-icon-button.btn-action-outline--warm {
+    border-color: var(--brand-red);
+    color: var(--brand-red);
+}
+
 .collapsed-header-icon-button.btn-primary {
     border-color: transparent;
     box-shadow:
@@ -484,7 +499,7 @@
 
 .collapsed-header-context-button {
     position: absolute;
-    right: 2.75rem;
+    right: 3rem;
     top: 50%;
     display: inline-flex;
     align-items: center;
@@ -502,7 +517,7 @@
 
 @media (min-width: 768px) {
     .collapsed-header-context-button {
-        right: 3.25rem;
+        right: 3.5rem;
         width: 2.25rem;
         height: 2.25rem;
     }

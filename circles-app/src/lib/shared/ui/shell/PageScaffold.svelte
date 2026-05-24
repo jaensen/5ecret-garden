@@ -324,7 +324,7 @@
 
           {#if collapsedInlineActions}
             <div
-              class="absolute right-12 md:right-14 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-auto z-10"
+              class="absolute right-[4.6rem] md:right-[5.2rem] top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-auto z-10"
             >
               {@render collapsedInlineActions()}
             </div>
