@@ -267,7 +267,7 @@
       {#if !avatarState.isGroup}
         <button
           type="button"
-          class="btn btn-ghost btn-xs p-1"
+          class="btn btn-ghost btn-circle btn-xs btn-touch-square"
           aria-label={$showFilters ? 'Hide filters' : 'Show filters'}
           aria-expanded={$showFilters}
           aria-controls={FILTER_PANEL_ID}
