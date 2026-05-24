@@ -92,13 +92,17 @@
     return lines.length > 0 ? lines.join('\n') : undefined;
   });
 
-  const radius = $derived(Math.max(34, size / 2 - 10));
-  const circumference = $derived(2 * Math.PI * radius);
+  const avatarSize = $derived(Math.round(size * 0.68));
+  const avatarHaloWidth = 4;
+  const ringGap = 2;
+  const trustRingRadius = $derived(
+    avatarSize / 2 + avatarHaloWidth + ringGap + ringStrokeWidth / 2
+  );
+  const circumference = $derived(2 * Math.PI * trustRingRadius);
   const dashOffset = $derived.by(() => {
     if (scoreValue === null) return circumference;
     return circumference * (1 - scoreValue / 100);
   });
-  const avatarSize = $derived(Math.round(size * 0.68));
   const viewBoxSize = $derived(size + 12);
   const center = $derived(viewBoxSize / 2);
   const scoreToneClass = $derived.by(() => {
@@ -112,7 +116,7 @@
   const normalizedRings = $derived.by(() =>
     rings.map((ring, index) => {
       const value = Math.max(0, Math.min(100, Number(ring.value) || 0));
-      const r = radius + ringStep + index * ringStep;
+      const r = trustRingRadius + ringStep + index * ringStep;
       const c = 2 * Math.PI * r;
       const offset = c * (1 - value / 100);
       const initialOffset = c;
@@ -143,7 +147,7 @@
   const outerRingExtent = $derived(
     normalizedRings.length > 0
       ? normalizedRings[normalizedRings.length - 1].radius + 8
-      : radius + 8
+      : trustRingRadius + 8
   );
   const canvasSize = $derived(Math.max(viewBoxSize, outerRingExtent * 2 + 24));
   const canvasCenter = $derived(canvasSize / 2);
@@ -361,7 +365,7 @@
       <circle
         cx={canvasCenter}
         cy={canvasCenter}
-        r={radius}
+        r={trustRingRadius}
         fill="none"
         stroke="oklch(var(--b3) / 0.55)"
         style="stroke-width: var(--ring-stroke-uniform);"
@@ -369,7 +373,7 @@
       <circle
         cx={canvasCenter}
         cy={canvasCenter}
-        r={radius}
+        r={trustRingRadius}
         fill="none"
         stroke="currentColor"
         class={`${scoreToneClass} transition-all ease-out`}
@@ -381,7 +385,7 @@
       <circle
         cx={canvasCenter}
         cy={canvasCenter}
-        r={radius}
+        r={trustRingRadius}
         fill="none"
         stroke="transparent"
         style="stroke-width: calc(var(--ring-stroke-uniform) + 8px); cursor: pointer;"
