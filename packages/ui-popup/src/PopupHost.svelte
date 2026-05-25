@@ -347,7 +347,7 @@
 <div class="gui-popup-shell" class:gui-popup-shell--open={$popupState.content !== null}>
   <button type="button" class="gui-popup-backdrop" onclick={() => attemptClose('backdrop')} aria-label="Close popup" tabindex={-1}></button>
   <div bind:this={popupEl} class="gui-popup" role="dialog" aria-modal="true" aria-label={$popupState.content?.title ?? 'Popup'}>
-    <div bind:this={popupInnerEl} class="gui-popup__inner ui-scrollbar-thin">
+    <div bind:this={popupInnerEl} class="gui-popup__inner">
       {#if !$popupState.content?.hideHeader}
         <div class="gui-popup__header">
           <button data-popup-close-control type="button" class="gui-popup__close" onclick={onClose} aria-label={$popupState.stack.length > 0 ? 'Back' : 'Close'}>
@@ -358,7 +358,7 @@
           {/if}
         </div>
       {/if}
-      <div class="gui-popup__content">
+      <div class="gui-popup__content ui-scrollbar-thin">
         {#each pagesWithKeys() as entry, i (entry.key)}
           {@const Component = entry.page.component}
           <div class={`gui-popup-page ${i === top ? 'is-top' : 'is-hidden'}`} data-popup-page-key={entry.key} aria-hidden={i === top ? 'false' : 'true'} inert={i !== top}>
@@ -406,10 +406,9 @@
     width: min(100% - 1rem, 56rem);
     max-height: min(78vh, calc(100vh - env(safe-area-inset-top) - 0.75rem));
     margin: 0 auto;
-    padding: 1rem;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    overflow: hidden;
     overflow-x: clip;
     overscroll-behavior-y: contain;
     overscroll-behavior-x: auto;
@@ -423,8 +422,33 @@
     box-shadow: 0 -8px 24px oklch(var(--bc) / 0.08);
     pointer-events: auto;
   }
-  .gui-popup__header { display:flex; align-items:center; gap:.75rem; margin-bottom:1rem; }
-  .gui-popup__close { border:1px solid #d4d4d8; background:#fff; border-radius:999px; width:2rem; height:2rem; cursor:pointer; }
+  .gui-popup__header {
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    flex: 0 0 auto;
+    padding: 1rem 1rem 0 1rem;
+    background: oklch(var(--b1));
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .gui-popup__content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: clip;
+    padding: 0 1rem 1rem 1rem;
+  }
+  .gui-popup__close {
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+  }
   .gui-popup__close:focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
   .gui-popup-page.is-hidden { display:none; }
+  .gui-popup-page.is-top { min-width: 0; }
 </style>

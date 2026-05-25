@@ -10,6 +10,7 @@
 
   interface Props {
     address: Address | undefined;
+    class?: string;
     imageUrl?: string | undefined;
     name?: string | undefined;
     showBookmarkBadge?: boolean;
@@ -29,6 +30,7 @@
 
   let {
     address,
+    class: className = '',
     imageUrl = '',
     name = 'Profile avatar',
     showBookmarkBadge = false,
@@ -92,9 +94,10 @@
     return lines.length > 0 ? lines.join('\n') : undefined;
   });
 
-  const avatarSize = $derived(Math.round(size * 0.68));
+  const avatarSize = $derived(Math.round(size * 0.7));
   const avatarHaloWidth = 4;
   const ringGap = 2;
+  const ringStrokeWidth = $derived(isDesktop ? 14 : 14);
   const trustRingRadius = $derived(
     avatarSize / 2 + avatarHaloWidth + ringGap + ringStrokeWidth / 2
   );
@@ -111,7 +114,6 @@
     if (scoreValue >= 45) return 'text-warning';
     return 'text-error';
   });
-  const ringStrokeWidth = $derived(isDesktop ? 16 : 16);
   const ringStep = $derived(ringStrokeWidth + 2);
   const normalizedRings = $derived.by(() =>
     rings.map((ring, index) => {
@@ -295,7 +297,7 @@
 </script>
 
 <div
-  class="profile-score-donut relative inline-flex items-center justify-center"
+  class={`profile-score-donut relative inline-flex items-center justify-center ${className}`.trim()}
   title={trustScoreTitle}
   style={`--mobile-donut-scale:${mobileScale}; --ring-stroke-uniform:${ringStrokeWidth}px;`}
 >
@@ -395,7 +397,7 @@
 
   <div class="absolute inset-0 flex items-center justify-center">
     <div
-      class="relative rounded-full bg-base-100 shadow-sm ring-4 ring-base-100/90 overflow-hidden"
+      class="relative rounded-full bg-base-100 shadow-sm ring-[3px] ring-base-100/90 overflow-hidden"
       style={`width:${avatarSize}px;height:${avatarSize}px;`}
     >
       <img

@@ -48,7 +48,13 @@
   import TrustHistoryHeatmap from '$lib/areas/trust/ui/TrustHistoryHeatmap.svelte';
   import PersonalMintHistoryHeatmap from '$lib/areas/minting/ui/PersonalMintHistoryHeatmap.svelte';
   import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
-  import { ArrowLeft as LArrowLeft, Star as LStar, X as LX } from 'lucide';
+  import {
+    ArrowLeft as LArrowLeft,
+    Info as LInfo,
+    Shield as LShield,
+    ShieldCheck as LShieldCheck,
+    X as LX,
+  } from 'lucide';
   import { createAvatarDataSource } from '$lib/shared/data/circles/avatarDataSource';
   import {
     bookmarksStateStore,
@@ -56,7 +62,6 @@
     profileBookmarksStore,
     type ProfileBookmark,
   } from '$lib/areas/settings/state/profileBookmarks';
-  import HelpPopover from '$lib/shared/ui/primitives/HelpPopover.svelte';
   import { TRUST_ROUTING_HELP_LINES } from '$lib/shared/content/trustRoutingCopy';
 
   function normalizeAddress(value: string | Address): Address {
@@ -99,6 +104,12 @@
       default:
         return undefined;
     }
+  });
+  const relationIconUrl = $derived.by(() => {
+    if (trustRow?.relation === 'mutuallyTrusts') return '/shield-check.svg';
+    if (trustRow?.relation === 'trusts') return '/trust.svg';
+    if (trustRow?.relation === 'trustedBy') return '/incoming.svg';
+    return '/shield-check.svg';
   });
   const relationIsPositive = $derived.by(
     () =>
@@ -352,7 +363,7 @@
   let trustedByCount = $state(0);
   let trustHistoryEventCount = $state(0);
   let mintingHistoryEventCount = $state(0);
-  let showTrustDetails = $state(false);
+  let activeHeaderInfoPanel = $state<'routing' | 'trust' | null>(null);
   let bookmarkedProfiles: ProfileBookmark[] = $state([]);
   let showBookmarkEditor: boolean = $state(false);
   let bookmarkNoteInput: string = $state('');
@@ -559,22 +570,52 @@
       },
     ];
   });
+
+  const trustInfoTitle = $derived.by(() => {
+    switch (trustRow?.relation) {
+      case 'mutuallyTrusts':
+        return 'You accept each other’s Circles.';
+      case 'trusts':
+        return 'You accept Circles from this account.';
+      case 'trustedBy':
+        return 'This account accepts your Circles.';
+      default:
+        return 'You are not connected yet.';
+    }
+  });
+
+  const trustInfoLines = $derived.by(() => {
+    switch (trustRow?.relation) {
+      case 'mutuallyTrusts':
+        return [
+          'You currently accept each other’s Circles.',
+          'Transfers can route in both directions when the wider path also allows it.',
+        ];
+      case 'trusts':
+        return [
+          'You currently accept Circles from this account.',
+          'That means payments can route from this account into your accepted network.',
+        ];
+      case 'trustedBy':
+        return [
+          'This account accepts your Circles, but you do not accept theirs yet.',
+          'Use the primary action if you want to trust back.',
+        ];
+      default:
+        return [
+          'There is currently no trust connection in either direction.',
+          'Add trust to allow this profile’s Circles in your routing graph.',
+        ];
+    }
+  });
+
+  function toggleHeaderInfoPanel(panel: 'routing' | 'trust'): void {
+    activeHeaderInfoPanel = activeHeaderInfoPanel === panel ? null : panel;
+  }
 </script>
 
 <div class="space-y-6">
   {#snippet profileActions()}
-    <button
-      class="btn btn-ghost btn-circle btn-sm btn-action-outline btn-touch-square"
-      type="button"
-      aria-label="Trust details"
-      title="Trust details"
-      onclick={() => {
-        showTrustDetails = !showTrustDetails;
-      }}
-    >
-      <img src="/trust.svg" alt="" class="w-5 h-5" aria-hidden="true" />
-    </button>
-
     {#if !avatarState.isGroup}
       <button
         class="btn btn-ghost btn-sm btn-action-outline"
@@ -587,7 +628,7 @@
           });
         }}
       >
-        <img src="/send-new.svg" alt="Send" class="w-5 h-5" />
+        <img src="/send-new.svg" alt="Send" class="action-icon" />
         Send
       </button>
     {/if}
@@ -603,6 +644,12 @@
           });
         }}
       >
+        <img
+          src="/sparkles.svg"
+          alt=""
+          class="action-icon"
+          aria-hidden="true"
+        />
         Mint
       </button>
     {/if}
@@ -622,6 +669,7 @@
           });
         }}
       >
+        <Lucide icon={LX} size={18} class="action-icon" ariaLabel="" />
         {!avatarState.isGroup ? 'Untrust' : 'Remove member'}
       </button>
     {:else if trustRow?.relation === 'mutuallyTrusts'}
@@ -639,6 +687,7 @@
           });
         }}
       >
+        <Lucide icon={LX} size={18} class="action-icon" ariaLabel="" />
         {!avatarState.isGroup ? 'Untrust' : 'Remove member'}
       </button>
     {:else if trustRow?.relation === 'trustedBy'}
@@ -659,6 +708,7 @@
           });
         }}
       >
+        <Lucide icon={LShield} size={18} class="action-icon" ariaLabel="" />
         {!avatarState.isGroup ? 'Trust back' : 'Add as member'}
       </button>
     {:else}
@@ -679,6 +729,7 @@
           });
         }}
       >
+        <Lucide icon={LShield} size={18} class="action-icon" ariaLabel="" />
         {!avatarState.isGroup ? 'Trust' : 'Add as member'}
       </button>
     {/if}
@@ -702,7 +753,50 @@
       </button>
 
       <div class="ml-auto flex items-center justify-end gap-2 flex-wrap">
+        <button
+          type="button"
+          class={`profile-header-icon-button ${activeHeaderInfoPanel === 'routing' ? 'profile-header-icon-button--active' : ''}`}
+          aria-label="Trust and routing info"
+          title="Trust and routing info"
+          onclick={() => toggleHeaderInfoPanel('routing')}
+        >
+          {#if activeHeaderInfoPanel === 'routing'}
+            <Lucide
+              icon={LArrowLeft}
+              size={22}
+              class="action-icon"
+              ariaLabel=""
+            />
+          {:else}
+            <Lucide icon={LInfo} size={30} class="action-icon" ariaLabel="" />
+          {/if}
+        </button>
+
         {@render profileActions()}
+
+        <button
+          type="button"
+          class={`profile-header-icon-button profile-header-icon-button--trust ${activeHeaderInfoPanel === 'trust' ? 'profile-header-icon-button--active' : ''}`}
+          aria-label={trustInfoTitle}
+          title={trustInfoTitle}
+          onclick={() => toggleHeaderInfoPanel('trust')}
+        >
+          {#if activeHeaderInfoPanel === 'trust'}
+            <Lucide
+              icon={LArrowLeft}
+              size={22}
+              class="action-icon"
+              ariaLabel=""
+            />
+          {:else}
+            <Lucide
+              icon={LShieldCheck}
+              size={22}
+              class="action-icon"
+              ariaLabel=""
+            />
+          {/if}
+        </button>
       </div>
     </div>
   {:else}
@@ -713,23 +807,57 @@
     </div>
   {/if}
 
-  <div class="flex justify-end -mt-1 mb-2 min-h-[3.25rem]">
-    <div
-      class={`mini-popover-surface overflow-hidden transition-all duration-200 ease-out ${showTrustDetails ? 'max-h-24 opacity-100 translate-y-0 px-3 py-2 border' : 'max-h-0 opacity-0 -translate-y-1 px-3 py-0 border-transparent'}`}
-    >
-      {#if showTrustDetails}
-        <TrustScoreBadge {address} />
-      {/if}
+  {#if activeHeaderInfoPanel}
+    <div class="mb-2 flex w-full">
+      <div class="w-full">
+        <div
+          class="mini-popover-surface w-full overflow-hidden border px-4 py-3 shadow-none"
+        >
+          {#if activeHeaderInfoPanel === 'trust'}
+            <div class="w-full space-y-3 text-left">
+              <div class="text-sm font-semibold text-base-content">
+                {trustInfoTitle}
+              </div>
+              <div
+                class="space-y-2 text-sm leading-relaxed text-base-content/80"
+              >
+                {#each trustInfoLines as line}
+                  <p>{line}</p>
+                {/each}
+              </div>
+              <div class="w-full pt-1 text-sm">
+                <TrustScoreBadge {address} />
+              </div>
+            </div>
+          {:else if activeHeaderInfoPanel === 'routing'}
+            <div class="w-full space-y-3 text-left">
+              <div class="text-sm font-semibold text-base-content">
+                Trust & routing
+              </div>
+              <ul
+                class="w-full space-y-2 text-sm leading-relaxed text-base-content/80"
+              >
+                {#each TRUST_ROUTING_HELP_LINES as line}
+                  <li>{line}</li>
+                {/each}
+              </ul>
+            </div>
+          {/if}
+        </div>
+      </div>
     </div>
-  </div>
+  {/if}
 
-  <div class={isPopup ? '-mt-10 sm:-mt-14 mb-2' : ''}>
+  <div class={isPopup ? '-mt-8 sm:-mt-10 mb-2' : ''}>
     <ProfileHeroCard
       {address}
       {profile}
       avatarInfo={otherAvatar}
+      {isPopup}
       {relationText}
       {relationOverlayUrl}
+      {relationIconUrl}
+      onRelationAction={() => toggleHeaderInfoPanel('trust')}
       {hasTrustRow}
       {relationIsPositive}
       {isBookmarked}

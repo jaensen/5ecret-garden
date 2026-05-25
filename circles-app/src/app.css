@@ -129,6 +129,16 @@
     @apply bg-base-200 border-base-300;
 }
 
+.btn-utility-soft img,
+.btn-utility-soft svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-utility-soft svg {
+    stroke-width: 1.75;
+}
+
 /* Icon-only variant of the soft utility surface with a consistent 44px touch area. */
 .btn-icon-tile {
     @apply btn btn-ghost btn-sm rounded-2xl bg-base-200/80 border border-transparent btn-touch-square;
@@ -137,6 +147,59 @@
 .btn-icon-tile:hover,
 .btn-icon-tile:focus-visible {
     @apply bg-base-200 border-base-300;
+}
+
+.action-icon {
+    @apply h-5 w-5 shrink-0;
+}
+
+.action-icon--soft-stroke {
+    stroke-width: 1.75;
+}
+
+.profile-header-icon-button {
+    @apply btn btn-ghost btn-sm btn-touch-square rounded-full border bg-transparent shadow-none;
+    border-color: var(--brand-blue);
+    color: var(--brand-blue);
+}
+
+.profile-header-icon-button:hover,
+.profile-header-icon-button:focus-visible {
+    border-color: color-mix(in srgb, var(--brand-blue) 82%, white 18%);
+    background: transparent;
+    color: var(--brand-blue);
+}
+
+.profile-header-icon-button svg,
+.profile-header-icon-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.profile-header-icon-button svg {
+    stroke-width: 1.8;
+}
+
+.profile-header-icon-button--trust {
+    border-color: var(--brand-red);
+    color: var(--brand-red);
+}
+
+.profile-header-icon-button--trust:hover,
+.profile-header-icon-button--trust:focus-visible {
+    border-color: color-mix(in srgb, var(--brand-red) 68%, white 32%);
+    background: transparent;
+    color: var(--brand-red);
+}
+
+.profile-header-icon-button--trust.profile-header-icon-button--active {
+    border-color: color-mix(in srgb, var(--brand-red) 74%, white 26%);
+    background: transparent;
+}
+
+.profile-header-icon-button--active {
+    border-color: color-mix(in srgb, var(--brand-blue) 46%, white 54%);
+    background: transparent;
 }
 
 .hero-overlay-button {
@@ -204,6 +267,20 @@
     filter: saturate(1.02) brightness(0.98);
 }
 
+.btn-primary img,
+.btn-primary svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-primary svg {
+    stroke-width: 1.75;
+}
+
+.btn-primary img {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(230deg) brightness(105%) contrast(102%);
+}
+
 .btn-primary:disabled,
 .btn-primary[disabled],
 .btn-primary.btn-disabled {
@@ -222,6 +299,14 @@
         0 10px 24px -20px rgba(56, 49, 139, 0.22),
         inset 0 1px 0 rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(18px);
+}
+
+/* In popup contexts, nested mini-popover/info surfaces should not add a second card shadow.
+   The popup shell already provides the outer elevation layer, so inner surfaces stay flat. */
+.gui-popup .mini-popover-surface,
+.gui-popup__content .mini-popover-surface,
+.gui-popup-page .mini-popover-surface {
+    box-shadow: none;
 }
 
 .mini-popover-backdrop {
@@ -378,6 +463,8 @@
 .btn-action-outline img,
 .btn-action-outline--warm img {
     filter: brightness(0) saturate(100%) invert(20%) sepia(35%) saturate(2677%) hue-rotate(226deg) brightness(89%) contrast(97%);
+    width: 18px;
+    height: 18px;
 }
 
 .btn-action-outline--warm img {

@@ -31,6 +31,8 @@
     onClose = undefined,
   }: Props = $props();
 
+  const usesWideTrigger = $derived(triggerClass.includes('btn-utility-soft'));
+
   let rootEl: HTMLDivElement | null = $state(null);
   let triggerEl: HTMLButtonElement | null = $state(null);
   let desktopPanelEl: HTMLDivElement | null = $state(null);
@@ -123,7 +125,7 @@
   <button
     bind:this={triggerEl}
     type="button"
-    class={`mini-popover-trigger inline-flex items-center justify-center rounded-full h-10 w-10 min-h-10 min-w-10 max-h-10 max-w-10 p-0 aspect-square overflow-hidden ${triggerClass}`.trim()}
+    class={`mini-popover-trigger inline-flex items-center rounded-full overflow-hidden ${usesWideTrigger ? 'justify-start px-3 gap-2 min-h-10 h-10 w-auto min-w-0 max-w-none' : 'justify-center btn-touch-square p-0'} ${triggerClass}`.trim()}
     aria-haspopup="dialog"
     aria-expanded={open}
     aria-label={title || mobileTitle || 'Open popover'}

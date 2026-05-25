@@ -91,7 +91,7 @@
   {@const variantClass = getVariantClass(a, i)}
   <button
     type="button"
-    class={`btn btn-sm overflow-hidden rounded-full motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${variantClass} ${iconOnly ? 'collapsed-header-icon-button w-8 h-8 min-h-8 min-w-8 md:w-9 md:h-9 md:min-h-9 md:min-w-9 px-0 py-0 justify-center gap-0 aspect-square' : isCompact ? 'w-11 h-11 min-h-11 px-0 justify-center gap-0' : 'w-auto min-h-11 px-4 gap-2'} ${isActive && (isCompact || iconOnly) ? 'ring-2 ring-primary/30 ring-offset-1 ring-offset-base-100' : ''}`}
+    class={`btn btn-sm overflow-hidden rounded-full motion-safe:transition-all motion-safe:duration-[420ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${variantClass} ${iconOnly ? 'collapsed-header-icon-button btn-touch-square px-0 py-0 justify-center gap-0' : isCompact ? 'w-11 h-11 min-h-11 px-0 justify-center gap-0' : 'w-auto min-h-11 px-4 gap-2'} ${isActive && (isCompact || iconOnly) ? 'ring-2 ring-primary/30 ring-offset-1 ring-offset-base-100' : ''}`}
     onclick={() => handleActionClick(a, i)}
     aria-label={a.label}
     disabled={!!a?.disabled}
@@ -103,7 +103,7 @@
     {/if}
     {#if !iconOnly}
       <span
-        class={`whitespace-nowrap overflow-hidden motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none ${isCompact ? 'max-w-0 opacity-0 scale-x-95' : 'max-w-40 opacity-100 scale-x-100'}`}
+        class={`whitespace-nowrap overflow-hidden motion-safe:transition-all motion-safe:duration-[480ms] motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isCompact ? 'max-w-0 opacity-0 scale-x-95' : 'max-w-40 opacity-100 scale-x-100'}`}
         aria-hidden={isCompact ? 'true' : undefined}>{a.label}</span
       >
     {/if}

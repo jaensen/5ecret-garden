@@ -15,8 +15,11 @@
     address: Address | undefined;
     profile: Profile | undefined;
     avatarInfo: AvatarRow | undefined;
+    isPopup?: boolean;
     relationText: string;
     relationOverlayUrl?: string | undefined;
+    relationIconUrl?: string | undefined;
+    onRelationAction?: () => void;
     compactActionLabel?: string;
     compactActionIconUrl?: string;
     compactActionTone?: 'success' | 'default';
@@ -48,8 +51,11 @@
     address,
     profile,
     avatarInfo,
+    isPopup = false,
     relationText,
     relationOverlayUrl = undefined,
+    relationIconUrl = undefined,
+    onRelationAction,
     compactActionLabel = '',
     compactActionIconUrl = '/trust.svg',
     compactActionTone = 'default',
@@ -76,11 +82,14 @@
   const hasCompactAction = $derived(
     !!compactActionLabel.trim() && typeof onCompactAction === 'function'
   );
+  const relationButtonEnabled = $derived(
+    typeof onRelationAction === 'function'
+  );
 </script>
 
 <div class="w-full sm:w-[92%] lg:w-3/5 mx-auto">
   <div
-    class="relative rounded-[2rem] bg-gradient-to-b from-base-100 via-base-100 to-base-200/30 px-4 pt-2 pb-4 sm:px-6 sm:pt-3 sm:pb-5 shadow-sm"
+    class={`relative rounded-[2rem] bg-gradient-to-b from-base-100 via-base-100 to-base-200/30 px-4 shadow-sm overflow-visible ${isPopup ? 'pt-16 pb-3 sm:pt-18 sm:pb-4' : 'pt-20 pb-4 sm:px-6 sm:pt-24 sm:pb-5'}`}
   >
     {#if hasCompactAction}
       <div
@@ -114,40 +123,63 @@
       </div>
     {/if}
 
-    <div class="flex flex-col items-center text-center gap-4">
+    <div
+      class={`flex flex-col items-center text-center ${isPopup ? 'gap-3' : 'gap-4'}`}
+    >
       <div
-        class="relative flex min-h-[14rem] items-center justify-center pt-3 pb-4 sm:min-h-0 sm:pt-0 sm:pb-0"
+        class={`relative flex w-full items-start justify-center ${isPopup ? 'min-h-[7.5rem] pb-1 sm:min-h-[8.5rem]' : 'min-h-[9rem] pb-2 sm:min-h-[10rem]'}`}
       >
+        {#if !isPopup}
+          <div
+            class="absolute left-1/2 top-0 z-10 flex w-full -translate-x-1/2 -translate-y-1/2 items-center justify-center sm:top-1/2 sm:-translate-y-1/2"
+          >
+            <button
+              type="button"
+              class={`btn btn-ghost btn-sm rounded-full min-h-10 h-10 px-3.5 gap-2 border border-base-300/70 bg-base-100/95 shadow-sm z-20 ${relationButtonEnabled ? 'cursor-pointer' : 'cursor-default'} ${relationIsPositive ? 'text-success' : 'text-base-content/70'} sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-[calc(100%+5.5rem)] sm:-translate-y-1/2`}
+              onclick={() => onRelationAction?.()}
+              aria-label={hasTrustRow ? relationText : 'Not connected'}
+              title={hasTrustRow ? relationText : 'Not connected'}
+            >
+              {#if relationIconUrl}
+                <img
+                  src={relationIconUrl}
+                  alt=""
+                  class="action-icon"
+                  aria-hidden="true"
+                />
+              {/if}
+              <span class="text-xs font-medium truncate max-w-[16rem]">
+                {hasTrustRow ? relationText : 'Not connected'}
+              </span>
+            </button>
+          </div>
+        {/if}
+
         <div
-          class="absolute left-1/2 top-1/2 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-2xl sm:h-[12.5rem] sm:w-[12.5rem]"
+          class={`absolute left-1/2 -translate-x-1/2 rounded-full bg-primary/5 blur-2xl sm:top-1/2 sm:-translate-y-1/2 ${isPopup ? 'top-3 h-[14rem] w-[14rem] sm:h-[10.5rem] sm:w-[10.5rem]' : 'top-4 h-[18rem] w-[18rem] sm:h-[12.5rem] sm:w-[12.5rem]'}`}
         ></div>
 
-        <div class="absolute -top-1 left-1/2 -translate-x-1/2">
+        {#if !isPopup}
           <div
-            class={`badge badge-sm border border-base-300/70 bg-base-100/95 shadow-sm ${relationIsPositive ? 'text-success' : 'text-base-content/70'}`}
+            class="absolute right-1 top-2 z-20 sm:left-1/2 sm:right-auto sm:top-1/2 sm:translate-x-[calc(100%+4rem)] sm:-translate-y-1/2"
           >
-            {hasTrustRow ? relationText : 'Not connected'}
+            <HelpPopover
+              title="Trust & routing"
+              lines={trustRoutingHelpLines}
+              buttonClass="hero-overlay-button"
+              widthClass="w-80"
+            />
           </div>
-        </div>
-
-        <div
-          class="absolute right-1 top-2 sm:right-0 sm:top-1/2 sm:-translate-y-1/2"
-        >
-          <HelpPopover
-            title="Trust & routing"
-            lines={trustRoutingHelpLines}
-            buttonClass="hero-overlay-button"
-            widthClass="w-80"
-          />
-        </div>
+        {/if}
 
         <ProfileScoreDonut
+          class="z-10"
           {address}
           imageUrl={profile?.previewImageUrl}
           name={profile?.name}
           showBookmarkBadge={isBookmarked}
-          size={96}
-          mobileScale={2}
+          size={isPopup ? 84 : 96}
+          mobileScale={isPopup ? 1.75 : 2}
           pictureOverlayUrl={relationOverlayUrl}
           pictureOverlayAlt="Overlay"
           avatarType={avatarInfo?.type}
@@ -155,21 +187,29 @@
         />
       </div>
 
-      <div class="space-y-1">
-        <h1 class="text-xl font-semibold tracking-tight text-base-content">
+      <div class={`space-y-1 ${isPopup ? 'mt-0.5' : ''}`}>
+        <h1
+          class={`font-semibold tracking-tight text-base-content ${isPopup ? 'text-lg sm:text-xl' : 'text-xl'}`}
+        >
           {profile?.name ?? 'Profile'}
         </h1>
-        <p class="text-sm text-base-content/72 max-w-md">
+        <p
+          class={`text-base-content/72 max-w-md ${isPopup ? 'text-[13px] leading-snug' : 'text-sm'}`}
+        >
           {hasTrustRow
             ? relationText
             : 'Trust and profile details at a glance.'}
         </p>
-        <p class="text-xs text-base-content/55">
+        <p
+          class={`text-base-content/55 ${isPopup ? 'text-[11px]' : 'text-xs'}`}
+        >
           Trust = you accept Circles from this account.
         </p>
       </div>
 
-      <div class="flex flex-wrap items-center justify-center gap-2">
+      <div
+        class={`flex flex-wrap items-center justify-center ${isPopup ? 'gap-1.5' : 'gap-2'}`}
+      >
         <AddressComponent address={address ?? '0x0'} />
 
         {#if address}
@@ -185,10 +225,10 @@
             <svelte:fragment slot="trigger">
               <Lucide
                 icon={LStar}
-                size={16}
+                size={18}
                 class={isBookmarked
-                  ? 'text-yellow-500 fill-yellow-500'
-                  : 'text-base-content/60'}
+                  ? 'action-icon action-icon--soft-stroke text-yellow-500 fill-yellow-500'
+                  : 'action-icon action-icon--soft-stroke text-base-content/60'}
               />
               <span>{isBookmarked ? 'Saved' : 'Save'}</span>
             </svelte:fragment>
@@ -319,7 +359,7 @@
 
         {#if showChartButton}
           <button type="button" class="btn-utility-soft" onclick={onGotoChart}>
-            <img src="/chart.svg" alt="Chart" class="w-4 h-4" />
+            <img src="/chart.svg" alt="Chart" class="action-icon" />
             <span>Metrics</span>
           </button>
         {/if}
@@ -329,7 +369,7 @@
             url={'https://gnosisscan.io/address/' + address}
             className="btn-utility-soft"
           >
-            <img src="/external.svg" alt="External Link" class="w-4" />
+            <img src="/external.svg" alt="External Link" class="action-icon" />
             <span>Explorer</span>
           </JumpLink>
         {/if}

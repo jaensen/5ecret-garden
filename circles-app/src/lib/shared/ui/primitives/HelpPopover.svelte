@@ -17,7 +17,7 @@
     lines,
     align = 'end',
     widthClass = 'w-80',
-    buttonClass = 'btn btn-ghost btn-xs btn-square',
+    buttonClass = 'btn btn-ghost btn-xs btn-touch-square',
     contentClass = 'mini-popover-surface p-3',
   }: Props = $props();
 </script>

@@ -234,7 +234,7 @@
       {#if hasAvatar}
         <button
           type="button"
-          class="absolute right-4 top-4 md:right-5 md:top-5 rounded-full outline-none ring-0 pointer-events-auto"
+          class="absolute right-4 top-4 md:right-5 md:top-5 rounded-full outline-none ring-0 pointer-events-auto btn-touch-square overflow-hidden"
           onclick={openProfile}
           aria-label="Open profile"
           title="Open profile"
@@ -242,7 +242,7 @@
           <img
             src={avatarImgUrl}
             alt={avatarAlt}
-            class="w-9 h-9 md:w-10 md:h-10 rounded-full border shadow-sm object-cover"
+            class="h-full w-full rounded-full shadow-sm object-cover"
             loading="eager"
             decoding="async"
           />
@@ -267,7 +267,7 @@
             <!-- Entire bar is clickable when actions exist -->
             <button
               type="button"
-              class={`w-full rounded-full border border-base-content/10 bg-base-100/72 pl-3 md:pl-4 ${collapsedInlineActions ? 'pr-32 md:pr-36' : 'pr-14 md:pr-16'} ${collapsedHeightClass}
+              class={`w-full rounded-full border border-base-content/10 bg-base-100/72 pl-3 md:pl-4 ${collapsedInlineActions || hasAvatar ? 'pr-36 md:pr-44' : 'pr-14 md:pr-16'} ${collapsedHeightClass}
                                 flex items-center justify-between gap-3 pointer-events-auto cursor-pointer shadow-sm backdrop-blur-[10px] supports-[backdrop-filter]:bg-base-100/68
                                 transition-all duration-200 ease-out hover:border-base-content/14 hover:bg-base-100/78 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-base-100`}
               aria-expanded={collapsedMenuOpen}
@@ -285,21 +285,6 @@
                   </span>
                 {/if}
               </div>
-              <span class="collapsed-header-context-button">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="inline-block h-5 w-5 shrink-0 stroke-current text-base-content/70 rotate-90"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                  />
-                </svg>
-              </span>
             </button>
           {:else}
             <!-- Non-interactive bar when there are no actions -->
@@ -322,30 +307,55 @@
             </div>
           {/if}
 
-          <!-- NEW: avatar inside collapsed header bar (pinned top-right) -->
-          {#if hasAvatar}
-            <button
-              type="button"
-              class="absolute right-[3rem] md:right-[3.75rem] top-1/2 -translate-y-1/2 rounded-full pointer-events-auto z-10"
-              onclick={openProfile}
-              aria-label="Open profile"
-              title="Open profile"
-            >
-              <img
-                src={avatarImgUrl}
-                alt={avatarAlt}
-                class="w-8 h-8 md:w-9 md:h-9 rounded-full border shadow-sm object-cover"
-                loading="eager"
-                decoding="async"
-              />
-            </button>
-          {/if}
-
-          {#if collapsedInlineActions}
+          {#if collapsedInlineActions || hasAvatar}
             <div
-              class="absolute right-[5.5rem] md:right-[6.8rem] top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-auto z-10"
+              class="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-auto z-10"
             >
-              {@render collapsedInlineActions()}
+              {#if collapsedInlineActions}
+                {@render collapsedInlineActions()}
+              {/if}
+
+              {#if hasAvatar}
+                <button
+                  type="button"
+                  class="rounded-full btn-touch-square overflow-hidden"
+                  onclick={openProfile}
+                  aria-label="Open profile"
+                  title="Open profile"
+                >
+                  <img
+                    src={avatarImgUrl}
+                    alt={avatarAlt}
+                    class="h-full w-full rounded-full shadow-sm object-cover"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </button>
+              {/if}
+
+              {#if hasActions}
+                <button
+                  type="button"
+                  class="collapsed-header-context-button btn-touch-square"
+                  aria-label="Toggle quick actions"
+                  aria-expanded={collapsedMenuOpen}
+                  onclick={toggleCollapsedMenu}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="inline-block h-5 w-5 shrink-0 stroke-current text-base-content/70 rotate-90"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                    />
+                  </svg>
+                </button>
+              {/if}
             </div>
           {/if}
 

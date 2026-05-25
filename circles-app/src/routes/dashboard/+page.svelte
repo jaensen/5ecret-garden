@@ -13,6 +13,7 @@
   import { totalCirclesBalance } from '$lib/shared/state/totalCirclesBalance';
 
   import PageScaffold from '$lib/shared/ui/shell/PageScaffold.svelte';
+  import ActionButtonBar from '$lib/shared/ui/shell/ActionButtonBar.svelte';
   import { openSendFlowPopup } from '$lib/areas/wallet/flows/send/openSendFlowPopup';
 
   // lucide (standalone) icon nodes
@@ -23,6 +24,7 @@
   } from 'lucide';
   import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
   import HelpPopover from '$lib/shared/ui/primitives/HelpPopover.svelte';
+  import type { ActionButton } from '$lib/shared/ui/shell/action-buttons';
 
   const TOKEN_SOURCES_HELP = [
     'Every person and group can issue its own Circles token.',
@@ -92,6 +94,32 @@
       transitiveOnly: true,
     });
   }
+
+  const collapsedLeadingActions = $derived.by((): ActionButton[] => {
+    const actions: ActionButton[] = [];
+
+    if (!avatarState.isGroup) {
+      actions.push({
+        id: 'send',
+        label: 'Send',
+        iconNode: LSend,
+        onClick: openSend,
+        variant: 'ghost',
+      });
+    }
+
+    if (mintableAmount >= 0.01) {
+      actions.push({
+        id: 'mint',
+        label: `Mint ${roundToDecimals(mintableAmount)} Circles`,
+        iconNode: LBanknote,
+        onClick: mintPersonalCircles,
+        variant: 'primary',
+      });
+    }
+
+    return actions;
+  });
 </script>
 
 <PageScaffold
@@ -189,31 +217,13 @@
     {/if}
   {/snippet}
 
+  {#snippet collapsedInlineActions()}
+    <ActionButtonBar actions={collapsedLeadingActions} iconOnly={true} />
+  {/snippet}
+
   <!-- Collapsed dropdown content -->
   {#snippet collapsedMenu()}
     <div class="grid grid-cols-1 gap-2">
-      {#if mintableAmount >= 0.01}
-        <button
-          type="button"
-          class="btn btn-primary min-h-0 h-[var(--collapsed-h)] md:h-[var(--collapsed-h-md)] justify-start px-3"
-          onclick={mintPersonalCircles}
-        >
-          <Lucide icon={LBanknote} size={20} class="shrink-0" />
-          Mint {roundToDecimals(mintableAmount)} Circles
-        </button>
-      {/if}
-
-      {#if !avatarState.isGroup}
-        <button
-          type="button"
-          class="btn btn-ghost btn-action-outline min-h-0 h-[var(--collapsed-h)] md:h-[var(--collapsed-h-md)] justify-start px-3"
-          onclick={openSend}
-        >
-          <Lucide icon={LSend} size={20} class="shrink-0" />
-          Send
-        </button>
-      {/if}
-
       <button
         type="button"
         class="btn btn-ghost min-h-0 h-[var(--collapsed-h)] md:h-[var(--collapsed-h-md)] justify-start px-3"
