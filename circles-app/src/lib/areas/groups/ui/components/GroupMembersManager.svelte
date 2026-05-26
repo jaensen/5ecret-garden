@@ -292,7 +292,7 @@
                 <div class="flex items-center gap-2">
                   <button
                     type="button"
-                    class="btn btn-ghost btn-xs btn-square text-error/80 hover:text-error"
+                    class="btn-icon-action text-error/80 hover:text-error"
                     aria-label="Untrust"
                     title="Untrust"
                     onclick={(event) => {

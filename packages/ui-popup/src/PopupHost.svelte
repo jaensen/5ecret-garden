@@ -408,7 +408,7 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
     overflow-x: clip;
     overscroll-behavior-y: contain;
     overscroll-behavior-x: auto;
@@ -438,6 +438,7 @@
     min-height: 0;
     overflow-y: auto;
     overflow-x: clip;
+    overflow-y: auto;
     padding: 0 1rem 1rem 1rem;
   }
   .gui-popup__close {

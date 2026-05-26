@@ -109,6 +109,10 @@
     border-radius: 999px;
 }
 
+.btn-xs {
+    min-width: 44px;
+}
+
 /* Icon-only ghost circle buttons: consistent 44px touch target from the outside in. */
 .btn.btn-ghost.btn-circle.btn-sm {
     @apply h-11 min-h-11 min-w-11 max-w-11;
@@ -147,6 +151,35 @@
 .btn-icon-tile:hover,
 .btn-icon-tile:focus-visible {
     @apply bg-base-200 border-base-300;
+}
+
+/* Compact semantic dismiss/help affordance: consistent 33px circular control for callouts and small overlays. */
+.btn-icon-dismiss {
+    @apply btn btn-ghost rounded-full border border-base-300/70 bg-base-100 p-0;
+    width: 33px;
+    height: 33px;
+    min-width: 33px;
+    max-width: 33px;
+    min-height: 33px;
+    max-height: 33px;
+    flex: 0 0 33px;
+}
+
+.btn-icon-dismiss:hover,
+.btn-icon-dismiss:focus-visible {
+    @apply bg-base-200 border-base-300;
+}
+
+.btn-icon-dismiss svg,
+.btn-icon-dismiss img {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Standard icon-only action button: reuse the app-wide 44px circular touch target. */
+.btn-icon-action {
+    @apply btn btn-ghost btn-circle btn-sm btn-touch-square;
 }
 
 .action-icon {
@@ -289,16 +322,7 @@
 }
 
 .mini-popover-surface {
-    border: 1px solid oklch(var(--b3) / 0.7);
-    border-radius: 1.5rem;
-    background: linear-gradient(180deg,
-            oklch(var(--b1) / 0.98),
-            oklch(var(--b2, var(--b1)) / 0.96));
-    box-shadow:
-        0 18px 44px -26px rgba(17, 24, 39, 0.32),
-        0 10px 24px -20px rgba(56, 49, 139, 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(18px);
+    @apply rounded-box border border-base-300 bg-base-100 shadow-sm;
 }
 
 /* In popup contexts, nested mini-popover/info surfaces should not add a second card shadow.
@@ -309,22 +333,38 @@
     box-shadow: none;
 }
 
+/* Popup form controls should stay compact and must not inherit oversized touch-target sizing.
+   Scope this to popup surfaces so normal page forms remain unchanged. */
+.gui-popup .input.input-sm,
+.gui-popup__content .input.input-sm,
+.gui-popup-page .input.input-sm,
+.gui-popup .select.select-sm,
+.gui-popup__content .select.select-sm,
+.gui-popup-page .select.select-sm {
+    min-height: 25px;
+    height: 25px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.gui-popup .textarea.textarea-sm,
+.gui-popup__content .textarea.textarea-sm,
+.gui-popup-page .textarea.textarea-sm {
+    min-height: unset;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    line-height: 1.25rem;
+}
+
 .mini-popover-backdrop {
     position: fixed;
     inset: 0;
     border: 0;
     padding: 0;
-    background: transparent;
-}
-
-.ui-blur-backdrop {
-    background: rgba(15, 23, 42, 0.18);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.08);
     transition:
-        background-color 0.28s ease,
-        backdrop-filter 0.28s ease,
-        opacity 0.28s ease;
+        background-color 0.22s ease,
+        opacity 0.22s ease;
 }
 
 .mini-popover-backdrop--desktop {
@@ -333,18 +373,54 @@
 
 .mini-popover-backdrop--mobile {
     z-index: 69;
-    background: rgba(15, 23, 42, 0.24);
+    background: rgba(15, 23, 42, 0.16);
 }
 
 .mini-popover-panel {
     color: oklch(var(--bc));
 }
 
-.mini-popover-panel--desktop {
+.mini-popover-surface--callout {
+    position: relative;
+    border-radius: 1rem;
+    border-color: oklch(var(--b3));
+    box-shadow:
+        0 18px 44px -26px rgba(17, 24, 39, 0.28),
+        0 10px 22px -18px rgba(56, 49, 139, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.mini-popover-surface--callout::after {
+    content: '';
     position: absolute;
-    top: calc(100% + 0.5rem);
+    left: calc(100% - 2rem);
+    width: 12px;
+    height: 12px;
+    background: inherit;
+    border-left: 1px solid oklch(var(--b3));
+    border-top: 1px solid oklch(var(--b3));
+    transform: rotate(45deg);
+}
+
+.mini-popover-surface--arrow-top::after {
+    top: -7px;
+}
+
+.mini-popover-surface--arrow-bottom::after {
+    bottom: -7px;
+    transform: rotate(225deg);
+}
+
+.mini-popover-panel--desktop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: none;
     z-index: 60;
     display: none;
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100vh - 1rem);
+    overflow: auto;
 }
 
 .mini-popover-mobile-shell {
@@ -552,12 +628,6 @@
     border-radius: 999px;
     border: 1px solid oklch(var(--b3) / 0.8);
     background: rgb(255 255 255 / 0.94);
-    width: 2rem;
-    min-width: 2rem;
-    max-width: 2rem;
-    height: 2rem;
-    min-height: 2rem;
-    max-height: 2rem;
     padding: 0;
     box-shadow:
         0 6px 18px -12px rgba(17, 24, 39, 0.2),
@@ -597,15 +667,9 @@
 }
 
 .collapsed-header-context-button {
-    position: absolute;
-    right: .75rem;
-    top: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    transform: translateY(-50%);
     border-radius: 999px;
     background: transparent;
     border: 0;
@@ -621,20 +685,38 @@
     color: var(--brand-blue);
 }
 
+.collapsed-header-actions-cluster button {
+    width: 33px;
+    height: 33px;
+    min-width: 33px;
+    max-width: 33px;
+    min-height: 33px;
+    max-height: 33px;
+    padding: 0;
+    flex: 0 0 33px;
+}
+
+.collapsed-header-actions-cluster button svg,
+.collapsed-header-actions-cluster button img {
+    flex-shrink: 0;
+}
+
 @media (min-width: 768px) {
-    .collapsed-header-icon-button {
-        width: 2.25rem;
-        min-width: 2.25rem;
-        max-width: 2.25rem;
-        height: 2.25rem;
-        min-height: 2.25rem;
-        max-height: 2.25rem;
+
+    .collapsed-header-icon-button,
+    .collapsed-header-context-button {
+        width: auto;
+        height: auto;
     }
 
-    .collapsed-header-context-button {
-        right: 1rem;
-        width: 2.25rem;
-        height: 2.25rem;
+    .collapsed-header-actions-cluster button {
+        width: 33px;
+        height: 33px;
+        min-width: 33px;
+        max-width: 33px;
+        min-height: 33px;
+        max-height: 33px;
+        flex-basis: 33px;
     }
 }
 

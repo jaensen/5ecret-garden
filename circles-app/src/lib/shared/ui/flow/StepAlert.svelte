@@ -34,8 +34,8 @@
   {children}
   unstyled
   className={`alert ${variantClass} py-2 text-sm ${className}`.trim()}
-  contentClassName="w-full flex items-start justify-between gap-2"
+  contentClassName="w-full flex items-start justify-between gap-3"
   bodyClassName="min-w-0"
   titleClassName="font-semibold"
-  actionClassName="shrink-0"
+  actionClassName="ml-auto shrink-0 flex justify-end self-start text-right"
 />

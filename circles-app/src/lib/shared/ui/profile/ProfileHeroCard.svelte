@@ -20,6 +20,7 @@
     relationOverlayUrl?: string | undefined;
     relationIconUrl?: string | undefined;
     onRelationAction?: () => void;
+    relationActionLabel?: string;
     compactActionLabel?: string;
     compactActionIconUrl?: string;
     compactActionTone?: 'success' | 'default';
@@ -56,6 +57,7 @@
     relationOverlayUrl = undefined,
     relationIconUrl = undefined,
     onRelationAction,
+    relationActionLabel = '',
     compactActionLabel = '',
     compactActionIconUrl = '/trust.svg',
     compactActionTone = 'default',
@@ -87,9 +89,9 @@
   );
 </script>
 
-<div class="w-full sm:w-[92%] lg:w-3/5 mx-auto">
+<div class="mx-auto w-full sm:w-[92%] lg:w-3/5">
   <div
-    class={`relative rounded-[2rem] bg-gradient-to-b from-base-100 via-base-100 to-base-200/30 px-4 shadow-sm overflow-visible ${isPopup ? 'pt-16 pb-3 sm:pt-18 sm:pb-4' : 'pt-20 pb-4 sm:px-6 sm:pt-24 sm:pb-5'}`}
+    class={`relative overflow-visible ${isPopup ? 'pt-0 sm:pb-3' : 'pb-0 sm:pb-5'}`}
   >
     {#if hasCompactAction}
       <div
@@ -123,11 +125,42 @@
       </div>
     {/if}
 
+    {#if isPopup}
+      <div
+        class="pointer-events-none absolute left-1/2 top-0 z-20 flex w-full -translate-x-1/2 items-start justify-center"
+      >
+        <div
+          class="pointer-events-auto relative -translate-y-[30%] sm:-translate-y-[38%]"
+        >
+          <div
+            class="absolute left-1/2 top-1/2 h-[9.5rem] w-[9.5rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-2xl sm:h-[12rem] sm:w-[12rem]"
+          ></div>
+          <ProfileScoreDonut
+            class="relative z-10"
+            {address}
+            imageUrl={profile?.previewImageUrl}
+            name={profile?.name}
+            showBookmarkBadge={isBookmarked}
+            size={80}
+            mobileScale={1.4}
+            pictureOverlayUrl={undefined}
+            pictureOverlayAlt="Overlay"
+            overlayButtonLabel={relationActionLabel}
+            overlayButtonTitle={relationActionLabel}
+            overlayButtonTone="trust"
+            onOverlayButtonClick={onRelationAction}
+            avatarType={avatarInfo?.type}
+            rings={ringMetrics}
+          />
+        </div>
+      </div>
+    {/if}
+
     <div
-      class={`flex flex-col items-center text-center ${isPopup ? 'gap-3' : 'gap-4'}`}
+      class={`flex flex-col items-center text-center ${isPopup ? 'gap-3 rounded-[2rem] bg-white px-4 pb-3 pt-28 shadow-sm ring-1 ring-base-200/70 sm:px-6 sm:pt-36' : 'gap-4'}`}
     >
       <div
-        class={`relative flex w-full items-start justify-center ${isPopup ? 'min-h-[7.5rem] pb-1 sm:min-h-[8.5rem]' : 'min-h-[9rem] pb-2 sm:min-h-[10rem]'}`}
+        class={`relative flex w-full items-start justify-center overflow-visible ${isPopup ? 'min-h-0 pb-0' : 'min-h-[9rem] pb-2 sm:min-h-[10rem]'}`}
       >
         {#if !isPopup}
           <div
@@ -156,7 +189,7 @@
         {/if}
 
         <div
-          class={`absolute left-1/2 -translate-x-1/2 rounded-full bg-primary/5 blur-2xl sm:top-1/2 sm:-translate-y-1/2 ${isPopup ? 'top-3 h-[14rem] w-[14rem] sm:h-[10.5rem] sm:w-[10.5rem]' : 'top-4 h-[18rem] w-[18rem] sm:h-[12.5rem] sm:w-[12.5rem]'}`}
+          class={`absolute left-1/2 -translate-x-1/2 rounded-full bg-primary/5 blur-2xl sm:top-1/2 sm:-translate-y-1/2 ${isPopup ? 'hidden' : 'top-4 h-[18rem] w-[18rem] sm:h-[12.5rem] sm:w-[12.5rem]'}`}
         ></div>
 
         {#if !isPopup}
@@ -172,22 +205,28 @@
           </div>
         {/if}
 
-        <ProfileScoreDonut
-          class="z-10"
-          {address}
-          imageUrl={profile?.previewImageUrl}
-          name={profile?.name}
-          showBookmarkBadge={isBookmarked}
-          size={isPopup ? 84 : 96}
-          mobileScale={isPopup ? 1.75 : 2}
-          pictureOverlayUrl={relationOverlayUrl}
-          pictureOverlayAlt="Overlay"
-          avatarType={avatarInfo?.type}
-          rings={ringMetrics}
-        />
+        {#if !isPopup}
+          <ProfileScoreDonut
+            class="z-10"
+            {address}
+            imageUrl={profile?.previewImageUrl}
+            name={profile?.name}
+            showBookmarkBadge={isBookmarked}
+            size={96}
+            mobileScale={2}
+            pictureOverlayUrl={relationOverlayUrl}
+            pictureOverlayAlt="Overlay"
+            overlayButtonLabel=""
+            overlayButtonTitle=""
+            overlayButtonTone="default"
+            onOverlayButtonClick={undefined}
+            avatarType={avatarInfo?.type}
+            rings={ringMetrics}
+          />
+        {/if}
       </div>
 
-      <div class={`space-y-1 ${isPopup ? 'mt-0.5' : ''}`}>
+      <div class={`space-y-1 ${isPopup ? 'mt-0 sm:mt-1' : ''}`}>
         <h1
           class={`font-semibold tracking-tight text-base-content ${isPopup ? 'text-lg sm:text-xl' : 'text-xl'}`}
         >
@@ -200,11 +239,14 @@
             ? relationText
             : 'Trust and profile details at a glance.'}
         </p>
+        <!-- Popup trust explainer text intentionally disabled; trust details stay in the dedicated action/panel flow. -->
+        <!--
         <p
           class={`text-base-content/55 ${isPopup ? 'text-[11px]' : 'text-xs'}`}
         >
           Trust = you accept Circles from this account.
         </p>
+        -->
       </div>
 
       <div

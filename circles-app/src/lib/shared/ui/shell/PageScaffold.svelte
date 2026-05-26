@@ -23,7 +23,7 @@
     collapsedHeightMd = '3.5rem',
 
     headerTopGapClass = 'mt-4 md:mt-6',
-    collapsedTopGapClass = 'mt-2 md:mt-2',
+    collapsedTopGapClass = 'mt-3 md:mt-3',
 
     // Svelte 5 snippet props (replacement for named slots)
     title,
@@ -122,6 +122,10 @@
   const headerPaddingClass = usePagePadding ? '' : 'px-4 md:px-6';
   const contentPaddingClass = usePagePadding ? '' : 'px-4 md:px-6';
   const fixedPaddingClass = usePagePadding ? '' : 'px-4 md:px-6';
+  const hasMetaSnippet = !!meta;
+  const hasHeaderActionsSnippet = !!headerActions;
+  const hasExpandedHeaderSupplementary =
+    hasMetaSnippet || hasHeaderActionsSnippet;
 
   const isPopupOpen: boolean = $derived($popupState.content !== null);
 
@@ -209,25 +213,31 @@
           ? 'bg-base-100 border shadow-sm'
           : 'bg-base-100 ring-1 ring-base-300'
       }
-            px-5 md:px-6 py-4 md:py-5 ${headerTopGapClass} relative`}
+            ${hasExpandedHeaderSupplementary ? 'rounded-3xl py-4 md:py-5' : 'rounded-full py-3 md:py-4'} px-5 md:px-6 ${hasAvatar ? 'pr-20 md:pr-24' : ''} ${headerTopGapClass} relative`}
     >
       <!-- NOTE: relative for absolute avatar -->
       <!-- Always stack title/meta and actions into separate rows -->
-      <div class="flex flex-col gap-3">
+      <div
+        class={`flex flex-col ${hasExpandedHeaderSupplementary ? 'gap-3' : 'gap-0 justify-center min-h-11'}`}
+      >
         <div class="min-w-0">
           <div class="leading-tight">{@render title?.()}</div>
-          <div class="mt-1 text-sm text-base-content/60">
-            {@render meta?.()}
-          </div>
+          {#if hasMetaSnippet}
+            <div class="mt-1 text-sm text-base-content/60">
+              {@render meta?.()}
+            </div>
+          {/if}
         </div>
 
-        <div
-          class="flex items-center gap-2 flex-wrap mt-4"
-          bind:this={actionsHost}
-          use:observeActions
-        >
-          {@render headerActions?.()}
-        </div>
+        {#if hasHeaderActionsSnippet}
+          <div
+            class="flex items-center gap-2 flex-wrap mt-4"
+            bind:this={actionsHost}
+            use:observeActions
+          >
+            {@render headerActions?.()}
+          </div>
+        {/if}
       </div>
 
       <!-- NEW: avatar inside expanded header (top-right of the card) -->
@@ -267,7 +277,7 @@
             <!-- Entire bar is clickable when actions exist -->
             <button
               type="button"
-              class={`w-full rounded-full border border-base-content/10 bg-base-100/72 pl-3 md:pl-4 ${collapsedInlineActions || hasAvatar ? 'pr-36 md:pr-44' : 'pr-14 md:pr-16'} ${collapsedHeightClass}
+              class={`w-full rounded-full border border-base-content/10 bg-base-100/72 pl-3 md:pl-4 ${collapsedInlineActions || hasAvatar || hasActions ? 'pr-36 md:pr-44' : 'pr-14 md:pr-16'} ${collapsedHeightClass}
                                 flex items-center justify-between gap-3 pointer-events-auto cursor-pointer shadow-sm backdrop-blur-[10px] supports-[backdrop-filter]:bg-base-100/68
                                 transition-all duration-200 ease-out hover:border-base-content/14 hover:bg-base-100/78 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-base-100`}
               aria-expanded={collapsedMenuOpen}
@@ -307,9 +317,9 @@
             </div>
           {/if}
 
-          {#if collapsedInlineActions || hasAvatar}
+          {#if collapsedInlineActions || hasAvatar || hasActions}
             <div
-              class="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-auto z-10"
+              class="collapsed-header-actions-cluster absolute right-3 md:right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-auto z-10"
             >
               {#if collapsedInlineActions}
                 {@render collapsedInlineActions()}

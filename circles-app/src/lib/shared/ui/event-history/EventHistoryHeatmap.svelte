@@ -485,7 +485,7 @@
           <div class="space-y-2">
             <input
               type="text"
-              class="input input-xs input-bordered w-full"
+              class="input input-sm w-full rounded-xl border-base-300/80 bg-base-100 text-sm shadow-sm focus:border-base-300"
               placeholder={overlaySearchPlaceholder}
               bind:value={overlayQuery}
             />

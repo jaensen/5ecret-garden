@@ -8,11 +8,13 @@
     open?: boolean;
     triggerClass?: string;
     align?: 'start' | 'end' | 'center';
+    side?: 'top' | 'bottom';
     widthClass?: string;
     panelClass?: string;
     mobileTitle?: string;
     closeOnBackdrop?: boolean;
     closeOnEscape?: boolean;
+    openOnHover?: boolean;
     onOpen?: () => void;
     onClose?: () => void;
   }
@@ -22,11 +24,13 @@
     open = $bindable(false),
     triggerClass = '',
     align = 'end',
+    side = 'bottom',
     widthClass = 'w-80',
     panelClass = '',
     mobileTitle = title,
     closeOnBackdrop = true,
     closeOnEscape = true,
+    openOnHover = false,
     onOpen = undefined,
     onClose = undefined,
   }: Props = $props();
@@ -38,6 +42,8 @@
   let desktopPanelEl: HTMLDivElement | null = $state(null);
   let mobilePanelEl: HTMLDivElement | null = $state(null);
   let isMobile = $state(false);
+  let desktopPanelStyle = $state('');
+  let hoverCloseTimer: ReturnType<typeof setTimeout> | null = $state(null);
 
   const ALIGN_CLASS: Record<NonNullable<Props['align']>, string> = {
     start: 'left-0',
@@ -51,8 +57,64 @@
   }
 
   function close(): void {
+    if (hoverCloseTimer) {
+      clearTimeout(hoverCloseTimer);
+      hoverCloseTimer = null;
+    }
     onClose?.();
     open = false;
+  }
+
+  function openPopover(): void {
+    if (hoverCloseTimer) {
+      clearTimeout(hoverCloseTimer);
+      hoverCloseTimer = null;
+    }
+    if (open) return;
+    onOpen?.();
+    open = true;
+  }
+
+  function updateDesktopPanelPosition(): void {
+    if (typeof window === 'undefined') return;
+    if (isMobile || !open) return;
+    if (!triggerEl || !desktopPanelEl) return;
+
+    const triggerRect = triggerEl.getBoundingClientRect();
+    const panelRect = desktopPanelEl.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const margin = 8;
+    const gap = 8;
+
+    let left = triggerRect.left;
+    if (align === 'end') left = triggerRect.right - panelRect.width;
+    if (align === 'center')
+      left = triggerRect.left + (triggerRect.width - panelRect.width) / 2;
+
+    left = Math.min(
+      Math.max(margin, left),
+      viewportWidth - panelRect.width - margin
+    );
+
+    const belowTop = triggerRect.bottom + gap;
+    const aboveTop = triggerRect.top - panelRect.height - gap;
+    const fitsBelow = belowTop + panelRect.height <= viewportHeight - margin;
+    const fitsAbove = aboveTop >= margin;
+
+    let top = side === 'top' ? aboveTop : belowTop;
+
+    if (side === 'top' && !fitsAbove) {
+      top = fitsBelow
+        ? belowTop
+        : Math.max(margin, viewportHeight - panelRect.height - margin);
+    } else if (side === 'bottom' && !fitsBelow) {
+      top = fitsAbove
+        ? aboveTop
+        : Math.max(margin, viewportHeight - panelRect.height - margin);
+    }
+
+    desktopPanelStyle = `left:${Math.round(left)}px;top:${Math.round(top)}px;`;
   }
 
   function toggle(): void {
@@ -60,8 +122,25 @@
       close();
       return;
     }
-    onOpen?.();
-    open = true;
+    openPopover();
+  }
+
+  function scheduleHoverClose(): void {
+    if (!openOnHover) return;
+    if (hoverCloseTimer) {
+      clearTimeout(hoverCloseTimer);
+    }
+    hoverCloseTimer = setTimeout(() => {
+      hoverCloseTimer = null;
+      close();
+    }, 120);
+  }
+
+  function cancelHoverClose(): void {
+    if (hoverCloseTimer) {
+      clearTimeout(hoverCloseTimer);
+      hoverCloseTimer = null;
+    }
   }
 
   function onTriggerKeydown(event: KeyboardEvent): void {
@@ -97,6 +176,12 @@
 
     window.addEventListener('pointerdown', onPointerDown);
     window.addEventListener('keydown', onKeydown);
+    window.addEventListener('resize', updateDesktopPanelPosition);
+    window.addEventListener('scroll', updateDesktopPanelPosition, true);
+
+    requestAnimationFrame(() => {
+      updateDesktopPanelPosition();
+    });
 
     queueMicrotask(() => {
       const targetPanel = isMobile ? mobilePanelEl : desktopPanelEl;
@@ -109,7 +194,16 @@
     return () => {
       window.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('keydown', onKeydown);
+      window.removeEventListener('resize', updateDesktopPanelPosition);
+      window.removeEventListener('scroll', updateDesktopPanelPosition, true);
     };
+  });
+
+  $effect(() => {
+    if (!open || isMobile) return;
+    requestAnimationFrame(() => {
+      updateDesktopPanelPosition();
+    });
   });
 
   onMount(() => {
@@ -131,6 +225,10 @@
     aria-label={title || mobileTitle || 'Open popover'}
     onclick={toggle}
     onkeydown={onTriggerKeydown}
+    onmouseenter={() => openOnHover && openPopover()}
+    onmouseleave={scheduleHoverClose}
+    onfocus={() => openOnHover && openPopover()}
+    onblur={scheduleHoverClose}
   >
     <slot name="trigger" />
   </button>
@@ -138,7 +236,7 @@
   {#if open}
     <button
       type="button"
-      class={`mini-popover-backdrop ui-blur-backdrop ${isMobile ? 'mini-popover-backdrop--mobile' : 'mini-popover-backdrop--desktop'}`}
+      class={`mini-popover-backdrop ${isMobile ? 'mini-popover-backdrop--mobile' : 'mini-popover-backdrop--desktop'}`}
       aria-label={`Close ${mobileTitle || title || 'popover'}`}
       onclick={() => closeOnBackdrop && close()}
     ></button>
@@ -146,9 +244,12 @@
     <div
       bind:this={desktopPanelEl}
       class={`mini-popover-panel mini-popover-panel--desktop ${ALIGN_CLASS[align]} ${widthClass} ${panelClass}`.trim()}
+      style={desktopPanelStyle}
       role="dialog"
       aria-modal="false"
       aria-label={title || mobileTitle || 'Popover'}
+      onmouseenter={cancelHoverClose}
+      onmouseleave={scheduleHoverClose}
     >
       <slot />
     </div>

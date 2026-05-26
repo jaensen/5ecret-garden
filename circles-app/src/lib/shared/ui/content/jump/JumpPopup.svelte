@@ -41,15 +41,17 @@
         You are about to open this link in a new tab:
       </div>
       <div
-        class="relative font-mono text-sm bg-base-200/50 border border-base-content/10 rounded-md p-3 pr-10"
+        class="relative min-h-11 rounded-xl border border-base-300/80 bg-base-200/55 pr-12"
       >
-        <div class="whitespace-nowrap overflow-x-auto">
+        <div
+          class="min-h-11 overflow-x-auto whitespace-nowrap px-3 py-3 pr-0 font-mono text-sm leading-5 text-base-content/80"
+        >
           {destination}
         </div>
 
         <button
           type="button"
-          class="btn btn-ghost btn-xs btn-square absolute top-2 right-2"
+          class="btn-icon-action absolute right-1.5 top-1/2 -translate-y-1/2"
           title="Copy address"
           aria-label="Copy address"
           onclick={copyDestination}

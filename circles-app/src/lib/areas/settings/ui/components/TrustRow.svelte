@@ -88,7 +88,7 @@
         {#if item.showRemove}
           <button
             type="button"
-            class="btn btn-ghost btn-xs btn-square text-error/80 hover:text-error"
+            class="btn-icon-action text-error/80 hover:text-error"
             aria-label="Remove trust"
             onclick={(event) => {
               event.stopPropagation();

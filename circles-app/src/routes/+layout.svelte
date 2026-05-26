@@ -278,7 +278,7 @@
 </main>
 {#if hasToasts}
   <div
-    class="toast toast-bottom toast-end z-[60]"
+    class="toast toast-bottom toast-end z-[60] layout-toast-stack"
     class:layout-toast={!!avatarState.avatar}
   >
     {#each $tasks as task}
@@ -303,6 +303,11 @@
 {/if}
 
 <style>
+  :global(.layout-toast-stack) {
+    right: 16px;
+    bottom: calc(env(safe-area-inset-bottom) + 16px);
+  }
+
   /* Lift toasts above BottomNav only on small screens; keep original position on md+ */
   @media (max-width: 767px) {
     :global(.layout-toast) {

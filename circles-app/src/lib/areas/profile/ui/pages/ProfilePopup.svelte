@@ -7,4 +7,12 @@
   }>();
 </script>
 
-<Profile {address} {trustVersion} isPopup={true} />
+<div class="profile-popup-shell">
+  <Profile {address} {trustVersion} isPopup={true} />
+</div>
+
+<style>
+  .profile-popup-shell {
+    overflow: visible;
+  }
+</style>

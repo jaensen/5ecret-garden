@@ -90,7 +90,7 @@
       clickable={false}
       view="horizontal"
     />
-    <div class="btn btn-xs btn-outline btn-primary">
+    <div class="btn btn-xs btn-primary">
       {#if !isRegistered}
         register
       {:else if isV1}
@@ -103,9 +103,7 @@
   {#if !isV1}
     <div class="w-full flex gap-x-2 items-center justify-between mt-6 px-2">
       <p class="font-bold text-primary">My groups</p>
-      <button
-        onclick={() => openCreateGroup()}
-        class="btn btn-xs btn-outline btn-primary"
+      <button onclick={() => openCreateGroup()} class="btn btn-xs btn-primary"
         >Create a group
       </button>
     </div>

@@ -4,7 +4,7 @@
 </script>
 
 <div class="dropdown dropdown-end">
-  <div tabIndex={0} role="button" class="btn btn-ghost btn-circle btn-xs">
+  <div tabIndex={0} role="button" class="btn-icon-action">
     <img src="/setting.svg" alt="setting" class="w-5 h-5 inline" />
   </div>
   <div

@@ -404,13 +404,13 @@
     </div>
     <div class="flex items-center gap-2 flex-wrap justify-end">
       <input
-        class="input input-bordered input-xs w-40"
+        class="input input-bordered input-sm w-40 rounded-full"
         type="text"
         maxlength="64"
         placeholder="New folder (e.g. Work/DAO)"
         bind:value={newFolderName}
       />
-      <button class="btn btn-xs" type="button" onclick={createFolder}
+      <button class="btn btn-sm btn-ghost" type="button" onclick={createFolder}
         >Add</button
       >
     </div>
@@ -537,7 +537,7 @@
           </button>
 
           <button
-            class="btn btn-ghost btn-xs btn-square"
+            class="btn-icon-action"
             type="button"
             disabled={folderRow.path.toLowerCase() ===
               VIP_BOOKMARK_FOLDER.toLowerCase()}

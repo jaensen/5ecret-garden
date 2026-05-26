@@ -132,7 +132,7 @@
 {/if}
 
 <button
-  class="btn btm-nav-xs btn-outline btn-primary"
+  class="btn btn-primary btn-sm"
   class:loading={isCreating}
   disabled={isCreating ||
     (safeCreationMode === 'importedKey' ? !hasLocalPrivateKey : !hasProvider)}

@@ -443,7 +443,7 @@
       message="Your current trust network cannot route this payment yet."
     >
       {#snippet action()}
-        <div class="flex flex-wrap gap-2">
+        <div class="flex w-full flex-wrap justify-end gap-2">
           <button
             type="button"
             class="btn btn-xs btn-outline"
@@ -467,7 +467,7 @@
         : 'Try a smaller amount or adjust the route above.'}
     >
       {#snippet action()}
-        <div class="flex flex-wrap gap-2">
+        <div class="flex w-full flex-wrap justify-end gap-2">
           {#if maxAmountText}
             <button
               type="button"

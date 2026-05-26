@@ -48,13 +48,7 @@
   import TrustHistoryHeatmap from '$lib/areas/trust/ui/TrustHistoryHeatmap.svelte';
   import PersonalMintHistoryHeatmap from '$lib/areas/minting/ui/PersonalMintHistoryHeatmap.svelte';
   import Lucide from '$lib/shared/ui/icons/Lucide.svelte';
-  import {
-    ArrowLeft as LArrowLeft,
-    Info as LInfo,
-    Shield as LShield,
-    ShieldCheck as LShieldCheck,
-    X as LX,
-  } from 'lucide';
+  import { ArrowLeft as LArrowLeft, Shield as LShield, X as LX } from 'lucide';
   import { createAvatarDataSource } from '$lib/shared/data/circles/avatarDataSource';
   import {
     bookmarksStateStore,
@@ -363,15 +357,13 @@
   let trustedByCount = $state(0);
   let trustHistoryEventCount = $state(0);
   let mintingHistoryEventCount = $state(0);
-  let activeHeaderInfoPanel = $state<'routing' | 'trust' | null>(null);
+  let activeHeaderInfoPanel = $state<'trust' | null>(null);
   let bookmarkedProfiles: ProfileBookmark[] = $state([]);
   let showBookmarkEditor: boolean = $state(false);
   let bookmarkNoteInput: string = $state('');
   let bookmarkFolders: string[] = $state([]);
   let bookmarkFolderSelection: string = $state('');
   let newBookmarkFolderInput: string = $state('');
-  let bookmarkButtonEl: HTMLButtonElement | null = $state(null);
-  let bookmarkPopoverEl: HTMLDivElement | null = $state(null);
 
   const normalizedAddress = $derived.by(() => {
     if (!address) return null;
@@ -420,7 +412,7 @@
     bookmarkNoteInput = currentBookmark?.note ?? '';
     bookmarkFolderSelection = currentFolder;
     newBookmarkFolderInput = '';
-    showBookmarkEditor = !showBookmarkEditor;
+    showBookmarkEditor = true;
   }
 
   function saveBookmarkWithCurrentNote(): void {
@@ -437,43 +429,6 @@
     profileBookmarksService.removeProfile(String(address));
     showBookmarkEditor = false;
   }
-
-  $effect(() => {
-    if (!showBookmarkEditor) return;
-
-    const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null;
-      const bookmarkButtonNode = bookmarkButtonEl as HTMLButtonElement | null;
-      const bookmarkPopoverNode = bookmarkPopoverEl as HTMLDivElement | null;
-      const insideButton = !!(
-        bookmarkButtonNode &&
-        target &&
-        bookmarkButtonNode.contains(target)
-      );
-      const insidePopover = !!(
-        bookmarkPopoverNode &&
-        target &&
-        bookmarkPopoverNode.contains(target)
-      );
-      if (!insideButton && !insidePopover) {
-        showBookmarkEditor = false;
-      }
-    };
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        showBookmarkEditor = false;
-      }
-    };
-
-    window.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('keydown', onKeyDown);
-
-    return () => {
-      window.removeEventListener('pointerdown', onPointerDown);
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  });
 
   const availableTabIds = $derived(
     (() => {
@@ -529,7 +484,7 @@
       {
         label: 'Common connections',
         value: normalizeMetric(commonConnectionsCount, 24),
-        tone: 'info',
+        tone: 'sky',
         hint: `${commonConnectionsCount} shared connections`,
       },
       {
@@ -541,7 +496,7 @@
       {
         label: 'Trusted by',
         value: normalizeMetric(trustedByCount, 200),
-        tone: 'warning',
+        tone: 'amber',
         hint: `${trustedByCount} profiles trust this one`,
       },
       {
@@ -553,19 +508,19 @@
       {
         label: 'Minting history',
         value: normalizeMetric(mintingHistoryEventCount, 60),
-        tone: 'warning',
+        tone: 'rose',
         hint: `${mintingHistoryEventCount} mint events`,
       },
       {
         label: 'Holders',
         value: normalizeMetric(tokenHolders.length, 40),
-        tone: 'info',
+        tone: 'violet',
         hint: `${tokenHolders.length} holders`,
       },
       {
         label: 'Holdings',
         value: normalizeMetric(holdings.length, 40),
-        tone: 'success',
+        tone: 'emerald',
         hint: `${holdings.length} holdings`,
       },
     ];
@@ -609,12 +564,16 @@
     }
   });
 
-  function toggleHeaderInfoPanel(panel: 'routing' | 'trust'): void {
+  function toggleHeaderInfoPanel(panel: 'trust'): void {
     activeHeaderInfoPanel = activeHeaderInfoPanel === panel ? null : panel;
   }
 </script>
 
-<div class="space-y-6">
+<div
+  class={isPopup
+    ? 'profile-popup-layout flex h-full min-h-0 flex-col'
+    : 'space-y-4'}
+>
   {#snippet profileActions()}
     {#if !avatarState.isGroup}
       <button
@@ -734,330 +693,313 @@
       </button>
     {/if}
   {/snippet}
-
-  {#if isPopup}
-    <div class="mb-2 flex items-center gap-3">
-      <button
-        data-popup-close-control
-        class="btn btn-ghost btn-circle btn-sm"
-        onclick={() => popupControls.back()}
-        aria-label={$popupState.stack.length > 0 ? 'Back' : 'Close'}
-        title={$popupState.stack.length > 0 ? 'Back' : 'Close'}
+  <div
+    class={isPopup
+      ? 'profile-popup-layout__hero flex-none space-y-4'
+      : 'space-y-4'}
+  >
+    {#if isPopup}
+      <div
+        class="sticky top-0 z-[2] -mx-1 flex min-h-11 items-center gap-3 px-1 pb-4 pt-4"
       >
-        <Lucide
-          icon={$popupState.stack.length > 0 ? LArrowLeft : LX}
-          size={16}
-          class="shrink-0"
-          ariaLabel=""
-        />
-      </button>
-
-      <div class="ml-auto flex items-center justify-end gap-2 flex-wrap">
         <button
-          type="button"
-          class={`profile-header-icon-button ${activeHeaderInfoPanel === 'routing' ? 'profile-header-icon-button--active' : ''}`}
-          aria-label="Trust and routing info"
-          title="Trust and routing info"
-          onclick={() => toggleHeaderInfoPanel('routing')}
+          data-popup-close-control
+          class="btn btn-ghost btn-circle btn-sm"
+          onclick={() => popupControls.back()}
+          aria-label={$popupState.stack.length > 0 ? 'Back' : 'Close'}
+          title={$popupState.stack.length > 0 ? 'Back' : 'Close'}
         >
-          {#if activeHeaderInfoPanel === 'routing'}
-            <Lucide
-              icon={LArrowLeft}
-              size={22}
-              class="action-icon"
-              ariaLabel=""
-            />
-          {:else}
-            <Lucide icon={LInfo} size={30} class="action-icon" ariaLabel="" />
-          {/if}
+          <Lucide
+            icon={$popupState.stack.length > 0 ? LArrowLeft : LX}
+            size={16}
+            class="shrink-0"
+            ariaLabel=""
+          />
         </button>
 
-        {@render profileActions()}
-
-        <button
-          type="button"
-          class={`profile-header-icon-button profile-header-icon-button--trust ${activeHeaderInfoPanel === 'trust' ? 'profile-header-icon-button--active' : ''}`}
-          aria-label={trustInfoTitle}
-          title={trustInfoTitle}
-          onclick={() => toggleHeaderInfoPanel('trust')}
-        >
-          {#if activeHeaderInfoPanel === 'trust'}
-            <Lucide
-              icon={LArrowLeft}
-              size={22}
-              class="action-icon"
-              ariaLabel=""
-            />
-          {:else}
-            <Lucide
-              icon={LShieldCheck}
-              size={22}
-              class="action-icon"
-              ariaLabel=""
-            />
-          {/if}
-        </button>
-      </div>
-    </div>
-  {:else}
-    <div
-      class="flex items-center justify-end gap-2 flex-wrap -mt-1 mb-1 sm:mb-2"
-    >
-      {@render profileActions()}
-    </div>
-  {/if}
-
-  {#if activeHeaderInfoPanel}
-    <div class="mb-2 flex w-full">
-      <div class="w-full">
         <div
-          class="mini-popover-surface w-full overflow-hidden border px-4 py-3 shadow-none"
+          class="ml-auto flex min-h-11 items-center justify-end gap-2 flex-wrap"
         >
-          {#if activeHeaderInfoPanel === 'trust'}
-            <div class="w-full space-y-3 text-left">
-              <div class="text-sm font-semibold text-base-content">
-                {trustInfoTitle}
-              </div>
-              <div
-                class="space-y-2 text-sm leading-relaxed text-base-content/80"
-              >
-                {#each trustInfoLines as line}
-                  <p>{line}</p>
-                {/each}
-              </div>
-              <div class="w-full pt-1 text-sm">
-                <TrustScoreBadge {address} />
-              </div>
-            </div>
-          {:else if activeHeaderInfoPanel === 'routing'}
-            <div class="w-full space-y-3 text-left">
-              <div class="text-sm font-semibold text-base-content">
-                Trust & routing
-              </div>
-              <ul
-                class="w-full space-y-2 text-sm leading-relaxed text-base-content/80"
-              >
-                {#each TRUST_ROUTING_HELP_LINES as line}
-                  <li>{line}</li>
-                {/each}
-              </ul>
-            </div>
-          {/if}
+          {@render profileActions()}
         </div>
       </div>
-    </div>
-  {/if}
+    {:else}
+      <div
+        class="flex items-center justify-end gap-2 flex-wrap -mt-1 mb-1 sm:mb-2"
+      >
+        {@render profileActions()}
+      </div>
+    {/if}
 
-  <div class={isPopup ? '-mt-8 sm:-mt-10 mb-2' : ''}>
-    <ProfileHeroCard
-      {address}
-      {profile}
-      avatarInfo={otherAvatar}
-      {isPopup}
-      {relationText}
-      {relationOverlayUrl}
-      {relationIconUrl}
-      onRelationAction={() => toggleHeaderInfoPanel('trust')}
-      {hasTrustRow}
-      {relationIsPositive}
-      {isBookmarked}
-      {showBookmarkEditor}
-      {bookmarkFolders}
-      bind:bookmarkFolderSelection
-      bind:newBookmarkFolderInput
-      bind:bookmarkNoteInput
-      trustRoutingHelpLines={TRUST_ROUTING_HELP_LINES}
-      ringMetrics={heroRingMetrics}
-      showChartButton={otherAvatar?.type === 'CrcV2_RegisterGroup'}
-      onOpenBookmarkEditor={openBookmarkEditor}
-      onCloseBookmarkEditor={() => (showBookmarkEditor = false)}
-      onRemoveBookmark={removeBookmark}
-      onSaveBookmark={saveBookmarkWithCurrentNote}
-      onGotoChart={() => {
-        popupControls.closeAndThen(() => {
-          void goto('/groups/metrics/' + address);
-        });
-      }}
-    />
+    {#if activeHeaderInfoPanel}
+      <div class="flex w-full">
+        <div class="w-full">
+          <div
+            class={`mini-popover-surface w-full overflow-hidden border px-4 py-3 shadow-none ${isPopup ? 'rounded-xl' : ''}`}
+          >
+            {#if activeHeaderInfoPanel === 'trust'}
+              <div class="w-full space-y-3 text-left">
+                <div class="text-sm font-semibold text-base-content">
+                  {trustInfoTitle}
+                </div>
+                <div
+                  class="space-y-2 text-sm leading-relaxed text-base-content/80"
+                >
+                  {#each trustInfoLines as line}
+                    <p>{line}</p>
+                  {/each}
+                </div>
+                <div class="w-full pt-1 text-sm">
+                  <TrustScoreBadge {address} />
+                </div>
+              </div>
+            {/if}
+          </div>
+        </div>
+      </div>
+    {/if}
+
+    <div class={isPopup ? 'mb-2' : ''}>
+      <ProfileHeroCard
+        {address}
+        {profile}
+        avatarInfo={otherAvatar}
+        {isPopup}
+        {relationText}
+        {relationOverlayUrl}
+        {relationIconUrl}
+        onRelationAction={() => toggleHeaderInfoPanel('trust')}
+        relationActionLabel={trustInfoTitle}
+        {hasTrustRow}
+        {relationIsPositive}
+        {isBookmarked}
+        {showBookmarkEditor}
+        {bookmarkFolders}
+        bind:bookmarkFolderSelection
+        bind:newBookmarkFolderInput
+        bind:bookmarkNoteInput
+        trustRoutingHelpLines={TRUST_ROUTING_HELP_LINES}
+        ringMetrics={heroRingMetrics}
+        showChartButton={otherAvatar?.type === 'CrcV2_RegisterGroup'}
+        onOpenBookmarkEditor={openBookmarkEditor}
+        onCloseBookmarkEditor={() => (showBookmarkEditor = false)}
+        onRemoveBookmark={removeBookmark}
+        onSaveBookmark={saveBookmarkWithCurrentNote}
+        onGotoChart={() => {
+          popupControls.closeAndThen(() => {
+            void goto('/groups/metrics/' + address);
+          });
+        }}
+      />
+    </div>
+
+    <div class="w-[80%] sm:w-[60%] border-b border-base-300"></div>
   </div>
 
-  <div class="w-[80%] sm:w-[60%] border-b border-base-300"></div>
+  <div
+    class={isPopup
+      ? 'profile-popup-layout__tabs min-h-0 flex-1 overflow-y-auto'
+      : ''}
+  >
+    <Tabs
+      id="profile-tabs"
+      bind:selected={selectedTab}
+      variant="boxed"
+      size="sm"
+      class="w-full p-0 mt-6"
+      fitted={false}
+      {tabOrder}
+    >
+      <Tab
+        id="common_connections"
+        title="Common connections"
+        badge={commonConnectionsCount}
+        panelClass={tabPanelClass}
+      >
+        <div class="w-full">
+          <CommonConnections
+            otherAvatarAddress={otherAvatar?.avatar}
+            bind:commonConnectionsCount
+          />
+        </div>
+      </Tab>
+
+      <Tab
+        id="trusts"
+        title="Trusts"
+        badge={trustsCount}
+        panelClass={tabPanelClass}
+      >
+        <div class="w-full">
+          <TrustRelationsList
+            avatarAddress={otherAvatar?.avatar}
+            relation="trusts"
+            bind:count={trustsCount}
+          />
+        </div>
+      </Tab>
+
+      <Tab
+        id="trusted_by"
+        title="Trusted by"
+        badge={trustedByCount}
+        panelClass={tabPanelClass}
+      >
+        <div class="w-full">
+          <TrustRelationsList
+            avatarAddress={otherAvatar?.avatar}
+            relation="trustedBy"
+            bind:count={trustedByCount}
+          />
+        </div>
+      </Tab>
+
+      <Tab
+        id="trust_history"
+        title="Trust history"
+        badge={trustHistoryEventCount}
+        panelClass={tabPanelClass}
+      >
+        <div class="w-full">
+          <TrustHistoryHeatmap
+            {address}
+            granularity="month"
+            showGranularitySwitch={true}
+            bind:eventCount={trustHistoryEventCount}
+          />
+        </div>
+      </Tab>
+
+      <Tab
+        id="minting_history"
+        title="Minting hstory"
+        badge={mintingHistoryEventCount}
+        panelClass={tabPanelClass}
+      >
+        <div class="w-full">
+          <PersonalMintHistoryHeatmap
+            {address}
+            bind:eventCount={mintingHistoryEventCount}
+          />
+        </div>
+      </Tab>
+
+      {#if otherAvatar?.type === 'CrcV2_RegisterGroup'}
+        <Tab
+          id="collateral"
+          title="Collateral"
+          badge={collateralInTreasury.length}
+          panelClass={tabPanelClass}
+        >
+          <div class="w-full">
+            {#if collateralLoading}
+              <div class="w-full py-6 text-center text-base-content/60">
+                Loading…
+              </div>
+            {:else if collateralError}
+              <div class="w-full py-6 text-center text-error">
+                {collateralError}
+              </div>
+            {:else}
+              <HoldersList
+                holders={collateralInTreasury}
+                emptyLabel="No collateral"
+                noMatchesLabel="No matching collateral"
+                searchPlaceholder="Search collateral by address or name"
+              />
+            {/if}
+          </div>
+        </Tab>
+      {/if}
+
+      {#if otherAvatar?.type === 'CrcV2_RegisterGroup' || otherAvatar?.type === 'CrcV2_RegisterHuman'}
+        <Tab
+          id="holders"
+          title="Holders"
+          badge={tokenHolders.length}
+          panelClass={tabPanelClass}
+        >
+          <div class="w-full">
+            {#if holdersLoading}
+              <div class="w-full py-6 text-center text-base-content/60">
+                Loading…
+              </div>
+            {:else if holdersError}
+              <div class="w-full py-6 text-center text-error">
+                {holdersError}
+              </div>
+            {:else}
+              <HoldersList holders={tokenHolders} />
+            {/if}
+          </div>
+        </Tab>
+      {/if}
+
+      {#if otherAvatar?.type === 'CrcV2_RegisterHuman' || otherAvatar?.type === 'CrcV2_RegisterOrganization'}
+        <Tab
+          id="holdings"
+          title="Holdings"
+          badge={holdings.length}
+          panelClass={tabPanelClass}
+        >
+          <div class="w-full">
+            {#if holdingsLoading}
+              <div class="w-full py-6 text-center text-base-content/60">
+                Loading…
+              </div>
+            {:else if holdingsError}
+              <div class="w-full py-6 text-center text-error">
+                {holdingsError}
+              </div>
+            {:else}
+              <HoldersList holders={holdings} />
+            {/if}
+          </div>
+        </Tab>
+      {/if}
+
+      <!-- Explore namespaces tab: auto-load the viewed profile's namespaces (read-only) -->
+      <Tab
+        id="explore_namespaces"
+        title="Namespaces"
+        panelClass={tabPanelClass}
+      >
+        <div class="space-y-3">
+          {#if otherError}
+            <div class="alert alert-error text-sm">{otherError}</div>
+          {/if}
+
+          {#if otherLoading}
+            <div class="flex items-center gap-2 text-base-content/70 py-2">
+              <span class="loading loading-spinner loading-sm"></span>
+              <span>Loading namespaces…</span>
+            </div>
+          {:else if otherResolvedAvatar}
+            <ProfileNamespaces
+              avatar={otherResolvedAvatar}
+              namespaces={otherNamespaces}
+              readonly={true}
+            />
+          {:else}
+            <div class="text-sm opacity-60">No avatar selected.</div>
+          {/if}
+        </div>
+      </Tab>
+    </Tabs>
+  </div>
 </div>
 
-<Tabs
-  id="profile-tabs"
-  bind:selected={selectedTab}
-  variant="boxed"
-  size="sm"
-  class="w-full p-0 mt-6"
-  fitted={false}
-  {tabOrder}
->
-  <Tab
-    id="common_connections"
-    title="Common connections"
-    badge={commonConnectionsCount}
-    panelClass={tabPanelClass}
-  >
-    <div class="w-full">
-      <CommonConnections
-        otherAvatarAddress={otherAvatar?.avatar}
-        bind:commonConnectionsCount
-      />
-    </div>
-  </Tab>
+<style>
+  .profile-popup-layout__hero {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: oklch(var(--b1));
+    padding-bottom: 0.5rem;
+  }
 
-  <Tab
-    id="trusts"
-    title="Trusts"
-    badge={trustsCount}
-    panelClass={tabPanelClass}
-  >
-    <div class="w-full">
-      <TrustRelationsList
-        avatarAddress={otherAvatar?.avatar}
-        relation="trusts"
-        bind:count={trustsCount}
-      />
-    </div>
-  </Tab>
-
-  <Tab
-    id="trusted_by"
-    title="Trusted by"
-    badge={trustedByCount}
-    panelClass={tabPanelClass}
-  >
-    <div class="w-full">
-      <TrustRelationsList
-        avatarAddress={otherAvatar?.avatar}
-        relation="trustedBy"
-        bind:count={trustedByCount}
-      />
-    </div>
-  </Tab>
-
-  <Tab
-    id="trust_history"
-    title="Trust history"
-    badge={trustHistoryEventCount}
-    panelClass={tabPanelClass}
-  >
-    <div class="w-full">
-      <TrustHistoryHeatmap
-        {address}
-        granularity="month"
-        showGranularitySwitch={true}
-        bind:eventCount={trustHistoryEventCount}
-      />
-    </div>
-  </Tab>
-
-  <Tab
-    id="minting_history"
-    title="Minting hstory"
-    badge={mintingHistoryEventCount}
-    panelClass={tabPanelClass}
-  >
-    <div class="w-full">
-      <PersonalMintHistoryHeatmap
-        {address}
-        bind:eventCount={mintingHistoryEventCount}
-      />
-    </div>
-  </Tab>
-
-  {#if otherAvatar?.type === 'CrcV2_RegisterGroup'}
-    <Tab
-      id="collateral"
-      title="Collateral"
-      badge={collateralInTreasury.length}
-      panelClass={tabPanelClass}
-    >
-      <div class="w-full">
-        {#if collateralLoading}
-          <div class="w-full py-6 text-center text-base-content/60">
-            Loading…
-          </div>
-        {:else if collateralError}
-          <div class="w-full py-6 text-center text-error">
-            {collateralError}
-          </div>
-        {:else}
-          <HoldersList
-            holders={collateralInTreasury}
-            emptyLabel="No collateral"
-            noMatchesLabel="No matching collateral"
-            searchPlaceholder="Search collateral by address or name"
-          />
-        {/if}
-      </div>
-    </Tab>
-  {/if}
-
-  {#if otherAvatar?.type === 'CrcV2_RegisterGroup' || otherAvatar?.type === 'CrcV2_RegisterHuman'}
-    <Tab
-      id="holders"
-      title="Holders"
-      badge={tokenHolders.length}
-      panelClass={tabPanelClass}
-    >
-      <div class="w-full">
-        {#if holdersLoading}
-          <div class="w-full py-6 text-center text-base-content/60">
-            Loading…
-          </div>
-        {:else if holdersError}
-          <div class="w-full py-6 text-center text-error">{holdersError}</div>
-        {:else}
-          <HoldersList holders={tokenHolders} />
-        {/if}
-      </div>
-    </Tab>
-  {/if}
-
-  {#if otherAvatar?.type === 'CrcV2_RegisterHuman' || otherAvatar?.type === 'CrcV2_RegisterOrganization'}
-    <Tab
-      id="holdings"
-      title="Holdings"
-      badge={holdings.length}
-      panelClass={tabPanelClass}
-    >
-      <div class="w-full">
-        {#if holdingsLoading}
-          <div class="w-full py-6 text-center text-base-content/60">
-            Loading…
-          </div>
-        {:else if holdingsError}
-          <div class="w-full py-6 text-center text-error">{holdingsError}</div>
-        {:else}
-          <HoldersList holders={holdings} />
-        {/if}
-      </div>
-    </Tab>
-  {/if}
-
-  <!-- Explore namespaces tab: auto-load the viewed profile's namespaces (read-only) -->
-  <Tab id="explore_namespaces" title="Namespaces" panelClass={tabPanelClass}>
-    <div class="space-y-3">
-      {#if otherError}
-        <div class="alert alert-error text-sm">{otherError}</div>
-      {/if}
-
-      {#if otherLoading}
-        <div class="flex items-center gap-2 text-base-content/70 py-2">
-          <span class="loading loading-spinner loading-sm"></span>
-          <span>Loading namespaces…</span>
-        </div>
-      {:else if otherResolvedAvatar}
-        <ProfileNamespaces
-          avatar={otherResolvedAvatar}
-          namespaces={otherNamespaces}
-          readonly={true}
-        />
-      {:else}
-        <div class="text-sm opacity-60">No avatar selected.</div>
-      {/if}
-    </div>
-  </Tab>
-</Tabs>
+  .profile-popup-layout__tabs {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+</style>
